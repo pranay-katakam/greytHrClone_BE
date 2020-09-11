@@ -3,6 +3,8 @@ package com.nineleaps.greytHRClone.controller;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.service.AuthenticationService;
+
+//import org.json.JSONObject;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,17 +17,10 @@ public class EmployeeAuthentication {
     @Autowired
     AuthenticationService authenticationService;
 
-
    @PostMapping(path="/employee")
-    public String Signup(@RequestBody EmployeeData employeeData){
+    public ResponseEntity<String> Signup(@RequestBody EmployeeData employeeData){
       return authenticationService.Signup(employeeData);
    }
-
-
-
-
-
-
 
    @GetMapping(path = "/profile")
     public JSONObject profile(@RequestParam(value = "id") int id){
@@ -33,8 +28,8 @@ public class EmployeeAuthentication {
        return authenticationService.profile(id);
    }
 
-
-
-
-
+   @PostMapping(path = "/login")
+    public String Login(@RequestBody EmployeeData userCredentials){
+       return authenticationService.Login(userCredentials);
+   }
 }
