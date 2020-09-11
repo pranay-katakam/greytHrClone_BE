@@ -26,11 +26,13 @@ public class AuthenticationService {
     }
 
 
-    public JSONObject profile(int id){
-        return  employeeDataRepository.profile(id);
+    public ResponseEntity<JSONObject> profile(int id){
+
+        return ResponseEntity.status(OK).body(employeeDataRepository.profile(id));
+
     }
 
-    public String Login(EmployeeData userCredentials){
+    public ResponseEntity<String> Login(EmployeeData userCredentials){
         String name = userCredentials.getName();
         String password = userCredentials.getPassword();
 
@@ -39,11 +41,14 @@ public class AuthenticationService {
 
         String dbpassword = dbuser.getPassword();
         System.out.println(dbpassword + "PRINITING PASSWORD" + password);
+        String loginResponse="";
         if(dbpassword.equals(password)){
-            return "Login successful";
+            loginResponse= "Login successful";
         }
         else{
-            return "wrong credentials";
+            loginResponse="wrong credentials";
         }
+        return ResponseEntity.status(OK).body(loginResponse);
+
     }
 }
