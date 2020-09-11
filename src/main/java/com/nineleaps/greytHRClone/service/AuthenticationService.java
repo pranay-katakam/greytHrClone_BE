@@ -8,9 +8,11 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import java.sql.Date;
+
+import static org.springframework.http.HttpStatus.*;
 
 
 @Service
@@ -19,6 +21,9 @@ public class AuthenticationService {
     EmployeeDataRepository employeeDataRepository;
 
     public ResponseEntity<String> Signup(EmployeeData employeeData){
+
+
+
 
         employeeDataRepository.save(employeeData);
         return ResponseEntity.status(CREATED).body("user has been added successfully");
@@ -32,23 +37,33 @@ public class AuthenticationService {
 
     }
 
-    public ResponseEntity<String> Login(EmployeeData userCredentials){
-        String name = userCredentials.getName();
-        String password = userCredentials.getPassword();
+    public ResponseEntity<String> Login(EmployeeData userCredentials) {
+        try {
 
-        EmployeeData dbuser = employeeDataRepository.findByName(name);
+            int existByEmail=employeeDataRepository.exist(userCredentials.getEmail());
 
+            if(existByEmail!=0) {
+                String email = userCredentials.getEmail();
+                String password = userCredentials.getPassword();
 
-        String dbpassword = dbuser.getPassword();
-        System.out.println(dbpassword + "PRINITING PASSWORD" + password);
-        String loginResponse="";
-        if(dbpassword.equals(password)){
-            loginResponse= "Login successful";
+                JSONObject dbuser = employeeDataRepository.UserByEmail(email);
+                System.out.println(dbuser);
+
+                String dbpassword = (String)dbuser.get("password");
+
+                String loginResponse = "";
+                if (dbpassword.equals(password)) {
+                    loginResponse = "Login successful";
+                } else {
+                    loginResponse = "wrong credentials";
+                }
+                return ResponseEntity.status(OK).body(loginResponse);
+            }else {
+                return ResponseEntity.status(NOT_FOUND).body("please enter a valid name");
+            }
+        }catch (Exception e){
+            return ResponseEntity.status(NOT_FOUND).body("caught in catch");
         }
-        else{
-            loginResponse="wrong credentials";
-        }
-        return ResponseEntity.status(OK).body(loginResponse);
 
     }
 }

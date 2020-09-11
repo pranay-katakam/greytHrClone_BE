@@ -13,9 +13,15 @@ import org.springframework.stereotype.Repository;
 
 public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Integer> {
 
-    EmployeeData findByName(String name);
+//    EmployeeData findByEmail(String email);
 
 
-    @Query(value = "select emp_id,email,name from employee_data where emp_id=?1",nativeQuery = true)
+    @Query(value = "select emp_id,name from employee_data where emp_id=?1",nativeQuery = true)
     JSONObject profile(int id);
+
+    @Query(value="Select count(name) from employee_data where email=?1",nativeQuery = true)
+    int exist(String email);
+
+    @Query(value = "select email,password from employee_data where email=?1",nativeQuery = true)
+    JSONObject UserByEmail(String email);
 }
