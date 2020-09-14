@@ -8,9 +8,11 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
+import java.sql.Date;
+
+import static org.springframework.http.HttpStatus.*;
 
 
 @Service
@@ -18,32 +20,49 @@ public class AuthenticationService {
     @Autowired
     EmployeeDataRepository employeeDataRepository;
 
-    public ResponseEntity<String> Signup(EmployeeData employeeData){
+    public ResponseEntity<String> Signup(EmployeeData employeeData) {
+        ResponseEntity<String> responseEntity;
 
-        employeeDataRepository.save(employeeData);
-        return ResponseEntity.status(CREATED).body("user has been added successfully");
+        int existByEmail = employeeDataRepository.exist(employeeData.getEmail());
 
+        if (existByEmail != 0) {
+            responseEntity = ResponseEntity.status(BAD_REQUEST).body("User Already Exists !!");
+        } else {
+            responseEntity = ResponseEntity.status(OK).body("Signed up successfully !!");
+            employeeDataRepository.save(employeeData);
+        }
+        return responseEntity;
     }
 
-
-    public JSONObject profile(int id){
-        return  employeeDataRepository.profile(id);
+    public ResponseEntity<JSONObject> profile(int id) {
+        return ResponseEntity.status(OK).body(employeeDataRepository.profile(id));
     }
 
-    public String Login(EmployeeData userCredentials){
-        String name = userCredentials.getName();
-        String password = userCredentials.getPassword();
+    public ResponseEntity<String> Login(EmployeeData userCredentials) {
+        try {
+            int existByEmail = employeeDataRepository.exist(userCredentials.getEmail());
+            if (existByEmail != 0) {
+                String email = userCredentials.getEmail();
+                String password = userCredentials.getPassword();
 
-        EmployeeData dbuser = employeeDataRepository.findByName(name);
+                JSONObject dbuser = employeeDataRepository.UserByEmail(email);
+                System.out.println(dbuser);
 
+                String dbpassword = (String) dbuser.get("password");
 
-        String dbpassword = dbuser.getPassword();
-        System.out.println(dbpassword + "PRINITING PASSWORD" + password);
-        if(dbpassword.equals(password)){
-            return "Login successful";
+                ResponseEntity<String> responseEntity;
+                if (dbpassword.equals(password)) {
+                    responseEntity = ResponseEntity.status(OK).body("Login Successful");
+                } else {
+                    responseEntity = ResponseEntity.status(BAD_REQUEST).body("wrong credentials");
+                }
+                return responseEntity;
+            } else {
+                return ResponseEntity.status(NOT_FOUND).body("please enter a valid email");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND).body("caught in catch");
         }
-        else{
-            return "wrong credentials";
-        }
+
     }
 }

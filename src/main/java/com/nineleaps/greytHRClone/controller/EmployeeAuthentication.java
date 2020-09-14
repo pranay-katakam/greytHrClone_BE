@@ -10,26 +10,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
+@CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @RestController
 public class EmployeeAuthentication {
 
     @Autowired
     AuthenticationService authenticationService;
 
-   @PostMapping(path="/employee")
-    public ResponseEntity<String> Signup(@RequestBody EmployeeData employeeData){
-      return authenticationService.Signup(employeeData);
-   }
+    @PostMapping(path = "/employee")
+    public ResponseEntity<String> Signup(@RequestBody EmployeeData employeeData) {
+        return authenticationService.Signup(employeeData);
+    }
 
-   @GetMapping(path = "/profile")
-    public JSONObject profile(@RequestParam(value = "id") int id){
+    @GetMapping(path = "/profile")
+    public ResponseEntity<JSONObject> profile(@RequestParam(value = "id") int id) {
+        return authenticationService.profile(id);
+    }
 
-       return authenticationService.profile(id);
-   }
-
-   @PostMapping(path = "/login")
-    public String Login(@RequestBody EmployeeData userCredentials){
-       return authenticationService.Login(userCredentials);
-   }
+    @PostMapping(path = "/login")
+    public ResponseEntity<String> Login(@RequestBody EmployeeData userCredentials) {
+        return authenticationService.Login(userCredentials);
+    }
 }
