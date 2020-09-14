@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 
 
@@ -24,4 +26,12 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
 
     @Query(value = "select email,password from employee_data where email=?1", nativeQuery = true)
     JSONObject UserByEmail(String email);
+
+    @Query(value="select name,dob from employee_data where MONTH(dob)<=MONTH(CURDATE()) and DAY(dob)<=DAY(CURDATE()) order by MONTH(dob) desc, DAY(dob) desc;",nativeQuery = true )
+    List<JSONObject> BirthdayList();
+
+    @Query(value="select name,created_date from employee_data where  created_date <= DATE_SUB(NOW(),INTERVAL 1 YEAR) order by DATE(created_date) desc",nativeQuery = true)
+    List<JSONObject> AnniversaryList();
+
+
 }
