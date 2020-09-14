@@ -2,147 +2,60 @@ package com.nineleaps.greytHRClone.model;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-
+import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
+
+
 
 @Data
 @Entity
-@Getter
-@Setter
-@ToString
 @Table(name="employee_data")
 public class EmployeeData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int empId ;
+    private int empId;
 
-    @Column(name="name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name="password")
+    @Column(name = "password")
     private String password;
 
-    @Column(name="email")
+    @Column(name = "email")
     private String email;
 
-    @Column(name="manager_id")
+    @Column(name = "manager_id")
     private int managerId;
 
-    @Column(name="dob")
-    @JsonFormat(pattern="dd-MM-yyyy")
+    @Column(name = "dob")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date dob;
 
-    @Column(name="location")
+    @Column(name = "location")
     private String location;
 
-    @Column(name="created_date")
+    @Column(name = "created_date")
+    @CreatedDate
     private Date createdDate;
 
-    @Column(name="employee_department")
-    private String employeeDepartment;
+    @Column(name = "department")
+    private String department;
 
-    @Column(name="employee_designation")
-    private String employeeDesignation;
+    @Column(name = "department")
+    private String designation;
 
-    public String getEmployeeDepartment() {
-        return employeeDepartment;
-    }
-
-    public void setEmployeeDepartment(String employeeDepartment) {
-        this.employeeDepartment = employeeDepartment;
-    }
-
-    public String getEmployeeDesignation() {
-        return employeeDesignation;
-    }
-
-    public void setEmployeeDesignation(String employeeDesignation) {
-        this.employeeDesignation = employeeDesignation;
-    }
-
-    public int getEmpId() {
-        return empId;
-    }
-
-    public void setEmpId(int empId) {
-        this.empId = empId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinTable(name = "employee_empdept",
+//            joinColumns = {@JoinColumn(name = "employee_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "dept_id")})
+//    private Set<EmployeeDepartment> departments = new HashSet<>();
+//
+//
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name="desig_id")
+//    private EmployeeDesignation designation;
 
 
-
-    public Date getDob() {
-        return dob;
-    }
-
-    public void setDob(Date dob) {
-        this.dob = dob;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public int getManagerId() {
-        return managerId;
-    }
-
-    public void setManagerId(int managerId) {
-        this.managerId = managerId;
-    }
-
-    @Override
-    public String toString() {
-        return "EmployeeData{" +
-                "empId=" + empId +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
-                ", managerId='" + managerId + '\'' +
-                ", dob=" + dob +
-                ", location='" + location + '\'' +
-                ", createdDate=" + createdDate +
-                ", employeeDepartment='" + employeeDepartment + '\'' +
-                ", employeeDesignation='" + employeeDesignation + '\'' +
-                '}';
-    }
 }

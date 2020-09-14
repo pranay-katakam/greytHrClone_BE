@@ -22,9 +22,6 @@ public class AuthenticationService {
 
     public ResponseEntity<String> Signup(EmployeeData employeeData){
 
-
-
-
         employeeDataRepository.save(employeeData);
         return ResponseEntity.status(CREATED).body("user has been added successfully");
 
@@ -32,17 +29,15 @@ public class AuthenticationService {
 
 
     public ResponseEntity<JSONObject> profile(int id){
-
         return ResponseEntity.status(OK).body(employeeDataRepository.profile(id));
-
     }
 
     public ResponseEntity<String> Login(EmployeeData userCredentials) {
         try {
-
             int existByEmail=employeeDataRepository.exist(userCredentials.getEmail());
 
             if(existByEmail!=0) {
+                ResponseEntity<String> responseEntity;
                 String email = userCredentials.getEmail();
                 String password = userCredentials.getPassword();
 
@@ -51,15 +46,14 @@ public class AuthenticationService {
 
                 String dbpassword = (String)dbuser.get("password");
 
-                String loginResponse = "";
                 if (dbpassword.equals(password)) {
-                    loginResponse = "Login successful";
+                     responseEntity=ResponseEntity.status(OK).body( "Login successful");
                 } else {
-                    loginResponse = "wrong credentials";
+                    responseEntity=ResponseEntity.status(BAD_REQUEST).body("wrong credentials");
                 }
-                return ResponseEntity.status(OK).body(loginResponse);
+                return responseEntity;
             }else {
-                return ResponseEntity.status(NOT_FOUND).body("please enter a valid name");
+                return ResponseEntity.status(BAD_REQUEST).body("please enter a valid name");
             }
         }catch (Exception e){
             return ResponseEntity.status(NOT_FOUND).body("caught in catch");
