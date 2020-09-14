@@ -20,36 +20,26 @@ public class AuthenticationService {
     @Autowired
     EmployeeDataRepository employeeDataRepository;
 
-    public ResponseEntity<String> Signup(EmployeeData employeeData){
-
-
-
-
+    public ResponseEntity<String> Signup(EmployeeData employeeData) {
         employeeDataRepository.save(employeeData);
         return ResponseEntity.status(CREATED).body("user has been added successfully");
-
     }
 
-
-    public ResponseEntity<JSONObject> profile(int id){
-
+    public ResponseEntity<JSONObject> profile(int id) {
         return ResponseEntity.status(OK).body(employeeDataRepository.profile(id));
-
     }
 
     public ResponseEntity<String> Login(EmployeeData userCredentials) {
         try {
-
-            int existByEmail=employeeDataRepository.exist(userCredentials.getEmail());
-
-            if(existByEmail!=0) {
+            int existByEmail = employeeDataRepository.exist(userCredentials.getEmail());
+            if (existByEmail != 0) {
                 String email = userCredentials.getEmail();
                 String password = userCredentials.getPassword();
 
                 JSONObject dbuser = employeeDataRepository.UserByEmail(email);
                 System.out.println(dbuser);
 
-                String dbpassword = (String)dbuser.get("password");
+                String dbpassword = (String) dbuser.get("password");
 
                 String loginResponse = "";
                 if (dbpassword.equals(password)) {
@@ -58,10 +48,10 @@ public class AuthenticationService {
                     loginResponse = "wrong credentials";
                 }
                 return ResponseEntity.status(OK).body(loginResponse);
-            }else {
-                return ResponseEntity.status(NOT_FOUND).body("please enter a valid name");
+            } else {
+                return ResponseEntity.status(NOT_FOUND).body("please enter a valid email");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(NOT_FOUND).body("caught in catch");
         }
 
