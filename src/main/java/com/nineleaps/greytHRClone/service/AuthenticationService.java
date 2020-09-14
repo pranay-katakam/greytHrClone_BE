@@ -20,43 +20,51 @@ public class AuthenticationService {
     @Autowired
     EmployeeDataRepository employeeDataRepository;
 
-    public ResponseEntity<String> Signup(EmployeeData employeeData){
-        employeeDataRepository.save(employeeData);
-        return ResponseEntity.status(CREATED).body("user has been added successfully");
+    public ResponseEntity<String> Signup(EmployeeData employeeData) {
+        ResponseEntity<String> responseEntity;
 
+        int existByEmail = employeeDataRepository.exist(employeeData.getEmail());
+
+        if (existByEmail != 0) {
+            responseEntity = ResponseEntity.status(BAD_REQUEST).body("User Already Exists !!");
+        } else {
+            responseEntity = ResponseEntity.status(OK).body("Signed up successfully !!");
+            employeeDataRepository.save(employeeData);
+        }
+        return responseEntity;
     }
 
-    public ResponseEntity<JSONObject> profile(int id){
-        return ResponseEntity.status(OK).body(employeeDataRepository.profile(id));
+    public ResponseEntity<JSONObject> profile(int id) {
 
+        return ResponseEntity.status(OK).body(employeeDataRepository.profile(id));
     }
 
     public ResponseEntity<String> Login(EmployeeData userCredentials) {
         try {
-            int existByEmail=employeeDataRepository.exist(userCredentials.getEmail());
 
-            if(existByEmail!=0) {
+            int existByEmail = employeeDataRepository.exist(userCredentials.getEmail());
+            if (existByEmail != 0) {
+
                 String email = userCredentials.getEmail();
                 String password = userCredentials.getPassword();
 
                 JSONObject dbuser = employeeDataRepository.UserByEmail(email);
                 System.out.println(dbuser);
 
-                String dbpassword = (String)dbuser.get("password");
+                String dbpassword = (String) dbuser.get("password");
 
-                String loginResponse = "";
+                ResponseEntity<String> responseEntity;
                 if (dbpassword.equals(password)) {
-                    loginResponse = "Login successful";
+                    responseEntity = ResponseEntity.status(OK).body("Login Successful");
                 } else {
-                    loginResponse = "wrong credentials";
+                    responseEntity = ResponseEntity.status(BAD_REQUEST).body("wrong credentials");
                 }
-                return ResponseEntity.status(OK).body(loginResponse);
+       return responseEntity;
+            } else {
+                return ResponseEntity.status(NOT_FOUND).body("please enter a valid email");
             }
-            else {
-                return ResponseEntity.status(NOT_FOUND).body("please enter a valid name");
-            }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
+
             return ResponseEntity.status(NOT_FOUND).body("caught in catch");
         }
 
