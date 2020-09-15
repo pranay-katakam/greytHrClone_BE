@@ -7,7 +7,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 
 @Data
 @Entity
@@ -37,12 +37,13 @@ public class EmployeeData {
     private String location;
 
     @Column(name = "created_date")
-    private Date createdDate;
+    private Date createdDate = new Date();
 
     @Column(name = "employee_department")
     private String employeeDepartment;
 
     @Column(name = "employee_designation")
     private String employeeDesignation;
+
 }
 

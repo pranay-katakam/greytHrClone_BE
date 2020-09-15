@@ -22,11 +22,6 @@ public class EmployeeAuthentication {
         return authenticationService.Signup(employeeData);
     }
 
-    @GetMapping(path = "/profile")
-    public ResponseEntity<JSONObject> profile(@RequestParam(value = "id") int id) {
-        return authenticationService.profile(id);
-    }
-
     @PostMapping(path = "/login")
     public ResponseEntity<String> Login(@RequestBody EmployeeData userCredentials) {
         return authenticationService.Login(userCredentials);
