@@ -1,6 +1,5 @@
 package com.nineleaps.greytHRClone.model;
 
-
 import lombok.Data;
 
 import javax.persistence.*;

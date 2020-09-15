@@ -1,13 +1,10 @@
 package com.nineleaps.greytHRClone.model;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import java.util.Date;
+
 
 @Data
 @Entity
@@ -39,11 +36,12 @@ public class EmployeeData {
     @Column(name = "created_date")
     private Date createdDate = new Date();
 
-    @Column(name = "employee_department")
-    private String employeeDepartment;
+    @Column(name = "department")
+    private String department;
 
-    @Column(name = "employee_designation")
-    private String employeeDesignation;
+    @Column(name = "designation")
+    private String designation;
+
 
 }
 
