@@ -1,10 +1,11 @@
 package com.nineleaps.greytHRClone.service;
 
+import com.nineleaps.greytHRClone.exception.BadRequestException;
+import com.nineleaps.greytHRClone.exception.DataAlreadyExistsException;
 import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 
 //import org.json.JSONObject;
-import exception.BadRequestException;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class AuthenticationService {
     public ResponseEntity<String> Signup(EmployeeData employeeData) {
         ResponseEntity<String> responseEntity;
 
+
         int existByEmail = employeeDataRepository.exist(employeeData.getEmail());
 
         if (existByEmail != 0) {
@@ -35,9 +37,7 @@ public class AuthenticationService {
         return responseEntity;
     }
 
-    public ResponseEntity<JSONObject> profile(int id) {
-        return ResponseEntity.status(OK).body(employeeDataRepository.profile(id));
-    }
+
 
     public ResponseEntity<String> Login(EmployeeData userCredentials) {
         try {
@@ -45,26 +45,22 @@ public class AuthenticationService {
             if (existByEmail != 0) {
                 String email = userCredentials.getEmail();
                 String password = userCredentials.getPassword();
-
                 JSONObject dbuser = employeeDataRepository.UserByEmail(email);
 
                 String dbpassword = (String) dbuser.get("password");
-
                 ResponseEntity<String> responseEntity;
                 if (dbpassword.equals(password)) {
                     responseEntity = ResponseEntity.status(OK).body("Login Successful");
                 } else {
-                    throw new BadRequestException("wrong credentials");
-//                    responseEntity = ResponseEntity.status(BAD_REQUEST).body("wrong credentials");
+
+                   throw new BadRequestException("wrong password");
                 }
                 return responseEntity;
             } else {
-                throw new BadRequestException("please enter valid name");
-//                return ResponseEntity.status(NOT_FOUND).body("please enter a valid email");
+                throw new BadRequestException("please enter a valid name");
             }
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
-//            return ResponseEntity.status(NOT_FOUND).body("caught in catch");
         }
 
     }
