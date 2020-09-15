@@ -51,4 +51,8 @@ public class EmployeeDetailsService {
         return ResponseEntity.status(CREATED).body("designation added successfully !");
 
     }
+
+    public ResponseEntity<JSONObject> getDepartments() {
+        return ResponseEntity.status(OK).body(employeeDepartmentRepository.getDepartments());
+    }
 }

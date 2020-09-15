@@ -63,7 +63,6 @@ public class AuthenticationService {
 //                return ResponseEntity.status(NOT_FOUND).body("please enter a valid email");
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage()+"inservice");
             throw new BadRequestException(e.getMessage());
 //            return ResponseEntity.status(NOT_FOUND).body("caught in catch");
         }

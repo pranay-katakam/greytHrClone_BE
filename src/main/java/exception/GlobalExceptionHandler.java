@@ -23,7 +23,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ExceptionResponse> handleBadRequestException(BadRequestException ex) {
-        System.out.println(ex.getMessage()+"global");
         return new ResponseEntity<>(new ExceptionResponse(new Date(),"Invalid Data", ex.getMessage()), HttpStatus.BAD_REQUEST);
 
     }

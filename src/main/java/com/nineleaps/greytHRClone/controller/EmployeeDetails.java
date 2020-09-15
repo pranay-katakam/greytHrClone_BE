@@ -38,14 +38,20 @@ public class EmployeeDetails {
     }
 
 
-    @PostMapping(path="/departments")
+    @PostMapping(path = "/departments")
     public ResponseEntity<String> addDepartments(@RequestBody EmployeeDepartment employeeDepartment) {
         return employeeDetailsService.addDepartments(employeeDepartment);
 
     }
-    @PostMapping(path="/designation")
+
+    @GetMapping(path = "/getDepartments")
+    public ResponseEntity<JSONObject> getDepartments() {
+        return employeeDetailsService.getDepartments();
+
+    }
+
+    @PostMapping(path = "/designation")
     public ResponseEntity<String> addDesignation(@RequestBody EmployeeDesignation employeeDesignation) {
-        System.out.println(employeeDesignation+"in controller");
         return employeeDetailsService.addDesignations(employeeDesignation);
 
     }
