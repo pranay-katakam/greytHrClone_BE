@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.sql.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -37,12 +39,8 @@ public class AuthenticationService {
         return responseEntity;
     }
 
-    public ResponseEntity<JSONObject> profile(int id) {
 
-        return ResponseEntity.status(OK).body(employeeDataRepository.profile(id));
-    }
-
-    public ResponseEntity<String> Login(EmployeeData userCredentials) {
+    public ResponseEntity<JSONObject> Login(EmployeeData userCredentials) {
         try {
 
             int existByEmail = employeeDataRepository.exist(userCredentials.getEmail());
@@ -52,13 +50,15 @@ public class AuthenticationService {
                 String password = userCredentials.getPassword();
                 JSONObject dbuser = employeeDataRepository.UserByEmail(email);
                 String dbpassword = (String) dbuser.get("password");
-                ResponseEntity<String> responseEntity;
+
                 if (dbpassword.equals(password)) {
-                    responseEntity = ResponseEntity.status(OK).body("Login Successful");
+                    JSONObject responseMsg = new JSONObject();
+                    responseMsg.put("message", "Login Successful");
+                   return  ResponseEntity.status(OK).body(responseMsg);
                 } else {
                    throw new BadRequestException("wrong password");
                 }
-       return responseEntity;
+
             } else {
                 throw new BadRequestException("please enter a valid name");
             }

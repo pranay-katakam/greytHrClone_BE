@@ -42,6 +42,5 @@ public class EmployeeData {
     @Column(name = "designation")
     private String designation;
 
-
 }
 

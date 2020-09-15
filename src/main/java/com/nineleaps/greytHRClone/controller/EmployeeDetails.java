@@ -1,36 +1,30 @@
 package com.nineleaps.greytHRClone.controller;
 
 import com.nineleaps.greytHRClone.dto.EventDTO;
-
+import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
-import com.nineleaps.greytHRClone.service.AuthenticationService;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
-
-import org.json.simple.JSONObject;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
+@Api(value = "Controller class deals employee details")
 @RestController
 public class EmployeeDetails {
 
-    private AuthenticationService authenticationService;
-    private EmployeeDetailsService employeeDetailsService;
-
     @Autowired
-    public EmployeeDetails(AuthenticationService authenticationService, EmployeeDetailsService employeeDetailsService) {
-        this.authenticationService = authenticationService;
-        this.employeeDetailsService = employeeDetailsService;
-    }
+    EmployeeDetailsService employeeDetailsService;
 
-    @GetMapping(path = "/profile")
-    public ResponseEntity<JSONObject> profile(@RequestParam(value = "id") int id) {
-        return authenticationService.profile(id);
+    @ApiOperation(value = "To get the profile details of employee")    @GetMapping(path = "/profile")
+    public ResponseEntity<ProfileDTO> profile(@RequestParam(value = "id", defaultValue = "0") int id) {
+        return employeeDetailsService.profile(id);
     }
 
     @GetMapping(path = "/events")
@@ -45,7 +39,7 @@ public class EmployeeDetails {
     }
 
     @PostMapping(path = "/designation")
-    public ResponseEntity<String> addDesignation(@RequestBody EmployeeDesignation employeeDesignation){
+    public ResponseEntity<String> addDesignation(@Valid @RequestBody EmployeeDesignation employeeDesignation){
         return employeeDetailsService.addDesignation(employeeDesignation);
     }
 

@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.controller;
 
 import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.service.AuthenticationService;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class EmployeeAuthentication {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<String> Login(@RequestBody EmployeeData userCredentials) {
+    public ResponseEntity<JSONObject> Login(@RequestBody EmployeeData userCredentials) {
         return authenticationService.Login(userCredentials);
     }
 

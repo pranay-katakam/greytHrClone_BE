@@ -2,6 +2,9 @@ package com.nineleaps.greytHRClone.service;
 
 import com.nineleaps.greytHRClone.dto.EventDTO;
 
+import com.nineleaps.greytHRClone.dto.ProfileDTO;
+
+import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
@@ -15,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @Service
 public class EmployeeDetailsService {
@@ -30,13 +35,40 @@ public class EmployeeDetailsService {
         this.employeeDesignationRepository = employeeDesignationRepository;
     }
 
+    public ResponseEntity< ProfileDTO> profile(int id) {
+        try{
+        JSONObject dbprofile=employeeDataRepository.profile(id);
+        int mangerId=(int)dbprofile.get("manager_id");
+
+        ProfileDTO profileDTO=new ProfileDTO();
+        profileDTO.setName((String)dbprofile.get("name"));
+        profileDTO.setDepartment((String)dbprofile.get("department"));
+        profileDTO.setDesignation((String)dbprofile.get("designation"));
+        profileDTO.setManagerId(mangerId);
+        profileDTO.setLocation((String)dbprofile.get("location"));
+
+        String managerName="";
+        if(mangerId!=0){
+            managerName= employeeDataRepository.getManagerName(mangerId);
+        }
+        profileDTO.setManagerName(managerName);
+
+        return ResponseEntity.status(OK).body(profileDTO);
+        }catch (Exception e)
+        {
+            throw new BadRequestException("please enter a valid Id");
+        }
+    }
+
+
     public ResponseEntity<List<EventDTO>> events() {
         List<JSONObject> birthdayList= employeeDataRepository.BirthdayList();
-        System.out.println("birthdays"+birthdayList);
+
         List<JSONObject> anniversaryList=employeeDataRepository.AnniversaryList();
-        System.out.println("anniversary"+anniversaryList);
+
 
         List<EventDTO> eventDTOS=new ArrayList<>();
+
         for(JSONObject bDay: birthdayList){
             EventDTO eventDTO=new EventDTO();
             eventDTO.setName((String)bDay.get("name"));
