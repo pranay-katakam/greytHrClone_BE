@@ -3,7 +3,6 @@ package com.nineleaps.greytHRClone.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -37,25 +36,14 @@ public class EmployeeData {
     private String location;
 
     @Column(name = "created_date")
-    @CreatedDate
-    private Date createdDate;
+    private Date createdDate = new Date();
 
     @Column(name = "department")
     private String department;
 
-    @Column(name = "department")
+    @Column(name = "designation")
     private String designation;
-
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinTable(name = "employee_empdept",
-//            joinColumns = {@JoinColumn(name = "employee_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "dept_id")})
-//    private Set<EmployeeDepartment> departments = new HashSet<>();
-//
-//
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @JoinColumn(name="desig_id")
-//    private EmployeeDesignation designation;
 
 
 }
+

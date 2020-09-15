@@ -22,7 +22,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(DataAlreadyExistsException.class)
     public ResponseEntity<ExceptionResponse> handleAlreadyExistsException(DataAlreadyExistsException ex) {
-        return ResponseEntity.status(CONFLICT).body(new ExceptionResponse(new Date(),"Already Exists", ex.getMessage()));
+        return new ResponseEntity<>(new ExceptionResponse(new Date(),"Already Exists", ex.getMessage()), CONFLICT);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ExceptionResponse> handleBadRequestException(BadRequestException ex) {
+        return new ResponseEntity<>(new ExceptionResponse(new Date(),"Invalid Data", ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @Override
