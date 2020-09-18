@@ -32,4 +32,8 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
 
     @Query("select name from EmployeeData where empId=?1")
     String getManagerName(int mangerId);
+
+    @Query(value="select emp_id,name from employee_data",nativeQuery = true)
+    List<JSONObject> getAllEmployee();
+
 }
