@@ -1,5 +1,6 @@
 package com.nineleaps.greytHRClone.dto;
 
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -4,8 +4,8 @@ package com.nineleaps.greytHRClone.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import javax.persistence.*;
-import java.util.Date;
-
+import java.sql.Date;
+import java.sql.Timestamp;
 
 
 @Data
@@ -13,7 +13,7 @@ import java.util.Date;
 @Table(name="employee_data")
 public class EmployeeData {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int empId;
 
     @Column(name = "name")
@@ -26,17 +26,18 @@ public class EmployeeData {
     private String email;
 
     @Column(name = "manager_id")
-    private int managerId;
+    private int managerId=0;
 
     @Column(name = "dob")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+//    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date dob;
 
     @Column(name = "location")
     private String location;
 
     @Column(name = "created_date")
-    private Date createdDate = new Date();
+    private Timestamp createdDate = new Timestamp(System.currentTimeMillis());
+
 
     @Column(name = "department")
     private String department;

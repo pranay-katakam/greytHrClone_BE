@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 @Repository
 public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Integer> {
 
@@ -21,6 +22,7 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     @Query(value = "select email,password from employee_data where email=?1", nativeQuery = true)
     JSONObject UserByEmail(String email);
 
+
     @Query(value = "select name,dob from employee_data where MONTH(dob)<=MONTH(CURDATE()) and DAY(dob)<=DAY(CURDATE()) order by MONTH(dob) desc, DAY(dob) desc",nativeQuery = true)
     List<JSONObject> BirthdayList();
 
@@ -29,4 +31,7 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
 
     @Query("select name from EmployeeData where empId=?1")
     String getManagerName(int mangerId);
+
+    @Query(value="select emp_id,name from employee_data",nativeQuery = true)
+    List<JSONObject> getAllEmployee();
 }

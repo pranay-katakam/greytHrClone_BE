@@ -47,13 +47,15 @@ public class AuthenticationService {
                 String email = userCredentials.getEmail();
                 String password = userCredentials.getPassword();
                 JSONObject dbuser = employeeDataRepository.UserByEmail(email);
+
                 String dbpassword = (String) dbuser.get("password");
 
                 if (dbpassword.equals(password)) {
                     JSONObject responseMsg = new JSONObject();
                     responseMsg.put("message", "Login Successful");
-                   return  ResponseEntity.status(OK).body(responseMsg);
+                    return ResponseEntity.status(OK).body(responseMsg);
                 } else {
+//                    return ResponseEntity.status(UNAUTHORIZED).body("Invalid credentials");
                    throw new BadRequestException("wrong password");
                 }
 

@@ -16,6 +16,7 @@ public class EmployeeAuthentication {
     AuthenticationService authenticationService;
 
 
+
     @PostMapping(path = "/employee")
     public ResponseEntity<String> Signup(@RequestBody EmployeeData employeeData) {
         return authenticationService.Signup(employeeData);
