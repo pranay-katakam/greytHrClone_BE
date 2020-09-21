@@ -117,4 +117,9 @@ public class EmployeeDetailsService {
     public ResponseEntity<List<JSONObject>> getManagers() {
         return ResponseEntity.status(HttpStatus.OK).body(employeeDataRepository.getAllEmployee());
     }
+
+    public ResponseEntity<String> updateName(String name,int eid) {
+        employeeDataRepository.updateName(name,eid);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
+    }
 }

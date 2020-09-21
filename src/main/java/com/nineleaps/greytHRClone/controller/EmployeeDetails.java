@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
@@ -55,13 +56,13 @@ public class EmployeeDetails {
         return employeeDetailsService.addDesignation(employeeDesignation);
     }
 
-    @ApiOperation(value = "To get avaliable departments")
+    @ApiOperation(value = "To get available departments")
     @GetMapping(path = "/departments")
     public ResponseEntity<Iterable<EmployeeDepartment>> getDepartments() {
         return employeeDetailsService.getDepartments();
     }
 
-    @ApiOperation(value = "To get avaliable designations")
+    @ApiOperation(value = "To get available designations")
     @GetMapping(path = "/designations")
     public ResponseEntity<Iterable<EmployeeDesignation>> getDesignations() {
         return employeeDetailsService.getDesignations();
@@ -71,5 +72,12 @@ public class EmployeeDetails {
     @GetMapping(path = "/managers")
     public ResponseEntity<List<JSONObject>> getManagers() {
         return employeeDetailsService.getManagers();
+    }
+
+    @ApiOperation(value = "To edit the name of employee")
+    @PatchMapping(path = "/updateName")
+    public ResponseEntity<String> updateName(@RequestParam(value = "name") String name, @RequestParam(value = "id") int eid){
+        System.out.println(name +"NAME" + eid +"EID");
+        return employeeDetailsService.updateName(name, eid);
     }
 }

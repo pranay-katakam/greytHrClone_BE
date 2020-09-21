@@ -12,9 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import java.sql.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -26,7 +23,6 @@ public class AuthenticationService {
 
     public ResponseEntity<String> Signup(EmployeeData employeeData) {
         ResponseEntity<String> responseEntity;
-
 
         int existByEmail = employeeDataRepository.exist(employeeData.getEmail());
 

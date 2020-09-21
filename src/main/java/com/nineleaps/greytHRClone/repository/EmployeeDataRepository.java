@@ -3,9 +3,11 @@ package com.nineleaps.greytHRClone.repository;
 import com.nineleaps.greytHRClone.model.EmployeeData;
 
 import org.json.simple.JSONObject;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,4 +38,8 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     @Query(value="select emp_id,name from employee_data",nativeQuery = true)
     List<JSONObject> getAllEmployee();
 
+    @Transactional
+    @Modifying
+    @Query(value = "update employee_data set name=?1 where emp_id=?2", nativeQuery = true)
+    void updateName(String name, int eid);
 }
