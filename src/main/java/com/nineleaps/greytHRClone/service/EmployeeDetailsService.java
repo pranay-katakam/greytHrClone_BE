@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.service;
 
 import com.nineleaps.greytHRClone.dto.EventDTO;
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
+import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
@@ -15,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
-
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -34,28 +37,29 @@ public class EmployeeDetailsService {
         this.employeeDesignationRepository = employeeDesignationRepository;
     }
 
-    public ResponseEntity< ProfileDTO> profile(int id) {
-        JSONObject dbprofile=employeeDataRepository.profile(id);
-        int mangerId=(int)dbprofile.get("manager_id");
-
-
-
-        ProfileDTO profileDTO=new ProfileDTO();
-        profileDTO.setName((String)dbprofile.get("name"));
-        profileDTO.setDepartment((String)dbprofile.get("department"));
-        profileDTO.setDesignation((String)dbprofile.get("designation"));
-        String managerName="";
-        if(mangerId!=0){
-            managerName= employeeDataRepository.getManagerName(mangerId);
+    public ResponseEntity<ProfileDTO> profile(int id) {
+        try {
+            JSONObject dbprofile = employeeDataRepository.profile(id);
+            int mangerId = (int) dbprofile.get("manager_id");
+            ProfileDTO profileDTO = new ProfileDTO();
+            profileDTO.setName((String) dbprofile.get("name"));
+            profileDTO.setDepartment((String) dbprofile.get("department"));
+            profileDTO.setDesignation((String) dbprofile.get("designation"));
+            profileDTO.setManagerId(mangerId);
+            profileDTO.setLocation((String) dbprofile.get("location"));
+            String managerName = "not Assigned";
+            if (mangerId != 0) {
+                managerName = employeeDataRepository.getManagerName(mangerId);
+            }
+            profileDTO.setManagerName(managerName);
+            return ResponseEntity.status(OK).body(profileDTO);
+        }catch (Exception e){
+            throw new BadRequestException("please enter a valid Id");
         }
-        profileDTO.setManagerName(managerName);
-
-        return ResponseEntity.status(OK).body(profileDTO);
     }
 
     public ResponseEntity<List<EventDTO>> events() {
         List<JSONObject> birthdayList= employeeDataRepository.BirthdayList();
-
         List<JSONObject> anniversaryList=employeeDataRepository.AnniversaryList();
 
 
@@ -73,8 +77,14 @@ public class EmployeeDetailsService {
             eventDTO.setName((String)anniversary.get("name"));
             eventDTO.setEventType(EventDTO.EventType.ANNIVERSARY);
             eventDTO.setDate((Date)anniversary.get("created_date"));
+            BigInteger diff=(BigInteger)anniversary.get("difference");
+            int difference=diff.intValue()/365;
+            eventDTO.setNumberOfYears(difference);
+
             eventDTOS.add(eventDTO);
         }
+
+
 
 
 //        eventDTOS.sort(Comparator.comparing(EventDTO::getDate));

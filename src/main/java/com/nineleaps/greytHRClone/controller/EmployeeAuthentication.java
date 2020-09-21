@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @RestController
 public class EmployeeAuthentication {
@@ -24,8 +26,8 @@ public class EmployeeAuthentication {
 
 
     @PostMapping(path = "/login")
-    public ResponseEntity<JSONObject> Login(@RequestBody EmployeeData userCredentials) {
-        return authenticationService.Login(userCredentials);
+    public ResponseEntity<JSONObject> Login(@RequestBody EmployeeData userCredentials, HttpServletResponse response) {
+        return authenticationService.Login(userCredentials,response);
     }
 
 }

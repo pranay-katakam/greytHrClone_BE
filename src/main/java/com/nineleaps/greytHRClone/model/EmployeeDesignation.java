@@ -1,8 +1,9 @@
 package com.nineleaps.greytHRClone.model;
 
-import lombok.Data;
 
+import lombok.Data;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
@@ -13,5 +14,6 @@ public class EmployeeDesignation {
     private int desId;
 
     @Column(name = "designation")
+    @NotNull(message = "designation must not be null!")
     private  String designation;
 }
