@@ -69,6 +69,7 @@ public class EmployeeDetails {
         return employeeDetailsService.getManagers();
     }
 
+    @ApiOperation(value = "assign managers to an employee")
     @PatchMapping(path="/assignManager")
     public ResponseEntity<String> assignManager(@RequestParam(value = "mid") int mid,@RequestParam(value = "eid") int eid){
         return employeeDetailsService.assignManagers(mid,eid);

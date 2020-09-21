@@ -28,7 +28,7 @@ public class SwaggerConfig {
                 "Application for displaying employee details and tracking attendance info ",
                 "0.0.1",
                 "Terms of service",
-                new Contact("Shinaz "+"Hitesh "+"Anshu", "", "greythrclone@gmail.com"),
+                new Contact("Shinaz |"+"Hitesh "+" |Anshu", "", "greythrclone@gmail.com"),
                 "Apache License Version 2.0",
                 "https://www.apache.org/licenses/LICENSE-2.0");
         return apiInfo;
