@@ -4,6 +4,9 @@ package com.nineleaps.greytHRClone.service;
 import com.nineleaps.greytHRClone.dto.EventDTO;
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
+
+import com.nineleaps.greytHRClone.model.EmployeeData;
+
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
@@ -16,9 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
+
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.*;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -28,8 +33,10 @@ import static org.springframework.http.HttpStatus.OK;
 public class EmployeeDetailsService {
 
     private EmployeeDataRepository employeeDataRepository;
+
     private EmployeeDepartmentRepository employeeDepartmentRepository;
     private EmployeeDesignationRepository employeeDesignationRepository;
+
     @Autowired
     public EmployeeDetailsService(EmployeeDataRepository employeeDataRepository, EmployeeDepartmentRepository employeeDepartmentRepository, EmployeeDesignationRepository employeeDesignationRepository) {
         this.employeeDataRepository = employeeDataRepository;
@@ -53,34 +60,39 @@ public class EmployeeDetailsService {
             }
             profileDTO.setManagerName(managerName);
             return ResponseEntity.status(OK).body(profileDTO);
+
         }catch (Exception e){
             throw new BadRequestException("please enter a valid Id");
+
         }
     }
 
     public ResponseEntity<List<EventDTO>> events() {
+
         List<JSONObject> birthdayList= employeeDataRepository.BirthdayList();
         List<JSONObject> anniversaryList=employeeDataRepository.AnniversaryList();
 
 
-        List<EventDTO> eventDTOS=new ArrayList<>();
 
-        for(JSONObject bDay: birthdayList){
-            EventDTO eventDTO=new EventDTO();
-            eventDTO.setName((String)bDay.get("name"));
+        List<EventDTO> eventDTOS = new ArrayList<>();
+
+        for (JSONObject bDay : birthdayList) {
+            EventDTO eventDTO = new EventDTO();
+            eventDTO.setName((String) bDay.get("name"));
             eventDTO.setEventType(EventDTO.EventType.BIRTHDAY);
-            eventDTO.setDate((Date)bDay.get("dob"));
+            eventDTO.setDate((Date) bDay.get("dob"));
             eventDTOS.add(eventDTO);
         }
-        for (JSONObject anniversary: anniversaryList){
-            EventDTO eventDTO=new EventDTO();
-            eventDTO.setName((String)anniversary.get("name"));
+
+
+        for (JSONObject anniversary : anniversaryList) {
+            EventDTO eventDTO = new EventDTO();
+            eventDTO.setName((String) anniversary.get("name"));
             eventDTO.setEventType(EventDTO.EventType.ANNIVERSARY);
             eventDTO.setDate((Date)anniversary.get("created_date"));
             BigInteger diff=(BigInteger)anniversary.get("difference");
             int difference=diff.intValue()/365;
             eventDTO.setNumberOfYears(difference);
-
             eventDTOS.add(eventDTO);
         }
 
@@ -94,6 +106,9 @@ public class EmployeeDetailsService {
         return ResponseEntity.status(HttpStatus.OK).body(eventDTOS);
     }
 
+//    public ResponseEntity<JSONObject> profile(int id) {
+//        return ResponseEntity.status(OK).body(employeeDataRepository.profile(id));
+//    }
 
     public ResponseEntity<String> addDepartment(EmployeeDepartment employeeDepartment) {
         employeeDepartmentRepository.save(employeeDepartment);
@@ -111,6 +126,12 @@ public class EmployeeDetailsService {
 
     public ResponseEntity<Iterable<EmployeeDesignation>> getDesignations() {
         return ResponseEntity.status(HttpStatus.OK).body(employeeDesignationRepository.findAll());
+
+    }
+
+
+    public ResponseEntity<List<JSONObject>> getManagers() {
+        return ResponseEntity.status(HttpStatus.OK).body(employeeDataRepository.getAllEmployee());
 
     }
 }
