@@ -2,6 +2,7 @@ package com.nineleaps.greytHRClone.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+//import jdk.nashorn.api.scripting.ScriptUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,7 @@ public class EventDTO {
     @Enumerated(EnumType.STRING)
     private EventType eventType;
 
+//    @JsonFormat(pattern = "MMM dd, yyyy")
     @JsonFormat(pattern = "dd-MM-yyyy")
     private Date date;
 
@@ -31,5 +33,6 @@ public class EventDTO {
     public enum EventType {
         BIRTHDAY, ANNIVERSARY
     }
+
 
 }
