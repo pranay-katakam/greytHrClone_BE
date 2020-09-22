@@ -6,11 +6,12 @@ import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static org.springframework.http.HttpStatus.*;
@@ -78,14 +79,17 @@ public class AuthenticationService {
     }
 
 
-    public ResponseEntity<String> Logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("userID", null);
-        cookie.setMaxAge(0);
-        cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-        return ResponseEntity.status(OK).body("User Successfully Logged Out");
+    public ResponseEntity<String> Logout(HttpServletRequest request, HttpServletResponse response) {
+        Cookie cookie = WebUtils.getCookie(request, "userID");
+        if (cookie != null) {
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+            return ResponseEntity.status(OK).body("User Successfully Logged Out");
 
+        } else {
+            return ResponseEntity.status(HttpServletResponse.SC_REQUEST_TIMEOUT).body("Session Expired");
+
+        }
     }
 }
+
