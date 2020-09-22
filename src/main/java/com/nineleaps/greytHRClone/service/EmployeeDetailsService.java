@@ -134,4 +134,10 @@ public class EmployeeDetailsService {
         return ResponseEntity.status(HttpStatus.OK).body(employeeDataRepository.getAllEmployee());
 
     }
+
+    public ResponseEntity<String> assignManagers(int mid, int eid) {
+        employeeDataRepository.assignManager(mid, eid);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Successfully assigned manager");
+
+    }
 }

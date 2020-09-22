@@ -15,7 +15,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
       boolean  value = false;
-        Cookie userCookie = WebUtils.getCookie(request, "userId");
+        Cookie userCookie = WebUtils.getCookie(request, "userID");
         if (userCookie == null) {
             return value;
         }else{
