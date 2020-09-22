@@ -4,6 +4,7 @@ import com.nineleaps.greytHRClone.dto.EventDTO;
 
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
+
 import com.nineleaps.greytHRClone.model.EmployeeData;
 
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
@@ -17,6 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -52,16 +56,19 @@ public class EmployeeDetailsService {
             }
             profileDTO.setManagerName(managerName);
             return ResponseEntity.status(OK).body(profileDTO);
-        } catch (Exception e) {
-            throw new BadRequestException("Please enter valid id");
+
+        }catch (Exception e){
+            throw new BadRequestException("please enter a valid Id");
+
         }
     }
 
 
     public ResponseEntity<List<EventDTO>> events() {
 
-        List<JSONObject> birthdayList = employeeDataRepository.BirthdayList();
-        List<JSONObject> anniversaryList = employeeDataRepository.AnniversaryList();
+        List<JSONObject> birthdayList= employeeDataRepository.BirthdayList();
+        List<JSONObject> anniversaryList=employeeDataRepository.AnniversaryList();
+
 
 
         List<EventDTO> eventDTOS = new ArrayList<>();
@@ -79,9 +86,14 @@ public class EmployeeDetailsService {
             EventDTO eventDTO = new EventDTO();
             eventDTO.setName((String) anniversary.get("name"));
             eventDTO.setEventType(EventDTO.EventType.ANNIVERSARY);
-            eventDTO.setDate((Date) anniversary.get("created_date"));
+            eventDTO.setDate((Date)anniversary.get("created_date"));
+            BigInteger diff=(BigInteger)anniversary.get("difference");
+            int difference=diff.intValue()/365;
+            eventDTO.setNumberOfYears(difference);
             eventDTOS.add(eventDTO);
         }
+
+
 
 
 //        eventDTOS.sort(Comparator.comparing(EventDTO::getDate));
@@ -118,8 +130,14 @@ public class EmployeeDetailsService {
         return ResponseEntity.status(HttpStatus.OK).body(employeeDataRepository.getAllEmployee());
     }
 
-    public ResponseEntity<String> updateName(String name,int eid) {
-        employeeDataRepository.updateName(name,eid);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
+//    public ResponseEntity<String> updateName(String name,int eid) {
+//        employeeDataRepository.updateName(name,eid);
+//        return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
+//    }
+
+    public ResponseEntity<String> assignManagers(int mid, int eid) {
+        employeeDataRepository.assignManager(mid, eid);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Successfully assigned manager");
+
     }
 }

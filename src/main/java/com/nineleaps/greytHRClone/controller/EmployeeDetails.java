@@ -7,6 +7,7 @@ import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.json.simple.JSONObject;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
 import java.util.List;
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
@@ -27,10 +29,9 @@ public class EmployeeDetails {
     @Autowired
     EmployeeDetailsService employeeDetailsService;
 
-    @ApiOperation(value = "To get the profile details of employee")
-    @GetMapping(path = "/profile")
+    public ResponseEntity<ProfileDTO> profile(@RequestAttribute("id") int id) {
+        System.out.println("idvalue"+id);
 
-    public ResponseEntity<ProfileDTO> profile(@RequestParam(value = "id", defaultValue = "0") int id) {
         return employeeDetailsService.profile(id);
     }
 
@@ -51,8 +52,7 @@ public class EmployeeDetails {
     @ApiOperation(value = "To add required designation")
     @PostMapping(path = "/designation")
 
-    public ResponseEntity<String> addDesignation(@RequestBody EmployeeDesignation employeeDesignation) {
-
+    public ResponseEntity<String> addDesignation(@Valid @RequestBody EmployeeDesignation employeeDesignation){
         return employeeDetailsService.addDesignation(employeeDesignation);
     }
 
@@ -74,10 +74,18 @@ public class EmployeeDetails {
         return employeeDetailsService.getManagers();
     }
 
-    @ApiOperation(value = "To edit the name of employee")
-    @PatchMapping(path = "/updateName")
-    public ResponseEntity<String> updateName(@RequestParam(value = "name") String name, @RequestParam(value = "id") int eid){
-        System.out.println(name +"NAME" + eid +"EID");
-        return employeeDetailsService.updateName(name, eid);
+
+//    @ApiOperation(value = "To edit the name of employee")
+//    @PatchMapping(path = "/updateName")
+//    public ResponseEntity<String> updateName(@RequestParam(value = "name") String name, @RequestParam(value = "id") int eid){
+//        System.out.println(name +"NAME" + eid +"EID");
+//        return employeeDetailsService.updateName(name, eid);
+//    }
+
+    @ApiOperation(value = "assign managers to an employee")
+    @PatchMapping(path="/assignManager")
+    public ResponseEntity<String> assignManager(@RequestParam(value = "mid") int mid,@RequestParam(value = "eid") int eid){
+        return employeeDetailsService.assignManagers(mid,eid);
     }
+
 }

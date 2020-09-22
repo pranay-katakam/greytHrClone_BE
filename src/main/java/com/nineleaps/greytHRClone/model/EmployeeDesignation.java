@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 
 public class EmployeeDesignation {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int desId;
 
-    @Column(name = "designation")
-    private String designation;
+    @NotNull(message = "designation must not be null!")
+    private  String designation;
 
 }
