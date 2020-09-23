@@ -84,7 +84,6 @@ public class AuthenticationService {
 
     }
 
-
     public ResponseEntity<String> Logout(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = new Cookie("userID", null);
         cookie.setMaxAge(0);

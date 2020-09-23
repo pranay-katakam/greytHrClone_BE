@@ -87,17 +87,9 @@ public class EmployeeDetailsService {
             eventDTO.setNumberOfYears(difference);
             eventDTOS.add(eventDTO);
         }
-
-//        eventDTOS.sort(Comparator.comparing(EventDTO::getDate));
-//          eventDTOS.stream().sorted(comparing(EventDTO::getDate).reversed());
-//        eventDTOS.sort(comparing(EventDTO::getDate).reversed());/////////
-
         return ResponseEntity.status(HttpStatus.OK).body(eventDTOS);
     }
 
-//    public ResponseEntity<JSONObject> profile(int id) {
-//        return ResponseEntity.status(OK).body(employeeDataRepository.profile(id));
-//    }
 
     public ResponseEntity<String> addDepartment(EmployeeDepartment employeeDepartment) {
         employeeDepartmentRepository.save(employeeDepartment);

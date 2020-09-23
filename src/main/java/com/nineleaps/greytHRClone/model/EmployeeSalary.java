@@ -7,7 +7,6 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
-
 @Table(name = "employee_salary")
 public class EmployeeSalary {
     @Id
