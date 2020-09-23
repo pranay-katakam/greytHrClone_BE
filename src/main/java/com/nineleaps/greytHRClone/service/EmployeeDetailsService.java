@@ -59,7 +59,6 @@ public class EmployeeDetailsService {
 
         }catch (Exception e){
             throw new BadRequestException("please enter a valid Id");
-
         }
     }
 
@@ -68,9 +67,6 @@ public class EmployeeDetailsService {
 
         List<JSONObject> birthdayList= employeeDataRepository.BirthdayList();
         List<JSONObject> anniversaryList=employeeDataRepository.AnniversaryList();
-
-
-
         List<EventDTO> eventDTOS = new ArrayList<>();
 
         for (JSONObject bDay : birthdayList) {
@@ -80,7 +76,6 @@ public class EmployeeDetailsService {
             eventDTO.setDate((Date) bDay.get("dob"));
             eventDTOS.add(eventDTO);
         }
-
 
         for (JSONObject anniversary : anniversaryList) {
             EventDTO eventDTO = new EventDTO();
@@ -92,9 +87,6 @@ public class EmployeeDetailsService {
             eventDTO.setNumberOfYears(difference);
             eventDTOS.add(eventDTO);
         }
-
-
-
 
 //        eventDTOS.sort(Comparator.comparing(EventDTO::getDate));
 //          eventDTOS.stream().sorted(comparing(EventDTO::getDate).reversed());

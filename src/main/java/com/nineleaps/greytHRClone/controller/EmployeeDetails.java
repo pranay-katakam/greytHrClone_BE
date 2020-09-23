@@ -30,8 +30,6 @@ public class EmployeeDetails {
     EmployeeDetailsService employeeDetailsService;
 
     public ResponseEntity<ProfileDTO> profile(@RequestAttribute("id") int id) {
-        System.out.println("idvalue"+id);
-
         return employeeDetailsService.profile(id);
     }
 
@@ -71,6 +69,7 @@ public class EmployeeDetails {
     @ApiOperation(value = "To get list of all employees can be assigned as manager")
     @GetMapping(path = "/managers")
     public ResponseEntity<List<JSONObject>> getManagers() {
+
         return employeeDetailsService.getManagers();
     }
 
@@ -87,5 +86,4 @@ public class EmployeeDetails {
     public ResponseEntity<String> assignManager(@RequestParam(value = "mid") int mid,@RequestParam(value = "eid") int eid){
         return employeeDetailsService.assignManagers(mid,eid);
     }
-
 }
