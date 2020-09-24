@@ -20,12 +20,14 @@ public class Interceptor implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login", "/logout",
                         "/swagger-ui.html",
                         "**/swagger**","/employee","/designations","/departments")
-        .order(1);
+                .order(1);
+
         registry.addInterceptor(userInterceptor)
                 .addPathPatterns("/user")
                 .order(2);
@@ -33,3 +35,4 @@ public class Interceptor implements WebMvcConfigurer {
 
     }
 }
+

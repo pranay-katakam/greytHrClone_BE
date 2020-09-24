@@ -1,6 +1,7 @@
 package com.nineleaps.greytHRClone.controller;
 
 
+import com.nineleaps.greytHRClone.dto.CommonResponseDTO;
 import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.service.AuthenticationService;
 import org.json.simple.JSONObject;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @RestController
@@ -28,7 +30,7 @@ public class EmployeeAuthentication {
 
 
     @PostMapping(path = "/login")
-    public ResponseEntity<JSONObject> Login(@RequestBody EmployeeData userCredentials, HttpServletResponse response) {
+    public ResponseEntity<CommonResponseDTO> Login(@RequestBody EmployeeData userCredentials, HttpServletResponse response) {
         return authenticationService.Login(userCredentials,response);
     }
 

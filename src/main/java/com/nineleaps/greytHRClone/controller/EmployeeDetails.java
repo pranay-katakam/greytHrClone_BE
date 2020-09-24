@@ -33,17 +33,11 @@ public class EmployeeDetails {
     @ApiOperation(value = "To get the profile details of employee")
     @GetMapping(path = "/profile")
     public ResponseEntity<ProfileDTO> profile(@RequestAttribute("id") int id) {
-        System.out.println("idvalue"+id);
-
         return employeeDetailsService.profile(id);
     }
 
-    @ApiOperation(value = "To get the list of birthdays and anniversery of employees")
-    @GetMapping(path = "/events")
-    public ResponseEntity<List<EventDTO>> events() {
-        return employeeDetailsService.events();
 
-    }
+
     @ApiOperation(value = "To add required departments")
     @PostMapping(path = "/department")
     public ResponseEntity<String> addDepartment(@RequestBody EmployeeDepartment employeeDepartment) {
@@ -74,6 +68,7 @@ public class EmployeeDetails {
     public ResponseEntity<List<JSONObject>> getManagers() {
         return employeeDetailsService.getManagers();
     }
+
 
     @ApiOperation(value = "assign managers to an employee")
     @PatchMapping(path="/assignManager")

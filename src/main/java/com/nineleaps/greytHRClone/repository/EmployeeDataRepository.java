@@ -18,14 +18,16 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     EmployeeData findByName(String name);
 
 
-    @Query(value = " select name,designation,department,location,manager_id from employee_data where emp_id=?1 ", nativeQuery = true)
-    JSONObject profile(int id);
+//    @Query(value = " select name,designation,department,location,manager_id from employee_data where emp_id=?1 ", nativeQuery = true)
+//    JSONObject profile(int id);
+
 
     @Query(value = "Select count(name) from employee_data where email=?1", nativeQuery = true)
     int exist(String email);
 
     @Query(value = "select emp_id,email,password from employee_data where email=?1", nativeQuery = true)
     JSONObject UserByEmail(String email);
+
 
 
     @Query(value = "select name,dob from employee_data where MONTH(dob)<=MONTH(CURDATE()) and DAY(dob)<=DAY(CURDATE()) order by MONTH(dob) desc, DAY(dob) desc", nativeQuery = true)
@@ -38,6 +40,7 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     @Query("select name from EmployeeData where empId=?1")
     String getManagerName(int mangerId);
 
+
     @Query(value = "select emp_id,name from employee_data", nativeQuery = true)
     List<JSONObject> getAllEmployee();
 
@@ -45,4 +48,5 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     @Modifying
     @Query(value = "UPDATE employee_data  SET manager_id=?1 where emp_id =?2", nativeQuery = true)
     void assignManager(int mid, int eid);
+
 }
