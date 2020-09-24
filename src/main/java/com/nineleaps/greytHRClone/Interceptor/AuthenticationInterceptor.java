@@ -17,8 +17,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         boolean value = false;
         Cookie userCookie = WebUtils.getCookie(request, "userID");
         if (userCookie == null) {
+            System.out.println("in if"+value);
             return value;
         } else {
+            System.out.println("in else");
             String retrievedId = userCookie.getValue();
             int id = Integer.parseInt(retrievedId);
             request.setAttribute("id", id);
