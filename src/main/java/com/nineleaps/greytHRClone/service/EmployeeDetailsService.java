@@ -46,7 +46,9 @@ public class EmployeeDetailsService {
             int mangerId = dbprofile.getManagerId();
             ProfileDTO profileDTO = new ProfileDTO();
             profileDTO.setName(dbprofile.getName());
-            List<String> departmentList=new ArrayList<>();
+
+            List<String> departmentList=new ArrayList<>();//initialising a new list
+
             for(EmployeeDepartment empD:dbprofile.getDepartments()){
                 departmentList.add(empD.getDepartment());
             }
@@ -67,39 +69,6 @@ public class EmployeeDetailsService {
         }
     }
 
-    public ResponseEntity<List<EventDTO>> events() {
-
-        List<JSONObject> birthdayList= employeeDataRepository.BirthdayList();
-        List<JSONObject> anniversaryList=employeeDataRepository.AnniversaryList();
-
-        List<EventDTO> eventDTOS = new ArrayList<>();
-
-        for (JSONObject bDay : birthdayList) {
-            EventDTO eventDTO = new EventDTO();
-            eventDTO.setName((String) bDay.get("name"));
-            eventDTO.setEventType(EventDTO.EventType.BIRTHDAY);
-            eventDTO.setDate((Date) bDay.get("dob"));
-            eventDTOS.add(eventDTO);
-        }
-
-        for (JSONObject anniversary : anniversaryList) {
-            EventDTO eventDTO = new EventDTO();
-            eventDTO.setName((String) anniversary.get("name"));
-            eventDTO.setEventType(EventDTO.EventType.ANNIVERSARY);
-            eventDTO.setDate((Date)anniversary.get("created_date"));
-            BigInteger diff=(BigInteger)anniversary.get("difference");
-            int difference=diff.intValue()/365;
-            eventDTO.setNumberOfYears(difference);
-            eventDTOS.add(eventDTO);
-        }
-
-
-//        eventDTOS.sort(Comparator.comparing(EventDTO::getDate));
-//          eventDTOS.stream().sorted(comparing(EventDTO::getDate).reversed());
-//        eventDTOS.sort(comparing(EventDTO::getDate).reversed());/////////
-
-        return ResponseEntity.status(HttpStatus.OK).body(eventDTOS);
-    }
 
 
 

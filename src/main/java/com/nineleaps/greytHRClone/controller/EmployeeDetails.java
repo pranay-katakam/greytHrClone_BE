@@ -33,12 +33,7 @@ public class EmployeeDetails {
         return employeeDetailsService.profile(id);
     }
 
-    @ApiOperation(value = "To get the list of birthdays and anniversery of employees")
-    @GetMapping(path = "/events")
-    public ResponseEntity<List<EventDTO>> events() {
-        return employeeDetailsService.events();
 
-    }
     @ApiOperation(value = "To add required departments")
     @PostMapping(path = "/department")
     public ResponseEntity<String> addDepartment(@RequestBody EmployeeDepartment employeeDepartment) {
