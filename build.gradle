@@ -26,9 +26,11 @@ dependencies {
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	compile 'javax.persistence:javax.persistence-api'
+
 	compile group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
 	compile group: 'org.hibernate', name: 'hibernate-validator', version: '6.0.2.Final'
 	compile group: 'org.hibernate', name: 'hibernate-validator-annotation-processor', version: '6.0.2.Final'
+
 
 
 	//	mapStruct dependency
@@ -38,6 +40,13 @@ dependencies {
 	//	swagger dependency
 	compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
+
+// VALIDATION
+	compile group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final'
+	compile group: 'org.hibernate', name: 'hibernate-validator', version: '6.0.2.Final'
+	compile group: 'org.hibernate', name: 'hibernate-validator-annotation-processor', version: '6.0.2.Final'
+
+
 
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

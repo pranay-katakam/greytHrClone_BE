@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+
 @Repository
 public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Integer> {
 
@@ -19,6 +20,7 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
 
 //    @Query(value = " select name,designation,department,location,manager_id from employee_data where emp_id=?1 ", nativeQuery = true)
 //    JSONObject profile(int id);
+
 
     @Query(value = "Select count(name) from employee_data where email=?1", nativeQuery = true)
     int exist(String email);
@@ -46,4 +48,5 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     @Modifying
     @Query(value = "UPDATE employee_data  SET manager_id=?1 where emp_id =?2", nativeQuery = true)
     void assignManager(int mid, int eid);
+
 }

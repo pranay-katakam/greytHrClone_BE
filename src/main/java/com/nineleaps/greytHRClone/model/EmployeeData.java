@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import javax.persistence.*;
 import java.util.*;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 
 @Data
@@ -26,17 +28,18 @@ public class EmployeeData {
     private String email;
 
     @Column(name = "manager_id")
-    private int managerId;
+    private int managerId=0;
 
     @Column(name = "dob")
-    @JsonFormat(pattern = "dd-MM-yyyy")
+//    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date dob;
 
     @Column(name = "location")
     private String location;
 
     @Column(name = "created_date")
-    private Date createdDate = new Date();
+    private Timestamp createdDate = new Timestamp(System.currentTimeMillis());
+
 
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)

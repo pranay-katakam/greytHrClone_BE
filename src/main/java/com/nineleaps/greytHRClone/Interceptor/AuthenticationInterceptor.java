@@ -24,6 +24,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             request.setAttribute("id", id);
             value=true;
             return value;
+
         }
 
 

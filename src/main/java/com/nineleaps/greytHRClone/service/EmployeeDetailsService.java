@@ -5,6 +5,7 @@ import com.nineleaps.greytHRClone.dto.EventDTO;
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.model.EmployeeData;
+
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.*;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -56,6 +58,7 @@ public class EmployeeDetailsService {
             profileDTO.setDesignation(dbprofile.getDesignation().getDesignation());
             profileDTO.setManagerId(mangerId);
             profileDTO.setLocation(dbprofile.getLocation());
+
             String managerName = "not Assigned";
             if (mangerId != 0) {
                 managerName = employeeDataRepository.getManagerName(mangerId);
@@ -65,10 +68,8 @@ public class EmployeeDetailsService {
 
         }catch (Exception e){
             throw new BadRequestException(e.getMessage());
-
         }
     }
-
 
 
 

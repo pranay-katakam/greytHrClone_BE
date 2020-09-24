@@ -1,10 +1,11 @@
 package com.nineleaps.greytHRClone.controller;
 
+
 import com.nineleaps.greytHRClone.dto.EventDTO;
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
+import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
-import com.nineleaps.greytHRClone.service.AuthenticationService;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
 
 import io.swagger.annotations.Api;
@@ -16,7 +17,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
 import java.util.List;
+
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @Api(value = "Controller class deals employee details")
@@ -32,6 +35,7 @@ public class EmployeeDetails {
     public ResponseEntity<ProfileDTO> profile(@RequestAttribute("id") int id) {
         return employeeDetailsService.profile(id);
     }
+
 
 
     @ApiOperation(value = "To add required departments")
