@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @Api(value = "Controller class deals employee salary")
@@ -20,6 +21,11 @@ public class EmployeeSalaryController {
     @PostMapping(path = "/addSalary")
     public ResponseEntity<String> addSalary( @RequestBody EmployeeSalary employeeSalary) {
         return employeeSalaryService.addSalary(employeeSalary);
+    }
+
+    @GetMapping(path="/getSalaryDetails")
+    public ResponseEntity<List<SalaryDTO>> getSalaryDetails(@RequestAttribute("id") int eid){
+        return employeeSalaryService.getSalaryDetails(eid);
     }
 
 

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SalaryDTO {
-
+    private int eid;
     private int basic;
     private int hra;
     private int specialAllowance;
@@ -16,11 +16,10 @@ public class SalaryDTO {
     private int profTax;
     private int GroupMedicalDeduction;
     private int GroupPolicyAccidentDeduction;
-    private  int totalEarning;
+    private int totalEarning;
     private int totalDeduction;
 
     private int netPay;
-    private int eid;
 
 
 }
