@@ -1,25 +1,27 @@
-//package com.nineleaps.greytHRClone.model;
-//
-//import lombok.Data;
-//
-//import javax.persistence.*;
-//
-//@Data
-//@Entity
-//@Table(name = "comment")
-//public class Comment {
-//
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private long commentId;
-//
-//    @Column(name="text")
-//    private String text;
-//
-//    @Column(name="commented_by")
-//    private String commentedBy;
-//
-//    @ManyToOne()
-//    @JoinColumn(name="fc_id", referencedColumnName = "fc_id", insertable = false, updatable = false)
-//    private Feed feed;
-//}
+package com.nineleaps.greytHRClone.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+
+import javax.persistence.*;
+
+@Data
+@Entity
+@Table(name = "comment")
+public class Comment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int commentId;
+
+    @Column(name="text")
+    private String text;
+
+    @Column(name="commented_by")
+    private String commentedBy;
+
+    @Column(name="fc_id")
+    private int fcId;
+
+
+}

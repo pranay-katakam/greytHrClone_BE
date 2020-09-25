@@ -30,11 +30,11 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
 
 
 
-    @Query(value = "select name,dob from employee_data where MONTH(dob)<=MONTH(CURDATE()) and DAY(dob)<=DAY(CURDATE()) order by MONTH(dob) desc, DAY(dob) desc", nativeQuery = true)
+    @Query(value = "select name from employee_data where MONTH(dob)=MONTH(CURDATE()) and DAY(dob)=DAY(CURDATE())", nativeQuery = true)
     List<JSONObject> BirthdayList();
 
 
-    @Query(value = "select name,created_date,DATEDIFF(NOW(),created_date) as difference from employee_data where  created_date <= DATE_SUB(NOW(),INTERVAL 1 YEAR) order by DATE(created_date) desc",nativeQuery = true)
+    @Query(value = "select name,created_date,DATEDIFF(NOW(),created_date) as difference from employee_data where MONTH(created_date)=MONTH(CURDATE()) and DAY(created_date)=DAY(CURDATE()) and  created_date <= DATE_SUB(NOW(),INTERVAL 1 YEAR) ",nativeQuery = true)
     List<JSONObject> AnniversaryList();
 
     @Query("select name from EmployeeData where empId=?1")
