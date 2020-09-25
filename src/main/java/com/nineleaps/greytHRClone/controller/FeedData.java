@@ -25,17 +25,12 @@ public class FeedData {
 
     @PostMapping(path = "/feed")
     public ResponseEntity<String> addFeed(Feed feed) {
-        feed.setName("CNBC best performance company");
         return feedService.addFeed(feed);
 
     }
 
     @PostMapping(path = "/comment")
-    public ResponseEntity<String> AddComment(Comment comment) {
-        System.out.println("comment"+comment);
-        comment.setText("amazing");
-        comment.setCommentedBy("shinaz");
-        comment.setFcId(1);
+    public ResponseEntity<String> AddComment(Comment comment) { ;
         return feedService.addComment(comment);
 
     }
