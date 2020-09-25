@@ -9,14 +9,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SalaryDTO {
 
-    int basic;
-    int hra;
-    int specialAllowance;
-    int pf;
-    int prof_tax;
-    int group_medical_deduction;
-    int group_policy_accident_deduction;
-    int netDeduction;
-    int netPay;
-    int id;
+    private int eid;
+    private int basic;
+    private int hra;
+    private int specialAllowance;
+    private int pf;
+    private int profTax;
+    private int GroupMedicalDeduction;
+    private int GroupPolicyAccidentDeduction;
+    private int totalEarning;
+    private int totalDeduction;
+
+    private int netPay;
+
 }

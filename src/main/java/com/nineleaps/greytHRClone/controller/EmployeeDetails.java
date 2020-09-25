@@ -29,18 +29,12 @@ public class EmployeeDetails {
     @Autowired
     EmployeeDetailsService employeeDetailsService;
 
+    @ApiOperation(value = "To get the profile details of employee")
+    @GetMapping(path = "/profile")
     public ResponseEntity<ProfileDTO> profile(@RequestAttribute("id") int id) {
         return employeeDetailsService.profile(id);
     }
 
-    @ApiOperation(value = "To get the list of birthdays and anniversery of employees")
-    @GetMapping(path = "/events")
-
-    public ResponseEntity<List<EventDTO>> events() {
-
-        return employeeDetailsService.events();
-
-    }
     @ApiOperation(value = "To add required departments")
     @PostMapping(path = "/department")
     public ResponseEntity<String> addDepartment(@RequestBody EmployeeDepartment employeeDepartment) {
@@ -74,12 +68,12 @@ public class EmployeeDetails {
     }
 
 
-//    @ApiOperation(value = "To edit the name of employee")
-//    @PatchMapping(path = "/updateName")
-//    public ResponseEntity<String> updateName(@RequestParam(value = "name") String name, @RequestParam(value = "id") int eid){
-//        System.out.println(name +"NAME" + eid +"EID");
-//        return employeeDetailsService.updateName(name, eid);
-//    }
+    @ApiOperation(value = "To edit the name of employee")
+    @PatchMapping(path = "/updateName")
+    public ResponseEntity<String> updateName(@RequestParam String name, @RequestParam int eid){
+
+        return employeeDetailsService.updateName(name, eid);
+    }
 
     @ApiOperation(value = "assign managers to an employee")
     @PatchMapping(path="/assignManager")

@@ -4,7 +4,6 @@ import com.nineleaps.greytHRClone.dto.EventDTO;
 
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
-
 import com.nineleaps.greytHRClone.model.EmployeeData;
 
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
@@ -42,14 +41,21 @@ public class EmployeeDetailsService {
 
     public ResponseEntity<ProfileDTO> profile(int id) {
         try {
-            JSONObject dbprofile = employeeDataRepository.profile(id);
-            int mangerId = (int) dbprofile.get("manager_id");
+            EmployeeData dbprofile = employeeDataRepository.findById(id).orElseThrow(() -> new BadRequestException("Invalid Id"));;
+            int mangerId = dbprofile.getManagerId();
             ProfileDTO profileDTO = new ProfileDTO();
-            profileDTO.setName((String) dbprofile.get("name"));
-            profileDTO.setDepartment((String) dbprofile.get("department"));
-            profileDTO.setDesignation((String) dbprofile.get("designation"));
+            profileDTO.setName(dbprofile.getName());
+
+            List<String> departmentList=new ArrayList<>();//initialising a new list
+
+            for(EmployeeDepartment empD:dbprofile.getDepartments()){
+                departmentList.add(empD.getDepartment());
+            }
+            profileDTO.setDepartment(departmentList);
+            profileDTO.setDesignation(dbprofile.getDesignation().getDesignation());
             profileDTO.setManagerId(mangerId);
-            profileDTO.setLocation((String) dbprofile.get("location"));
+            profileDTO.setLocation(dbprofile.getLocation());
+
             String managerName = "not Assigned";
             if (mangerId != 0) {
                 managerName = employeeDataRepository.getManagerName(mangerId);
@@ -58,38 +64,11 @@ public class EmployeeDetailsService {
             return ResponseEntity.status(OK).body(profileDTO);
 
         }catch (Exception e){
-            throw new BadRequestException("please enter a valid Id");
+
+            throw new BadRequestException(e.getMessage());
+
         }
     }
-
-
-    public ResponseEntity<List<EventDTO>> events() {
-
-        List<JSONObject> birthdayList= employeeDataRepository.BirthdayList();
-        List<JSONObject> anniversaryList=employeeDataRepository.AnniversaryList();
-        List<EventDTO> eventDTOS = new ArrayList<>();
-
-        for (JSONObject bDay : birthdayList) {
-            EventDTO eventDTO = new EventDTO();
-            eventDTO.setName((String) bDay.get("name"));
-            eventDTO.setEventType(EventDTO.EventType.BIRTHDAY);
-            eventDTO.setDate((Date) bDay.get("dob"));
-            eventDTOS.add(eventDTO);
-        }
-
-        for (JSONObject anniversary : anniversaryList) {
-            EventDTO eventDTO = new EventDTO();
-            eventDTO.setName((String) anniversary.get("name"));
-            eventDTO.setEventType(EventDTO.EventType.ANNIVERSARY);
-            eventDTO.setDate((Date)anniversary.get("created_date"));
-            BigInteger diff=(BigInteger)anniversary.get("difference");
-            int difference=diff.intValue()/365;
-            eventDTO.setNumberOfYears(difference);
-            eventDTOS.add(eventDTO);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(eventDTOS);
-    }
-
 
     public ResponseEntity<String> addDepartment(EmployeeDepartment employeeDepartment) {
         employeeDepartmentRepository.save(employeeDepartment);
@@ -114,10 +93,12 @@ public class EmployeeDetailsService {
         return ResponseEntity.status(HttpStatus.OK).body(employeeDataRepository.getAllEmployee());
     }
 
-//    public ResponseEntity<String> updateName(String name,int eid) {
-//        employeeDataRepository.updateName(name,eid);
-//        return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
-//    }
+
+    public ResponseEntity<String> updateName(String name,int eid) {
+        employeeDataRepository.updateName(name,eid);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
+    }
+
 
     public ResponseEntity<String> assignManagers(int mid, int eid) {
         employeeDataRepository.assignManager(mid, eid);

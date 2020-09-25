@@ -2,16 +2,14 @@ package com.nineleaps.greytHRClone.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-//import jdk.nashorn.api.scripting.ScriptUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+
 import java.util.Date;
 
 

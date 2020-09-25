@@ -14,15 +14,17 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        boolean value = false;
+        boolean  value = false;
         Cookie userCookie = WebUtils.getCookie(request, "userID");
         if (userCookie == null) {
             return value;
-        } else {
-            String retrievedId = userCookie.getValue();
+        }else{
+            String retrievedId=userCookie.getValue();
             int id = Integer.parseInt(retrievedId);
             request.setAttribute("id", id);
-            return true;
+            value=true;
+            return value;
+
         }
 
 

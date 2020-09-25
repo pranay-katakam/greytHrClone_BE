@@ -7,16 +7,18 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
-@Table(name = "employee_salary")
+@Table(name="employee_salary")
 public class EmployeeSalary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int salaryId;
+    private int sid;
 
-    @Column(name = "emp_id")
-    @NotNull(message = "ID must not be null!")
-    private int empId;
+    @Column(name = "eid")
+    @NotNull(message = "eid must not be null!")
+    private  int eid;
 
-    @Column(name = "salary")
-    private int salary;
+    @Column(name = "total_salary")
+    @NotNull(message = "Total must not be null!")
+    private  int totalSalary;
+
 }

@@ -1,8 +1,10 @@
 package com.nineleaps.greytHRClone.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import javax.persistence.*;
+import java.util.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -36,11 +38,17 @@ public class EmployeeData {
     @Column(name = "created_date")
     private Timestamp createdDate = new Timestamp(System.currentTimeMillis());
 
-    @Column(name = "department")
-    private String department;
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+    @JoinColumn(name = "dept_ids")
+    private Set<EmployeeDepartment> departments = new HashSet<>();
 
-    @Column(name = "designation")
-    private String designation;
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name="desig_id")
+    private EmployeeDesignation designation;
+
+
 
 }
 
