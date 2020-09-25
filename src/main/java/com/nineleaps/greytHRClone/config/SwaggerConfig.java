@@ -22,15 +22,18 @@ public class SwaggerConfig {
                 .build()
                 .apiInfo(metaData());
     }
+//    private Contact contact =new Contact("Shinaz |"+"Hitesh "+" |Anshu", "", "greythrclone@gmail.com");
+
     private ApiInfo metaData() {
         ApiInfo apiInfo = new ApiInfo(
                 "Greythr clone",
                 "Application for displaying employee details and tracking attendance info ",
                 "0.0.1",
                 "Terms of service",
-                new Contact("Shinaz "+"Hitesh "+"Anshu", "", "greythrclone@gmail.com"),
+                "Shinaz |"+"Hitesh "+" |Anshu",
                 "Apache License Version 2.0",
                 "https://www.apache.org/licenses/LICENSE-2.0");
         return apiInfo;
     }
+
 }

@@ -1,19 +1,22 @@
 package com.nineleaps.greytHRClone.model;
 
-
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name="employee_department")
-public class EmployeeDepartment {
+@Table(name = "liked")
+public class Liked {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int depId;
+    private int likeId;
 
-    @Column(name = "department")
-    private String department;
+    @Column(name="liked_by")
+    private String likedBy;
+
+    @Column(name="fl_id")
+    private int flId;
+
 
 }
