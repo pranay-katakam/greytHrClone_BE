@@ -30,6 +30,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new ExceptionResponse(new Date(), "Invalid Data", ex.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(UnauthorisedException.class)
+    public ResponseEntity<ExceptionResponse> handleUnauthorisedException(UnauthorisedException ex) {
+        return new ResponseEntity<>(new ExceptionResponse(new Date(), "Unauthorised", ex.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status,
