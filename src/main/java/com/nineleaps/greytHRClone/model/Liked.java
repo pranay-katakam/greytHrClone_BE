@@ -18,5 +18,7 @@ public class Liked {
     @Column(name="fl_id")
     private int flId;
 
+    @Column(name="eid")
+    private int eid;
 
 }
