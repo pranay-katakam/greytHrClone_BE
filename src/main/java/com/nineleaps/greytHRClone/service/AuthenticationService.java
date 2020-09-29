@@ -36,9 +36,6 @@ public class AuthenticationService {
             responseEntity = ResponseEntity.status(BAD_REQUEST).body("User Already Exists !!");
         } else {
 
-
-
-
             responseEntity = ResponseEntity.status(OK).body("Signed up successfully !!");
             employeeDataRepository.save(employeeData);
         }
