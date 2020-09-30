@@ -34,8 +34,8 @@ public class AuthenticationService {
 
         if (existByEmail != 0) {
             responseEntity = ResponseEntity.status(BAD_REQUEST).body("User Already Exists !!");
-        } else {
-
+        }
+        else {
             responseEntity = ResponseEntity.status(OK).body("Signed up successfully !!");
             String name= StringUtils.capitalize(employeeData.getName());
             employeeData.setName(name);
@@ -44,11 +44,8 @@ public class AuthenticationService {
         return responseEntity;
     }
 
-
     public ResponseEntity<ApiResponseDTO> Login(EmployeeData userCredentials, HttpServletResponse response) {
-
         try {
-
             int existByEmail = employeeDataRepository.exist(userCredentials.getEmail());
             if (existByEmail != 0) {
 
@@ -63,20 +60,19 @@ public class AuthenticationService {
                     ApiResponseDTO apiResponseDTO = new ApiResponseDTO("Login Successful");
                     return ResponseEntity.status(OK).body(apiResponseDTO);
 
-                } else {
-
+                }
+                else {
                     throw new BadRequestException("wrong password");
                 }
-
-            } else {
+            }
+            else
+                {
                 throw new BadRequestException("please enter a valid name");
             }
-        } catch (Exception e) {
-
-            throw new BadRequestException(e.getMessage());
-
         }
-
+        catch (Exception e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     private void generateCoookie(HttpServletResponse response, int id) {

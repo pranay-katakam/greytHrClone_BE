@@ -58,10 +58,9 @@ public class EmployeeDetailsService {
             profileDTO.setManagerName(managerName);
             return ResponseEntity.status(OK).body(profileDTO);
 
-        }catch (Exception e){
-
+        }
+        catch (Exception e){
             throw new BadRequestException(e.getMessage());
-
         }
     }
 
