@@ -17,17 +17,18 @@ public class Feed {
 
     @Enumerated
     private FeedType feedType;
-//            =FeedType.COMPANY_NEWS;
 
     @Enumerated
     private EventType eventType;
-//            = EventType.OTHERS;
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "created_date")
     private Date createdDate = new Date();
+
+    @Column(name = "no_of_years")
+    private int noOfYears = 0;
 
     @OneToMany( mappedBy="fcId",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private List< Comment > comments ;

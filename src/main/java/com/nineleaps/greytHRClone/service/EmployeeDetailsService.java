@@ -1,7 +1,6 @@
 package com.nineleaps.greytHRClone.service;
 
 
-import com.nineleaps.greytHRClone.dto.EventDTO;
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.model.EmployeeData;
@@ -17,10 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import java.util.*;
 
@@ -46,6 +41,7 @@ public class EmployeeDetailsService {
         try {
             EmployeeData dbprofile = employeeDataRepository.findById(id).orElseThrow(() -> new BadRequestException("Invalid Id"));;
             int mangerId = dbprofile.getManagerId();
+            int empId =dbprofile.getEmpId();
             ProfileDTO profileDTO = new ProfileDTO();
             profileDTO.setName(dbprofile.getName());
 
@@ -58,6 +54,7 @@ public class EmployeeDetailsService {
             profileDTO.setDesignation(dbprofile.getDesignation().getDesignation());
             profileDTO.setManagerId(mangerId);
             profileDTO.setLocation(dbprofile.getLocation());
+            profileDTO.setEid(empId);
 
             String managerName = "not Assigned";
             if (mangerId != 0) {
