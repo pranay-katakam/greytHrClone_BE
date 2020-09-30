@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.model;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Entity
@@ -20,5 +21,8 @@ public class Liked {
 
     @Column(name="eid")
     private int eid;
+
+    @Column(name = "created_date")
+    private Date createdDate = new Date();
 
 }
