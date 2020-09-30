@@ -12,8 +12,8 @@ public class Liked {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int likeId;
 
-    @Column(name="liked_by")
-    private String likedBy;
+//    @Column(name="liked_by")
+//    private String likedBy;
 
     @Column(name="fl_id")
     private int flId;
