@@ -1,9 +1,8 @@
 package com.nineleaps.greytHRClone.service;
 
-import com.nineleaps.greytHRClone.dto.CommonResponseDTO;
+import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.model.EmployeeData;
-import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 
 import org.json.simple.JSONObject;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.Cookie;
@@ -37,17 +37,16 @@ public class AuthenticationService {
             responseEntity = ResponseEntity.status(BAD_REQUEST).body("User Already Exists !!");
         } else {
 
-
-
-
             responseEntity = ResponseEntity.status(OK).body("Signed up successfully !!");
+            String name= StringUtils.capitalize(employeeData.getName());
+            employeeData.setName(name);
             employeeDataRepository.save(employeeData);
         }
         return responseEntity;
     }
 
 
-    public ResponseEntity<CommonResponseDTO> Login(EmployeeData userCredentials, HttpServletResponse response) {
+    public ResponseEntity<ApiResponseDTO> Login(EmployeeData userCredentials, HttpServletResponse response) {
 
         try {
             int existByEmail = employeeDataRepository.exist(userCredentials.getEmail());
@@ -60,8 +59,8 @@ public class AuthenticationService {
                 int id = (int) dbuser.get("emp_id");
                 if (dbpassword.equals(password)) {
                     generateCoookie(response, id);
-                    CommonResponseDTO commonResponseDTO= new CommonResponseDTO("Login Successful");
-                    return ResponseEntity.status(OK).body(commonResponseDTO);
+                    ApiResponseDTO apiResponseDTO = new ApiResponseDTO("Login Successful");
+                    return ResponseEntity.status(OK).body(apiResponseDTO);
 
                 } else {
 

@@ -1,9 +1,9 @@
 package com.nineleaps.greytHRClone.service;
 
-import com.nineleaps.greytHRClone.dto.EventDTO;
-import com.nineleaps.greytHRClone.model.Comment;
-import com.nineleaps.greytHRClone.model.Feed;
-import com.nineleaps.greytHRClone.model.Liked;
+import com.nineleaps.greytHRClone.dto.CommentDTO;
+import com.nineleaps.greytHRClone.dto.FeedDTO;
+import com.nineleaps.greytHRClone.dto.LikeDTO;
+import com.nineleaps.greytHRClone.model.*;
 import com.nineleaps.greytHRClone.repository.CommentRepository;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 import com.nineleaps.greytHRClone.repository.FeedRepository;
@@ -14,9 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,64 +32,60 @@ public class FeedService {
     }
 
 
-    //    public ResponseEntity<List<EventDTO>> events() {
-//
-//        List<JSONObject> birthdayList= employeeDataRepository.BirthdayList();
-//        List<JSONObject> anniversaryList=employeeDataRepository.AnniversaryList();
-//
-//        List<EventDTO> eventDTOS = new ArrayList<>();
-//
-//        for (JSONObject bDay : birthdayList) {
-//            EventDTO eventDTO = new EventDTO();
-//            eventDTO.setName((String) bDay.get("name"));
-//            eventDTO.setEventType(EventDTO.EventType.BIRTHDAY);
-//            eventDTO.setDate((Date) bDay.get("dob"));
-//            eventDTOS.add(eventDTO);
-//        }
-//
-//        for (JSONObject anniversary : anniversaryList) {
-//            EventDTO eventDTO = new EventDTO();
-//            eventDTO.setName((String) anniversary.get("name"));
-//            eventDTO.setEventType(EventDTO.EventType.ANNIVERSARY);
-//            eventDTO.setDate((Date)anniversary.get("created_date"));
-//            BigInteger diff=(BigInteger)anniversary.get("difference");
-//            int difference=diff.intValue()/365;
-//            eventDTO.setNumberOfYears(difference);
-//            eventDTOS.add(eventDTO);
-//        }
-//
-//
-////        eventDTOS.sort(Comparator.comparing(EventDTO::getDate));
-////          eventDTOS.stream().sorted(comparing(EventDTO::getDate).reversed());
-////        eventDTOS.sort(comparing(EventDTO::getDate).reversed());/////////
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(eventDTOS);
-//    }
-
-
     public ResponseEntity<String> addFeed(Feed feed) {
-        System.out.println("feed" + feed);
         feedRepository.save(feed);
         return ResponseEntity.status(HttpStatus.CREATED).body("feed saved successfully");
     }
 
 
-    public ResponseEntity<Object> addComment(Comment comment) {
-//        commentRepository.save(comment);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentRepository.save(comment));
+    public ResponseEntity<String> addComment(Comment comment) {
+        commentRepository.save(comment);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Comment saved succesfully");
 
     }
 
-    public ResponseEntity<Iterable<Feed>> getFeed() {
+    public ResponseEntity<List<FeedDTO>> getFeed() {
         Iterable<Feed> feed = feedRepository.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(feed);
+        List<FeedDTO> feedDTOList = new ArrayList<>();
+
+
+        for (Feed feedObj : feed) {
+            FeedDTO feedDTO = new FeedDTO();
+            feedDTO.setName(feedObj.getName());
+            feedDTO.setDate(feedObj.getCreatedDate());
+            feedDTO.setNumberOfYears(feedObj.getNoOfYears());
+            feedDTO.setEventType(feedObj.getEventType());
+            feedDTO.setFeedType(feedObj.getFeedType());
+
+
+            List<CommentDTO> commentDTOS = new ArrayList<>();
+            for (Comment commentObj : feedObj.getComments()) {
+                CommentDTO commentDTO = new CommentDTO();
+                commentDTO.setCommentedBy(commentObj.getCommentedBy());
+                commentDTO.setCommentedOn(commentObj.getCreatedDate());
+                commentDTO.setComment(commentObj.getComment());
+                commentDTOS.add(commentDTO);
+            }
+            feedDTO.setComments(commentDTOS);
+
+            List<LikeDTO> likeDTOS = new ArrayList<>();
+            for (Liked likedObj : feedObj.getLikes()) {
+                LikeDTO likeDTO = new LikeDTO();
+                likeDTO.setEid(likedObj.getEid());
+                likeDTO.setLikedOn(likedObj.getCreatedDate());
+                likeDTO.setLikedBy(likedObj.getLikedBy());
+                likeDTOS.add(likeDTO);
+            }
+            feedDTO.setLikes(likeDTOS);
+
+            feedDTOList.add(feedDTO);
+
+        }
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(feedDTOList);
     }
 
-    public ResponseEntity<Iterable<Comment>> getComment() {
-        Iterable<Comment> comments = commentRepository.findAll();
-        return ResponseEntity.status(HttpStatus.OK).body(comments);
-    }
 
     public ResponseEntity<String> addLike(Liked liked) {
         int existById = likeRepository.existLike(liked.getEid(), liked.getFlId());
