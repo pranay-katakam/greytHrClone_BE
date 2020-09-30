@@ -1,9 +1,7 @@
 package com.nineleaps.greytHRClone.controller;
 
 
-import com.nineleaps.greytHRClone.dto.EventDTO;
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
-import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;

@@ -13,7 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileDTO {
-
+    private int eid;
     private String name;
     private String designation;
     private List<String> department;

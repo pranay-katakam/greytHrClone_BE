@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Component
@@ -25,23 +26,26 @@ public class Scheduler {
     }
 
     @Async
-    @Scheduled(cron = "0 30 6 * * ?")//sec,min,hour,dayDate,monthDate,dayWeek/year
+    @Scheduled(cron = "0 30 17 * * ?")//sec,min,hour,dayDate,monthDate,dayWeek/year
     public void AddBirthdayAndAnniversary(){
         List<JSONObject> birthdayList= employeeDataRepository.BirthdayList();
         List<JSONObject> anniversaryList=employeeDataRepository.AnniversaryList();
 
        for(JSONObject eventObj:birthdayList){
            Feed feed=new Feed();
-           feed.setEventType(EventType.BIRTHDAY);
+           feed.setEventType(EventType.Birthday);
            feed.setFeedType(FeedType.EVENTS);
            feed.setName((String)eventObj.get("name"));
            feedRepository.save(feed);
        }
         for(JSONObject eventObj:anniversaryList){
             Feed feed=new Feed();
-            feed.setEventType(EventType.ANNIVERSARY);
+            feed.setEventType(EventType.Anniversary);
             feed.setFeedType(FeedType.EVENTS);
             feed.setName((String)eventObj.get("name"));
+            BigInteger noOfYears=(BigInteger)eventObj.get("difference");
+            int anniversaryYears =noOfYears.intValue()/365;
+            feed.setNoOfYears(anniversaryYears);
             feedRepository.save(feed);
         }
 
