@@ -1,7 +1,6 @@
 package com.nineleaps.greytHRClone.repository;
 
 import com.nineleaps.greytHRClone.model.EmployeeData;
-
 import org.json.simple.JSONObject;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,12 +15,8 @@ import java.util.List;
 public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Integer> {
 
     EmployeeData findByName(String name);
-
-
-//    @Query(value = " select name,designation,department,location,manager_id from employee_data where emp_id=?1 ", nativeQuery = true)
+    //    @Query(value = " select name,designation,department,location,manager_id from employee_data where emp_id=?1 ", nativeQuery = true)
 //    JSONObject profile(int id);
-
-
 
     @Query(value = "Select count(name) from employee_data where email=?1", nativeQuery = true)
     int exist(String email);
@@ -33,7 +28,7 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     List<JSONObject> BirthdayList();
 
 
-    @Query(value = "select name,created_date,DATEDIFF(NOW(),created_date) as difference from employee_data where MONTH(created_date)=MONTH(CURDATE()) and DAY(created_date)=DAY(CURDATE()) and  created_date <= DATE_SUB(NOW(),INTERVAL 1 YEAR) ",nativeQuery = true)
+    @Query(value = "select name,created_date,DATEDIFF(NOW(),created_date) as difference from employee_data where MONTH(created_date)=MONTH(CURDATE()) and DAY(created_date)=DAY(CURDATE()) and  created_date <= DATE_SUB(NOW(),INTERVAL 1 YEAR) ", nativeQuery = true)
     List<JSONObject> AnniversaryList();
 
     @Query("select name from EmployeeData where empId=?1")
@@ -52,4 +47,8 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     @Modifying
     @Query(value = "UPDATE employee_data  SET name=?1 where emp_id =?2", nativeQuery = true)
     void updateName(String name, int eid);
+
+    @Query("select name from EmployeeData where empId=?1")
+    String getNameByID(int eid);
+
 }

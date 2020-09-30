@@ -1,10 +1,9 @@
 package com.nineleaps.greytHRClone.controller;
 
 
-import com.nineleaps.greytHRClone.dto.CommonResponseDTO;
+import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.service.AuthenticationService;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class EmployeeAuthentication {
     }
 
     @PostMapping(path = "/login")
-    public ResponseEntity<CommonResponseDTO> Login(@RequestBody EmployeeData userCredentials, HttpServletResponse response) {
+    public ResponseEntity<ApiResponseDTO> Login(@RequestBody EmployeeData userCredentials, HttpServletResponse response) {
         return authenticationService.Login(userCredentials,response);
     }
 

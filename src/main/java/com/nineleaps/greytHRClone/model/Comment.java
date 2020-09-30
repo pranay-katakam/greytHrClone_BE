@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Data
 @Entity
@@ -14,14 +15,18 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int commentId;
 
-    @Column(name="text")
-    private String text;
+    @Column(name = "comment")
+    private String comment;
 
-    @Column(name="commented_by")
+    @Column(name = "commented_by")
     private String commentedBy;
 
-    @Column(name="fc_id")
+
+    @Column(name = "fc_id")
     private int fcId;
+
+    @Column(name = "created_date")
+    private Date createdDate = new Date();
 
 
 }
