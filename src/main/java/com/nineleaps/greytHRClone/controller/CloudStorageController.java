@@ -17,11 +17,11 @@ public class CloudStorageController {
     @Autowired
     private FirebaseService firebaseService;
 
-    @PostMapping("/upload-image")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) throws Exception {
-        String uploadedFile = firebaseService.uploadFile(file);
-        return  ResponseEntity.status(HttpStatus.CREATED).body(uploadedFile);
-    }
+//    @PostMapping("/upload-image")
+//    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) throws Exception {
+//        String uploadedFile = firebaseService.uploadFile(file);
+//        return  ResponseEntity.status(HttpStatus.CREATED).body(uploadedFile);
+//    }
 
 
     @GetMapping("/download/{fileName:.+}")

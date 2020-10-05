@@ -67,7 +67,7 @@ public class FirebaseServiceImpl implements FirebaseService {
         Storage storage = storageOptions.getService();
 
         BlobId blobId = BlobId.of(bucketName, objectName);
-        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(multipartFile.getContentType()).build();
         Blob blob = storage.create(blobInfo, Files.readAllBytes(filePath));
 
         log.info("File " + filePath + " uploaded to bucket " + bucketName + " as " + objectName);

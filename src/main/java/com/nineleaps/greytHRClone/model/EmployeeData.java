@@ -27,6 +27,9 @@ public class EmployeeData {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "image_name")
+    private String imageName;
+
     @Column(name = "manager_id")
     private int managerId=0;
 
