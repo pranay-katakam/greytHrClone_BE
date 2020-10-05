@@ -61,7 +61,7 @@ public class FeedService {
             List<CommentDTO> commentDTOS = new ArrayList<>();
             for (Comment commentObj : feedObj.getComments()) {
                 CommentDTO commentDTO = new CommentDTO();
-                commentDTO.setCommentedBy(commentObj.getCommentedBy());
+                commentDTO.setCommentedBy(commentObj.getUser().getName());
                 commentDTO.setCommentedOn(commentObj.getCreatedDate());
                 commentDTO.setComment(commentObj.getComment());
                 commentDTOS.add(commentDTO);
@@ -71,9 +71,9 @@ public class FeedService {
             List<LikeDTO> likeDTOS = new ArrayList<>();
             for (Liked likedObj : feedObj.getLikes()) {
                 LikeDTO likeDTO = new LikeDTO();
-                likeDTO.setEid(likedObj.getEid());
+                likeDTO.setEid(likedObj.getUser().getEmpId());
                 likeDTO.setLikedOn(likedObj.getCreatedDate());
-                likeDTO.setLikedBy(likedObj.getLikedBy());
+                likeDTO.setLikedBy(likedObj.getUser().getName());
                 likeDTOS.add(likeDTO);
             }
             feedDTO.setLikes(likeDTOS);
@@ -88,20 +88,20 @@ public class FeedService {
 
 
     public ResponseEntity<String> addLike(Liked liked) {
-        int existById = likeRepository.existLike(liked.getEid(), liked.getFlId());
+        int existById = likeRepository.existLike(liked.getUser(), liked.getFlId());
         System.out.println(existById + " ID");
         if (existById == 0) {
             likeRepository.save(liked);
-            return ResponseEntity.status(HttpStatus.CREATED).body(liked.getLikedBy() + " liked for a feed");
+            return ResponseEntity.status(HttpStatus.CREATED).body(liked.getUser().getName() + " liked for a feed");
         } else {
-            return deleteLike(liked.getEid(), liked.getFlId());
+            return deleteLike(liked.getUser(), liked.getFlId());
         }
 
     }
 
-    private ResponseEntity<String> deleteLike(int eid, int fl_id) {
-        likeRepository.deleteLike(eid, fl_id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(eid + " disliked for a feed");
+    private ResponseEntity<String> deleteLike(EmployeeData user, int fl_id) {
+        likeRepository.deleteLike(user, fl_id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user.getName() + " disliked for a feed");
     }
 
 }
