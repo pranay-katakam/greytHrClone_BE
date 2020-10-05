@@ -5,6 +5,8 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.Date;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Data
 @Entity
 @Table(name = "liked")
@@ -13,16 +15,14 @@ public class Liked {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int likeId;
 
-    @Column(name="liked_by")
-    private String likedBy;
-
     @Column(name="fl_id")
     private int flId;
 
-    @Column(name="eid")
-    private int eid;
-
     @Column(name = "created_date")
     private Date createdDate = new Date();
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "empId", referencedColumnName = "empId")
+    private EmployeeData user;
 
 }
