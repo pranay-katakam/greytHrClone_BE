@@ -2,6 +2,7 @@ package com.nineleaps.greytHRClone.controller;
 
 
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
+import com.nineleaps.greytHRClone.helper.FirebaseService;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
@@ -11,9 +12,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -26,7 +29,7 @@ import java.util.List;
 public class EmployeeDetails {
 
     @Autowired
-    EmployeeDetailsService employeeDetailsService;
+    private EmployeeDetailsService employeeDetailsService;
 
 
     @Operation(summary = "View Profile details", description = "To get the profile details of employee", tags = { "viewProfile" })
@@ -72,6 +75,11 @@ public class EmployeeDetails {
     @PatchMapping(path="/assignManager")
     public ResponseEntity<String> assignManager(@RequestParam(value = "mid") int mid,@RequestParam(value = "eid") int eid){
         return employeeDetailsService.assignManagers(mid,eid);
+    }
+
+    @PostMapping("/upload-image")
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file,@RequestAttribute("id") int id) throws Exception {
+        return  employeeDetailsService.uploadFile(file,id);
     }
 
 
