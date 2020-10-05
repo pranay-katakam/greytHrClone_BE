@@ -30,6 +30,16 @@ public class FeedData {
 
     }
 
+    @PostMapping(path = "/reply-comment")
+    public ResponseEntity<String> replyComment(@RequestBody ReplyComment replyComment) {
+//        replyComment.setCId(1);
+        System.out.println("replyComment"+replyComment);
+        return feedService.replyComment(replyComment);
+
+    }
+
+
+
     @GetMapping(path = "/feeds")
     public ResponseEntity<List<FeedDTO>> getFeed() {
         return feedService.getFeed();
