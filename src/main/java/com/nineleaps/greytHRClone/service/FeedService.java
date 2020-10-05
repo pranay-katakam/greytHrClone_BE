@@ -3,11 +3,10 @@ package com.nineleaps.greytHRClone.service;
 import com.nineleaps.greytHRClone.dto.CommentDTO;
 import com.nineleaps.greytHRClone.dto.FeedDTO;
 import com.nineleaps.greytHRClone.dto.LikeDTO;
+import com.nineleaps.greytHRClone.dto.ReplyCommentDTO;
+import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.model.*;
-import com.nineleaps.greytHRClone.repository.CommentRepository;
-import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
-import com.nineleaps.greytHRClone.repository.FeedRepository;
-import com.nineleaps.greytHRClone.repository.LikeRepository;
+import com.nineleaps.greytHRClone.repository.*;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +22,14 @@ public class FeedService {
     private FeedRepository feedRepository;
     private CommentRepository commentRepository;
     private LikeRepository likeRepository;
+    private ReplyCommentRepository replyCommentRepository;
 
     @Autowired
-    public FeedService(FeedRepository feedRepository, CommentRepository commentRepository, LikeRepository likeRepository) {
+    public FeedService(FeedRepository feedRepository, CommentRepository commentRepository, LikeRepository likeRepository,ReplyCommentRepository replyCommentRepository) {
         this.feedRepository = feedRepository;
         this.commentRepository = commentRepository;
         this.likeRepository = likeRepository;
+        this.replyCommentRepository=replyCommentRepository;
     }
 
 
@@ -61,9 +62,19 @@ public class FeedService {
             List<CommentDTO> commentDTOS = new ArrayList<>();
             for (Comment commentObj : feedObj.getComments()) {
                 CommentDTO commentDTO = new CommentDTO();
-                commentDTO.setCommentedBy(commentObj.getCommentedBy());
+                commentDTO.setCommentId(commentObj.getCommentId());
+                commentDTO.setCommentedBy(commentObj.getUser().getName());
                 commentDTO.setCommentedOn(commentObj.getCreatedDate());
                 commentDTO.setComment(commentObj.getComment());
+                List<ReplyCommentDTO> replyCommentDTOS = new ArrayList<>();
+                for (ReplyComment replyObj : commentObj.getReplies()) {
+                    ReplyCommentDTO replyCommentDTO=new ReplyCommentDTO();
+                    replyCommentDTO.setRepliedBy(replyObj.getUser().getName());
+                    replyCommentDTO.setRepliedOn(replyObj.getCreatedDate());
+                    replyCommentDTO.setReply(replyObj.getReply());
+                    replyCommentDTOS.add(replyCommentDTO);
+                }
+                commentDTO.setReplies(replyCommentDTOS);
                 commentDTOS.add(commentDTO);
             }
             feedDTO.setComments(commentDTOS);
@@ -71,9 +82,9 @@ public class FeedService {
             List<LikeDTO> likeDTOS = new ArrayList<>();
             for (Liked likedObj : feedObj.getLikes()) {
                 LikeDTO likeDTO = new LikeDTO();
-                likeDTO.setEid(likedObj.getEid());
+                likeDTO.setEid(likedObj.getUser().getEmpId());
                 likeDTO.setLikedOn(likedObj.getCreatedDate());
-                likeDTO.setLikedBy(likedObj.getLikedBy());
+                likeDTO.setLikedBy(likedObj.getUser().getName());
                 likeDTOS.add(likeDTO);
             }
             feedDTO.setLikes(likeDTOS);
@@ -88,20 +99,24 @@ public class FeedService {
 
 
     public ResponseEntity<String> addLike(Liked liked) {
-        int existById = likeRepository.existLike(liked.getEid(), liked.getFlId());
+        int existById = likeRepository.existLike(liked.getUser(), liked.getFlId());
         System.out.println(existById + " ID");
         if (existById == 0) {
             likeRepository.save(liked);
-            return ResponseEntity.status(HttpStatus.CREATED).body(liked.getLikedBy() + " liked for a feed");
+            return ResponseEntity.status(HttpStatus.CREATED).body( liked.getUser().getEmpId()+" liked for a feed");
         } else {
-            return deleteLike(liked.getEid(), liked.getFlId());
+            return deleteLike(liked.getUser(), liked.getFlId());
         }
 
     }
 
-    private ResponseEntity<String> deleteLike(int eid, int fl_id) {
-        likeRepository.deleteLike(eid, fl_id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(eid + " disliked for a feed");
+    private ResponseEntity<String> deleteLike(EmployeeData user, int fl_id) {
+        likeRepository.deleteLike(user, fl_id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmpId() + " disliked for a feed");
     }
 
+    public ResponseEntity<String> replyComment(ReplyComment replyComment) {
+        replyCommentRepository.save(replyComment);
+        return ResponseEntity.status(HttpStatus.CREATED).body("reply for comment successful");
+    }
 }

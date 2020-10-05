@@ -50,4 +50,9 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
 
     @Query("select name from EmployeeData where empId=?1")
     String getNameByID(int eid);
+
+    @Transactional
+    @Modifying
+    @Query("update EmployeeData set imageName=?1 where empId=?2")
+    void saveImageById(String ImageName,int id);
 }

@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.service;
 
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
+import com.nineleaps.greytHRClone.helper.FirebaseService;
 import com.nineleaps.greytHRClone.model.EmployeeData;
 
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
@@ -15,10 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.*;
 
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 
@@ -29,13 +32,17 @@ public class EmployeeDetailsService {
 
     private EmployeeDepartmentRepository employeeDepartmentRepository;
     private EmployeeDesignationRepository employeeDesignationRepository;
+    private FirebaseService firebaseService;
 
     @Autowired
-    public EmployeeDetailsService(EmployeeDataRepository employeeDataRepository, EmployeeDepartmentRepository employeeDepartmentRepository, EmployeeDesignationRepository employeeDesignationRepository) {
+    public EmployeeDetailsService(EmployeeDataRepository employeeDataRepository, EmployeeDepartmentRepository employeeDepartmentRepository, EmployeeDesignationRepository employeeDesignationRepository, FirebaseService firebaseService) {
         this.employeeDataRepository = employeeDataRepository;
         this.employeeDepartmentRepository = employeeDepartmentRepository;
         this.employeeDesignationRepository = employeeDesignationRepository;
+        this.firebaseService=firebaseService;
     }
+
+
 
     public ResponseEntity<ProfileDTO> profile(int id) {
         try {
@@ -55,7 +62,10 @@ public class EmployeeDetailsService {
             profileDTO.setManagerId(mangerId);
             profileDTO.setLocation(dbprofile.getLocation());
             profileDTO.setEid(empId);
-
+            System.out.println(dbprofile.getImageName());
+            if(dbprofile.getImageName()!=null) {
+                profileDTO.setImageName("https://firebasestorage.googleapis.com/v0/b/greythrclone-291017.appspot.com/o/" + dbprofile.getImageName() + "?alt=media");
+            }
             String managerName = "not Assigned";
             if (mangerId != 0) {
                 managerName = employeeDataRepository.getManagerName(mangerId);
@@ -100,5 +110,12 @@ public class EmployeeDetailsService {
         employeeDataRepository.assignManager(mid, eid);
         return ResponseEntity.status(HttpStatus.CREATED).body("Successfully assigned manager");
 
+    }
+
+
+    public ResponseEntity<String> uploadFile(MultipartFile file,int id) throws Exception {
+        String ImageName= firebaseService.uploadFile(file);
+        employeeDataRepository.saveImageById(ImageName,id);
+        return ResponseEntity.status(CREATED).body("image uploaded successsfully");
     }
 }

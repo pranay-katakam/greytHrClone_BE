@@ -9,20 +9,23 @@ import static javax.persistence.FetchType.LAZY;
 
 @Data
 @Entity
-@Table(name = "liked")
-public class Liked {
+@Table(name = "reply_comment")
+public class ReplyComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int likeId;
+    private int replyCId;
 
-    @Column(name="fl_id")
-    private int flId;
+    @Column(name = "reply")
+    private String reply;
 
-    @Column(name = "created_date")
-    private Date createdDate = new Date();
+    @Column(name = "cid")
+    private int cid;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "empId", referencedColumnName = "empId")
     private EmployeeData user;
 
+
+    @Column(name = "created_date")
+    private Date createdDate = new Date();
 }
