@@ -57,7 +57,7 @@ public class FirebaseServiceImpl implements FirebaseService {
 
     }
 
-//    @Async
+    //    @Async
     public String uploadFile(MultipartFile multipartFile) throws IOException {
         log.debug("bucket name====" + bucketName);
         File file = convertMultiPartToFile(multipartFile);
@@ -83,7 +83,7 @@ public class FirebaseServiceImpl implements FirebaseService {
 
 
     @Override
-    public ResponseEntity<Object> downloadFile(String fileName, HttpServletRequest request){
+    public ResponseEntity<Object> downloadFile(String fileName, HttpServletRequest request) {
         try {
             Storage storage = storageOptions.getService();
 
@@ -105,7 +105,7 @@ public class FirebaseServiceImpl implements FirebaseService {
                     .header("Content-type", "application/octet-stream")
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                     .body(byteArrayResource);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ResourceNotFoundException("please enter a valid file name");
         }
 

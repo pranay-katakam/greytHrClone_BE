@@ -103,7 +103,7 @@ public class FeedService {
         System.out.println(existById + " ID");
         if (existById == 0) {
             likeRepository.save(liked);
-            return ResponseEntity.status(HttpStatus.CREATED).body( liked.getUser().getEmpId()+" liked for a feed");
+            return ResponseEntity.status(HttpStatus.CREATED).body("User of ID :" +liked.getUser().getEmpId()+ " liked for a feed");
         } else {
             return deleteLike(liked.getUser(), liked.getFlId());
         }
@@ -112,7 +112,8 @@ public class FeedService {
 
     private ResponseEntity<String> deleteLike(EmployeeData user, int fl_id) {
         likeRepository.deleteLike(user, fl_id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmpId() + " disliked for a feed");
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("User of ID :" +user.getEmpId()+" disliked for a feed");
     }
 
     public ResponseEntity<String> replyComment(ReplyComment replyComment) {
