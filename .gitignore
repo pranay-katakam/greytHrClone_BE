@@ -35,3 +35,8 @@ out/
 <<<<<<< HEAD
 
 *.properties
+
+/Dockerfile
+
+/docker-compose.yml
+/firebase-sdk.json

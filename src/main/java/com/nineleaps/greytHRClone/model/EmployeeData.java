@@ -1,7 +1,6 @@
 package com.nineleaps.greytHRClone.model;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import javax.persistence.*;
@@ -28,7 +27,7 @@ public class EmployeeData {
     private String email;
 
     @Column(name = "image_name")
-    private String imageName;
+    private String imageName="defaultProfile.png";
 
     @Column(name = "manager_id")
     private int managerId=0;
