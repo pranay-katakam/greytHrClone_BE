@@ -14,6 +14,7 @@ public class LikeDTO {
 
     private int eid;
     private String likedBy;
+    private String likedByImage;
     private Date likedOn ;
 
 }

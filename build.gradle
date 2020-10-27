@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.nineleaps'
-version = '0.0.1-SNAPSHOT'
+version = '1.0.0'
 sourceCompatibility = '1.8'
 
 configurations {
@@ -54,7 +54,6 @@ dependencies {
 
 	//firebase SDK
 	compile group: 'com.google.firebase', name: 'firebase-admin', version: '6.9.0'
-
 	compile group: 'commons-io', name: 'commons-io', version: '2.6'
 
 

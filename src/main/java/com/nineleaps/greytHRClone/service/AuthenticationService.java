@@ -5,8 +5,10 @@ import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,13 +20,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
+import java.util.Locale;
+
 import static org.springframework.http.HttpStatus.*;
 
-
+@Slf4j
 @Service
 public class AuthenticationService {
     @Autowired
-    EmployeeDataRepository employeeDataRepository;
+    private EmployeeDataRepository employeeDataRepository;
+
+    @Autowired
+    private MessageSource messageSource;
 
 
     public ResponseEntity<String> Signup(EmployeeData employeeData) {
@@ -59,6 +66,7 @@ public class AuthenticationService {
                 int id = (int) dbuser.get("emp_id");
                 if (dbpassword.equals(password)) {
                     generateCoookie(response, id);
+
                     ApiResponseDTO apiResponseDTO = new ApiResponseDTO("Login Successful");
                     return ResponseEntity.status(OK).body(apiResponseDTO);
 
