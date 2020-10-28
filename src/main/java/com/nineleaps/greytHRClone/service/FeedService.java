@@ -92,7 +92,7 @@ public class FeedService {
 
     private ResponseEntity<String> deleteLike(EmployeeData user, int fl_id) {
         likeRepository.deleteLike(user, fl_id);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user.getName() + " disliked for a feed");
+        return ResponseEntity.status(HttpStatus.CREATED).body(user.getEmpId() + " disliked for a feed");
 
     }
 }

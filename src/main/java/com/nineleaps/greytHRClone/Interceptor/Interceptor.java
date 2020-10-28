@@ -1,4 +1,3 @@
-
 package com.nineleaps.greytHRClone.Interceptor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +24,10 @@ public class Interceptor implements WebMvcConfigurer {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login", "/logout",
-                        "/swagger-ui.html",
-                        "**/swagger**","/employee","/designations","/departments")
+
+                        "/swagger-ui/**","/v3/api-docs",
+                        "/employee","/designations","/departments")
+
                 .order(1);
 
         registry.addInterceptor(userInterceptor)

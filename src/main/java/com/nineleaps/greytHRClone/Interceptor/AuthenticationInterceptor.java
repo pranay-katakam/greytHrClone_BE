@@ -20,7 +20,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         Cookie userCookie = WebUtils.getCookie(request, "userID");
         if (userCookie == null) {
             throw new UnauthorisedException("please login/ session time out");
-//        return value;
 
         } else {
             String retrievedId = userCookie.getValue();
@@ -32,4 +31,3 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
     }
 }
-
