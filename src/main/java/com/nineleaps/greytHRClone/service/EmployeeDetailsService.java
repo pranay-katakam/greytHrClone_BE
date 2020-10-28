@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.service;
 
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
+import com.nineleaps.greytHRClone.exception.UnsupportedMediaTypeException;
 import com.nineleaps.greytHRClone.helper.FirebaseService;
 import com.nineleaps.greytHRClone.model.EmployeeData;
 
@@ -20,9 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static com.nineleaps.greytHRClone.common.Constants.FIREBASE_URL_PREFIX;
-import static com.nineleaps.greytHRClone.common.Constants.FIREBASE_URL_SUFFIX;
+import static com.nineleaps.greytHRClone.common.Constants.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -116,8 +118,33 @@ public class EmployeeDetailsService {
 
 
     public ResponseEntity<String> uploadFile(MultipartFile file,int id) throws Exception {
-        String ImageName= firebaseService.uploadFile(file);
-        employeeDataRepository.saveImageById(ImageName,id);
-        return ResponseEntity.status(CREATED).body("image uploaded successsfully");
+        System.out.println("size "+IsImageSize1MB(file.getSize()));
+        System.out.println("format"+checkForImageFormat(file.getContentType()));
+        if(IsImageSize1MB(file.getSize())&&checkForImageFormat(file.getContentType())) {
+            String ImageName = firebaseService.uploadFile(file);
+            employeeDataRepository.saveImageById(ImageName, id);
+            return ResponseEntity.status(CREATED).body("image uploaded successsfully");
+        }else {
+            throw new UnsupportedMediaTypeException("please upload  image Inside 1 MB and of type .png/jpg/jpeg/.gif ");
+        }
     }
+
+    // confirms whether file is in image format only
+    private boolean checkForImageFormat(String FileName){
+        Pattern p = Pattern.compile(IMG_REGEX);
+        Matcher m = p.matcher(FileName);
+        return m.matches();
+    }
+
+    private boolean IsImageSize1MB(long fileSize){
+        if(fileSize<=1048576){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+
+
+
 }
