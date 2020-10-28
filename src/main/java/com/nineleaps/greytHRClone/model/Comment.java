@@ -1,7 +1,6 @@
 package com.nineleaps.greytHRClone.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Data;
 
 import javax.persistence.*;
@@ -33,12 +32,11 @@ public class Comment {
     @Column(name = "created_date")
     private Date createdDate = new Date();
 
+    @OneToMany( mappedBy="cid",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ReplyComment> replies ;
 
-//    @ManyToOne
-//    private Comment parent;
-//
-//    @OneToMany(mappedBy = "parent")
-//    private List<Comment> children = new ArrayList<Comment>();
+
+
 
 
 }

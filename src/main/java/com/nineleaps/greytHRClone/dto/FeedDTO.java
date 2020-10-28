@@ -20,7 +20,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FeedDTO {
+    private int feedId;
     private String name;
+    private String imageUrl;
 
     @Enumerated(EnumType.STRING)
     private EventType eventType;

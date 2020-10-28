@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
+import static com.nineleaps.greytHRClone.common.Constants.FIREBASE_URL_PREFIX;
+import static com.nineleaps.greytHRClone.common.Constants.FIREBASE_URL_SUFFIX;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -61,7 +63,7 @@ public class EmployeeDetailsService {
             profileDTO.setEid(empId);
             System.out.println(dbprofile.getImageName());
             if(dbprofile.getImageName()!=null) {
-                profileDTO.setImageName("https://firebasestorage.googleapis.com/v0/b/greythrclone-291017.appspot.com/o/" + dbprofile.getImageName() + "?alt=media");
+                profileDTO.setImageName(FIREBASE_URL_PREFIX + dbprofile.getImageName() + FIREBASE_URL_SUFFIX);
             }
             String managerName = "not Assigned";
             if (mangerId != 0) {

@@ -12,20 +12,22 @@ import static javax.persistence.FetchType.LAZY;
 @Table(name = "reply_comment")
 public class ReplyComment {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private int replyCId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int replyCId;
 
-        @Column(name = "reply")
-        private String reply;
+    @Column(name = "reply")
+    private String reply;
 
-        @ManyToOne(fetch = LAZY)
-        @JoinColumn(name = "empId", referencedColumnName = "empId")
-        private EmployeeData user;
+    @Column(name = "cid")
+    private int cid;
 
-        @Column(name = "cId")
-        private int cId;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "empId", referencedColumnName = "empId")
+    private EmployeeData user;
 
-        @Column(name = "created_date")
-        private Date createdDate = new Date();
+
+    @Column(name = "created_date")
+    private Date createdDate = new Date();
 }
+
