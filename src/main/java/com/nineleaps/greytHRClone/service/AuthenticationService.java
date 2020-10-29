@@ -37,13 +37,12 @@ public class AuthenticationService {
     public ResponseEntity<String> Signup(EmployeeData employeeData) {
         ResponseEntity<String> responseEntity;
 
-
         int existByEmail = employeeDataRepository.exist(employeeData.getEmail());
 
         if (existByEmail != 0) {
             responseEntity = ResponseEntity.status(BAD_REQUEST).body("User Already Exists !!");
-        } else {
-
+        }
+        else {
             responseEntity = ResponseEntity.status(OK).body("Signed up successfully !!");
             String name= StringUtils.capitalize(employeeData.getName());
             employeeData.setName(name);
@@ -52,12 +51,11 @@ public class AuthenticationService {
         return responseEntity;
     }
 
-
     public ResponseEntity<ApiResponseDTO> Login(EmployeeData userCredentials, HttpServletResponse response) {
-
         try {
             int existByEmail = employeeDataRepository.exist(userCredentials.getEmail());
             if (existByEmail != 0) {
+
                 String email = userCredentials.getEmail();
                 String password = userCredentials.getPassword();
                 JSONObject dbuser = employeeDataRepository.UserByEmail(email);
@@ -70,18 +68,19 @@ public class AuthenticationService {
                     ApiResponseDTO apiResponseDTO = new ApiResponseDTO("Login Successful");
                     return ResponseEntity.status(OK).body(apiResponseDTO);
 
-                } else {
-
+                }
+                else {
                     throw new BadRequestException("wrong password");
                 }
-
-            } else {
+            }
+            else
+                {
                 throw new BadRequestException("please enter a valid name");
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
-
     }
 
     private void generateCoookie(HttpServletResponse response, int id) {
@@ -96,7 +95,6 @@ public class AuthenticationService {
                 .build();
         response.addHeader("Set-Cookie", resCookie.toString());
     }
-
 
     public ResponseEntity<String> Logout(HttpServletRequest request, HttpServletResponse response) {
         Cookie cookie = WebUtils.getCookie(request, "userID");

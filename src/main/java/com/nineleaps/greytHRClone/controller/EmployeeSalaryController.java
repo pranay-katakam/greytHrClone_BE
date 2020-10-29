@@ -3,7 +3,9 @@ package com.nineleaps.greytHRClone.controller;
 import com.nineleaps.greytHRClone.dto.SalaryDTO;
 import com.nineleaps.greytHRClone.model.EmployeeSalary;
 import com.nineleaps.greytHRClone.service.EmployeeSalaryService;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +29,5 @@ public class EmployeeSalaryController {
     public ResponseEntity<List<SalaryDTO>> getSalaryDetails(@RequestAttribute("id") int eid){
         return employeeSalaryService.getSalaryDetails(eid);
     }
-
 
 }

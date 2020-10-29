@@ -8,7 +8,6 @@ import java.util.*;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-
 @Data
 @Entity
 @Table(name="employee_data")
@@ -42,7 +41,6 @@ public class EmployeeData {
     @Column(name = "created_date")
     private Timestamp createdDate = new Timestamp(System.currentTimeMillis());
 
-
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
     @JoinColumn(name = "dept_ids")
@@ -52,7 +50,6 @@ public class EmployeeData {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name="desig_id")
     private EmployeeDesignation designation;
-
 
 
 

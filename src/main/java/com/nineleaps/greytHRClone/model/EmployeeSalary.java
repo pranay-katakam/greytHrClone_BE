@@ -20,4 +20,5 @@ public class EmployeeSalary {
     @Column(name = "total_salary")
     @NotNull(message = "Total must not be null!")
     private  int totalSalary;
+
 }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class Constants {
-    public static final String FIREBASE_SDK_JSON ="firebase-sdk.json";
+    public static final String FIREBASE_SDK_JSON ="firebase-adminsdk.json";
     public static final String FIREBASE_BUCKET = "greythrclone-291017.appspot.com";
     public static final String FIREBASE_PROJECT_ID ="greythrclone-291017";
 

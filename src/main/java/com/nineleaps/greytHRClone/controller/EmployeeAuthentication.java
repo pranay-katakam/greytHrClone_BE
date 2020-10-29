@@ -19,14 +19,10 @@ public class EmployeeAuthentication {
     @Autowired
     AuthenticationService authenticationService;
 
-
-
     @PostMapping(path = "/employee")
     public ResponseEntity<String> Signup(@RequestBody EmployeeData employeeData) {
         return authenticationService.Signup(employeeData);
     }
-
-
 
     @PostMapping(path = "/login")
     public ResponseEntity<ApiResponseDTO> Login(@RequestBody EmployeeData userCredentials, HttpServletResponse response) {
