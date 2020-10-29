@@ -11,6 +11,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Table(name = "reply_comment")
 public class ReplyComment {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int replyCId;
@@ -29,3 +30,4 @@ public class ReplyComment {
     @Column(name = "created_date")
     private Date createdDate = new Date();
 }
+

@@ -22,5 +22,4 @@ public class ProfileDTO {
     private String location;
     private String imageName;
 
-
 }

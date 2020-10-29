@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 
@@ -23,11 +24,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DataAlreadyExistsException.class)
     public ResponseEntity<ExceptionResponse> handleAlreadyExistsException(DataAlreadyExistsException ex) {
         return new ResponseEntity<>(new ExceptionResponse(new Date(), "Already Exists", ex.getMessage()), CONFLICT);
+
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ExceptionResponse> handleBadRequestException(BadRequestException ex) {
         return new ResponseEntity<>(new ExceptionResponse(new Date(), "Invalid Data", ex.getMessage()), HttpStatus.BAD_REQUEST);
+
     }
 
     @ExceptionHandler(UnauthorisedException.class)
@@ -56,4 +59,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
         return ResponseEntity.status(BAD_REQUEST).body(errors);
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ExceptionResponse> handleUnauthorizedException(UnauthorizedException ex) {
+        return new ResponseEntity<>(new ExceptionResponse(new Date(), "Unauthorized", ex.getMessage()), HttpStatus.UNAUTHORIZED);
+
+    }
 }
+

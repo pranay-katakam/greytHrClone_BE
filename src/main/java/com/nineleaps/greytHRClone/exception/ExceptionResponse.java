@@ -14,3 +14,4 @@ public class ExceptionResponse {
     private String error;
     private String message;
 }
+

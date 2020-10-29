@@ -36,17 +36,14 @@ public class FeedService {
         this.replyCommentRepository=replyCommentRepository;
     }
 
-
     public ResponseEntity<String> addFeed(Feed feed) {
         feedRepository.save(feed);
-        return ResponseEntity.status(HttpStatus.CREATED).body("feed saved successfully");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Feed saved successfully");
     }
-
 
     public ResponseEntity<String> addComment(Comment comment) {
         commentRepository.save(comment);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Comment saved succesfully");
-
+        return ResponseEntity.status(HttpStatus.CREATED).body("Comment saved successfully");
     }
 
     public ResponseEntity<List<FeedDTO>> getFeed() {
@@ -82,7 +79,6 @@ public class FeedService {
             feedDTO.setEventType(eventType);
             feedDTO.setFeedType(feedObj.getFeedType());
 
-
             List<CommentDTO> commentDTOS = new ArrayList<>();
             for (Comment commentObj : feedObj.getComments()) {
                 CommentDTO commentDTO = new CommentDTO();
@@ -115,17 +111,13 @@ public class FeedService {
                 likeDTOS.add(likeDTO);
             }
             feedDTO.setLikes(likeDTOS);
-
             feedDTOList.add(feedDTO);
-
         }
-
-
         return ResponseEntity.status(HttpStatus.OK).body(feedDTOList);
     }
 
-
     public ResponseEntity<String> addLike(Liked liked) {
+
         int existById = likeRepository.existLike(liked.getUser(), liked.getFlId());
         System.out.println(existById + " ID");
         if (existById == 0) {
@@ -133,18 +125,19 @@ public class FeedService {
             return ResponseEntity.status(HttpStatus.CREATED).body("User of ID :" +liked.getUser().getEmpId()+ " liked for a feed");
         } else {
             return deleteLike(liked.getUser(), liked.getFlId());
-        }
 
+        }
     }
 
     private ResponseEntity<String> deleteLike(EmployeeData user, int fl_id) {
         likeRepository.deleteLike(user, fl_id);
-
         return ResponseEntity.status(HttpStatus.CREATED).body("User of ID :" +user.getEmpId()+" disliked for a feed");
+
     }
 
     public ResponseEntity<String> replyComment(ReplyComment replyComment) {
         replyCommentRepository.save(replyComment);
         return ResponseEntity.status(HttpStatus.CREATED).body("reply for comment successful");
+
     }
 }

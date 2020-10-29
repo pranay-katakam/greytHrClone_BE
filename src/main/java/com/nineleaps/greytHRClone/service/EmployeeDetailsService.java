@@ -1,12 +1,10 @@
 package com.nineleaps.greytHRClone.service;
 
-
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.exception.UnsupportedMediaTypeException;
 import com.nineleaps.greytHRClone.helper.FirebaseService;
 import com.nineleaps.greytHRClone.model.EmployeeData;
-
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
@@ -17,8 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -27,7 +25,6 @@ import java.util.regex.Pattern;
 import static com.nineleaps.greytHRClone.common.Constants.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
-
 
 @Service
 public class EmployeeDetailsService {
@@ -77,12 +74,11 @@ public class EmployeeDetailsService {
             profileDTO.setManagerName(managerName);
             return ResponseEntity.status(OK).body(profileDTO);
 
-        }catch (Exception e){
+        }
+        catch (Exception e){
             throw new BadRequestException(e.getMessage());
         }
     }
-
-
 
     public ResponseEntity<String> addDepartment(EmployeeDepartment employeeDepartment) {
         employeeDepartmentRepository.save(employeeDepartment);
@@ -103,10 +99,14 @@ public class EmployeeDetailsService {
 
     }
 
-
     public ResponseEntity<List<JSONObject>> getManagers() {
         return ResponseEntity.status(HttpStatus.OK).body(employeeDataRepository.getAllEmployee());
+    }
 
+
+    public ResponseEntity<String> updateName(String name,int eid) {
+        employeeDataRepository.updateName(name,eid);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
     }
 
 
