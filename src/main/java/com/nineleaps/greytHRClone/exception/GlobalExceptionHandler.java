@@ -40,6 +40,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new ExceptionResponse(new Date(), "Resource not found", ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UnsupportedMediaTypeException.class)
+    public ResponseEntity<ExceptionResponse> handleUnsupportedMediaTypeException(UnsupportedMediaTypeException ex) {
+        return new ResponseEntity<>(new ExceptionResponse(new Date(), "Only Image files allowed", ex.getMessage()), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
