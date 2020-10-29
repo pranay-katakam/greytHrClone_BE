@@ -12,5 +12,6 @@ import java.util.Date;
 public class ReplyCommentDTO {
     private String reply;
     private String repliedBy;
+    private String repliedByImage;
     private Date repliedOn;
 }

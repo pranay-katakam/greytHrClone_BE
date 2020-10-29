@@ -26,7 +26,7 @@ public class Scheduler {
     }
 
     @Async
-    @Scheduled(cron = "0 17 17 * * ?")//sec,min,hour,dayDate,monthDate,dayWeek/year
+    @Scheduled(cron = "0 35 11 * * ?")//sec,min,hour,dayDate,monthDate,dayWeek/year
     public void AddBirthdayAndAnniversary(){
         List<JSONObject> birthdayList= employeeDataRepository.BirthdayList();
         List<JSONObject> anniversaryList=employeeDataRepository.AnniversaryList();

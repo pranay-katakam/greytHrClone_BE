@@ -24,6 +24,12 @@ public class FeedData {
 
     }
 
+    @PostMapping(path = "/like")
+    public ResponseEntity<String> addLike(@RequestBody Liked liked) {
+        return feedService.addLike(liked);
+
+    }
+
     @PostMapping(path = "/comment")
     public ResponseEntity<String> AddComment(@RequestBody Comment comment) {
         return feedService.addComment(comment);
@@ -33,11 +39,10 @@ public class FeedData {
     @PostMapping(path = "/reply-comment")
     public ResponseEntity<String> replyComment(@RequestBody ReplyComment replyComment) {
 //        replyComment.setCId(1);
-        System.out.println("replyComment"+replyComment);
+        System.out.println("replyComment" + replyComment);
         return feedService.replyComment(replyComment);
 
     }
-
 
 
     @GetMapping(path = "/feeds")
@@ -45,11 +50,5 @@ public class FeedData {
         return feedService.getFeed();
     }
 
-
-    @PostMapping(path = "/like")
-    public ResponseEntity<String> addLike(@RequestBody Liked liked) {
-        return feedService.addLike(liked);
-
-    }
 
 }

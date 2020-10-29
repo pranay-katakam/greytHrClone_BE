@@ -16,6 +16,7 @@ public class CommentDTO {
     private int commentId;
     private String comment;
     private String commentedBy;
+    private String commentedByImage;
     private Date commentedOn;
     private List<ReplyCommentDTO> replies;
 

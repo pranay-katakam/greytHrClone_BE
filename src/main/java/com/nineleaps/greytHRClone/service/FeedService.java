@@ -15,6 +15,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static com.nineleaps.greytHRClone.common.Constants.*;
+import static com.nineleaps.greytHRClone.common.Constants.FIREBASE_URL_SUFFIX;
 
 @Service
 public class FeedService {
@@ -50,12 +54,32 @@ public class FeedService {
         List<FeedDTO> feedDTOList = new ArrayList<>();
 
 
+        String ImageType="";
+        int imageNameSuffix=0;
+        EventType eventType;
+
         for (Feed feedObj : feed) {
             FeedDTO feedDTO = new FeedDTO();
+            feedDTO.setFeedId(feedObj.getFeedId());
             feedDTO.setName(feedObj.getName());
+            Random random = new Random();
+            imageNameSuffix=random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
+
+            eventType=feedObj.getEventType();
+                switch (eventType) {
+                    case Birthday:
+                        ImageType="birthdayImage";
+                        break;
+                    case Anniversary:
+                        ImageType="anniversaryImage";
+                        break;
+                    default:
+                        ImageType="otherImage";
+                }
+            feedDTO.setImageUrl(FIREBASE_URL_PREFIX + ImageType+"s%2F"+ImageType+imageNameSuffix+".png" + FIREBASE_URL_SUFFIX);
             feedDTO.setDate(feedObj.getCreatedDate());
             feedDTO.setNumberOfYears(feedObj.getNoOfYears());
-            feedDTO.setEventType(feedObj.getEventType());
+            feedDTO.setEventType(eventType);
             feedDTO.setFeedType(feedObj.getFeedType());
 
 
@@ -64,12 +88,14 @@ public class FeedService {
                 CommentDTO commentDTO = new CommentDTO();
                 commentDTO.setCommentId(commentObj.getCommentId());
                 commentDTO.setCommentedBy(commentObj.getUser().getName());
+                commentDTO.setCommentedByImage(FIREBASE_URL_PREFIX +commentObj.getUser().getImageName()+ FIREBASE_URL_SUFFIX);
                 commentDTO.setCommentedOn(commentObj.getCreatedDate());
                 commentDTO.setComment(commentObj.getComment());
                 List<ReplyCommentDTO> replyCommentDTOS = new ArrayList<>();
                 for (ReplyComment replyObj : commentObj.getReplies()) {
                     ReplyCommentDTO replyCommentDTO=new ReplyCommentDTO();
                     replyCommentDTO.setRepliedBy(replyObj.getUser().getName());
+                    replyCommentDTO.setRepliedByImage(FIREBASE_URL_PREFIX +replyObj.getUser().getImageName()+ FIREBASE_URL_SUFFIX);
                     replyCommentDTO.setRepliedOn(replyObj.getCreatedDate());
                     replyCommentDTO.setReply(replyObj.getReply());
                     replyCommentDTOS.add(replyCommentDTO);
@@ -85,6 +111,7 @@ public class FeedService {
                 likeDTO.setEid(likedObj.getUser().getEmpId());
                 likeDTO.setLikedOn(likedObj.getCreatedDate());
                 likeDTO.setLikedBy(likedObj.getUser().getName());
+                likeDTO.setLikedByImage(FIREBASE_URL_PREFIX +likedObj.getUser().getImageName()+ FIREBASE_URL_SUFFIX);
                 likeDTOS.add(likeDTO);
             }
             feedDTO.setLikes(likeDTOS);
