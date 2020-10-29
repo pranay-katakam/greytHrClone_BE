@@ -12,7 +12,7 @@ import static javax.persistence.FetchType.LAZY;
 @Data
 @Entity
 @Table(name = "swipes")
-public class Swipes {
+public class Swipe {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int swipeId;
