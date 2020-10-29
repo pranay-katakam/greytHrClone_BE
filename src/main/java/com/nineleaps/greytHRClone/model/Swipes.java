@@ -30,5 +30,4 @@ public class Swipes {
     private DoorAddress doorAddress;
 
 
-
 }
