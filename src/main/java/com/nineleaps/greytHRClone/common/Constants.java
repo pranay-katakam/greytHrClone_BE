@@ -15,4 +15,6 @@ public class Constants {
     public static final int RANDOM_MIN = 1;
     public static final int RANDOM_MAX = 10;
 
+    public static final String IMG_REGEX = "([^\\s]+(\\/(?i)(jpe?g|png|gif|bmp))$)";
+
 }
