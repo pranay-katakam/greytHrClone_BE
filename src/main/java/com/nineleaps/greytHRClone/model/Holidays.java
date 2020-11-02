@@ -18,7 +18,6 @@ public class Holidays {
     private int holidayId;
 
     @NotNull
-    @NotEmpty
     @Column(name = "holiday_date")
     private Date holidayDate;
 

@@ -31,10 +31,10 @@ public class AttendanceController {
     }
 
 
-    @GetMapping(path = "/swipes")
-    public ResponseEntity<Iterable<Swipe>> getSwipes() {
-        return attendanceService.getSwipes();
-    }
+//    @GetMapping(path = "/swipes")
+//    public ResponseEntity<Iterable<Swipe>> getSwipes() {
+//        return attendanceService.getSwipes();
+//    }
 
 
 }
