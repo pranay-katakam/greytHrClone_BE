@@ -21,13 +21,15 @@ public class EmployeeAttendance {
     @JoinColumn(name = "empId", referencedColumnName = "empId")
     private EmployeeData user;
 
-//    first in time
-    @Column(name = "first_in")
-    private Date firstIn;
+////    first in time
+//    @Column(name = "first_in")
+//    private Date firstIn;
+//
+////    last out time
+//    @Column(name = "last_out")
+//    private Date lastOut;
 
-//    last out time
-    @Column(name = "last_out")
-    private Date lastOut;
+    //date
 
     @Enumerated
     private AttendanceCategory attendanceCategory;
