@@ -24,8 +24,11 @@ public class Interceptor implements WebMvcConfigurer {
         registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login", "/logout",
-                        "/swagger-ui.html",
-                        "**/swagger**","/employee","/designations","/departments")
+
+                        "/swagger-ui/**","/v3/api-docs",
+
+                        "/employee","/designations","/departments","/designation","/department")
+
                 .order(1);
 
         registry.addInterceptor(userInterceptor)
@@ -34,5 +37,6 @@ public class Interceptor implements WebMvcConfigurer {
 
 
     }
+
 }
 

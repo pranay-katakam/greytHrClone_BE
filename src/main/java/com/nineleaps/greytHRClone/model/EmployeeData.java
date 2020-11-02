@@ -1,14 +1,12 @@
 package com.nineleaps.greytHRClone.model;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import javax.persistence.*;
 import java.util.*;
 import java.sql.Date;
 import java.sql.Timestamp;
-
 
 @Data
 @Entity
@@ -27,6 +25,9 @@ public class EmployeeData {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "image_name")
+    private String imageName="defaultProfile.png";
+
     @Column(name = "manager_id")
     private int managerId=0;
 
@@ -40,7 +41,6 @@ public class EmployeeData {
     @Column(name = "created_date")
     private Timestamp createdDate = new Timestamp(System.currentTimeMillis());
 
-
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
     @JoinColumn(name = "dept_ids")
@@ -50,7 +50,6 @@ public class EmployeeData {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name="desig_id")
     private EmployeeDesignation designation;
-
 
 
 

@@ -32,6 +32,10 @@ out/
 
 ### VS Code ###
 .vscode/
-<<<<<<< HEAD
 
 *.properties
+
+/Dockerfile
+
+/docker-compose.yml
+/firebase-sdk.json

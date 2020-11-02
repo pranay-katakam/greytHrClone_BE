@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 
@@ -23,16 +24,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DataAlreadyExistsException.class)
     public ResponseEntity<ExceptionResponse> handleAlreadyExistsException(DataAlreadyExistsException ex) {
         return new ResponseEntity<>(new ExceptionResponse(new Date(), "Already Exists", ex.getMessage()), CONFLICT);
+
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ExceptionResponse> handleBadRequestException(BadRequestException ex) {
         return new ResponseEntity<>(new ExceptionResponse(new Date(), "Invalid Data", ex.getMessage()), HttpStatus.BAD_REQUEST);
+
     }
 
     @ExceptionHandler(UnauthorisedException.class)
     public ResponseEntity<ExceptionResponse> handleUnauthorisedException(UnauthorisedException ex) {
         return new ResponseEntity<>(new ExceptionResponse(new Date(), "Unauthorised", ex.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(new ExceptionResponse(new Date(), "Resource not found", ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UnsupportedMediaTypeException.class)
+    public ResponseEntity<ExceptionResponse> handleUnsupportedMediaTypeException(UnsupportedMediaTypeException ex) {
+        return new ResponseEntity<>(new ExceptionResponse(new Date(), "Only Image files allowed", ex.getMessage()), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
 
@@ -46,4 +59,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
         return ResponseEntity.status(BAD_REQUEST).body(errors);
     }
+
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<ExceptionResponse> handleUnauthorizedException(UnauthorizedException ex) {
+        return new ResponseEntity<>(new ExceptionResponse(new Date(), "Unauthorized", ex.getMessage()), HttpStatus.UNAUTHORIZED);
+
+    }
 }
+

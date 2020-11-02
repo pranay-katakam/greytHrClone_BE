@@ -1,78 +1,84 @@
 package com.nineleaps.greytHRClone.controller;
 
-
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
+import com.nineleaps.greytHRClone.helper.FirebaseService;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+//import io.swagger.annotations.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import org.graalvm.compiler.word.Word;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
-
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
-@Api(value = "Controller class deals employee details")
+@Tag(name = "employee details controller", description = "Controller class deals employee details")
 @RestController
 public class EmployeeDetails {
 
     @Autowired
-    EmployeeDetailsService employeeDetailsService;
+    private EmployeeDetailsService employeeDetailsService;
 
-
-    @ApiOperation(value = "To get the profile details of employee")
+    @Operation(summary = "View Profile details", description = "To get the profile details of employee", tags = { "viewProfile" })
     @GetMapping(path = "/profile")
     public ResponseEntity<ProfileDTO> profile(@RequestAttribute("id") int id) {
         return employeeDetailsService.profile(id);
     }
 
 
-
-    @ApiOperation(value = "To add required departments")
+    @Operation(summary = "Add new department ", description = "To add required departments", tags = { "addDepartment" })
     @PostMapping(path = "/department")
     public ResponseEntity<String> addDepartment(@RequestBody EmployeeDepartment employeeDepartment) {
         return employeeDetailsService.addDepartment(employeeDepartment);
     }
 
-    @ApiOperation(value = "To add required designation")
+    @Operation(summary = "Add new designation ", description = "To add required designation", tags = { "addDesignation" })
     @PostMapping(path = "/designation")
-    public ResponseEntity<String> addDesignation(@Valid @RequestBody EmployeeDesignation employeeDesignation){
 
+    public ResponseEntity<String> addDesignation(@Valid @RequestBody EmployeeDesignation employeeDesignation){
         return employeeDetailsService.addDesignation(employeeDesignation);
     }
 
-    @ApiOperation(value = "To get avaliable departments")
+    @Operation(summary = "View departments ", description = "To get available departments", tags = { "getDepartments" })
     @GetMapping(path = "/departments")
     public ResponseEntity<Iterable<EmployeeDepartment>> getDepartments() {
         return employeeDetailsService.getDepartments();
     }
 
-    @ApiOperation(value = "To get avaliable designations")
+    @Operation(summary = "View designations ", description = "To get available designations", tags = { "getDesignations" })
     @GetMapping(path = "/designations")
     public ResponseEntity<Iterable<EmployeeDesignation>> getDesignations() {
         return employeeDetailsService.getDesignations();
     }
 
-    @ApiOperation(value = "To get list of all employees can be assigned as manager")
+    @Operation(summary = "View employee to be assigned as manager ", description = "To get list of all employees can be assigned as manager", tags = { "getAssignableManagers" })
     @GetMapping(path = "/managers")
     public ResponseEntity<List<JSONObject>> getManagers() {
+
         return employeeDetailsService.getManagers();
     }
 
 
-    @ApiOperation(value = "assign managers to an employee")
+    @Operation(summary = "to assign a manager", description = "assign managers to an employee", tags = { "assignNewManager" })
     @PatchMapping(path="/assignManager")
     public ResponseEntity<String> assignManager(@RequestParam(value = "mid") int mid,@RequestParam(value = "eid") int eid){
         return employeeDetailsService.assignManagers(mid,eid);
     }
 
+    @PostMapping("/upload-image")
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file,@RequestAttribute("id") int id) throws Exception {
+        return  employeeDetailsService.uploadFile(file,id);
+    }
 
 }

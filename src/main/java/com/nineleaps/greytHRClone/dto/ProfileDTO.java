@@ -20,6 +20,6 @@ public class ProfileDTO {
     private int managerId;
     private String managerName;
     private String location;
-
+    private String imageName;
 
 }

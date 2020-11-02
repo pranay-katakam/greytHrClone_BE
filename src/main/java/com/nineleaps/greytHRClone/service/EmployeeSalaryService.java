@@ -4,6 +4,7 @@ import com.nineleaps.greytHRClone.dto.SalaryDTO;
 import com.nineleaps.greytHRClone.model.EmployeeSalary;
 import com.nineleaps.greytHRClone.repository.EmployeeSalaryRepository;
 import org.json.simple.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +24,7 @@ public class EmployeeSalaryService {
         System.out.println(employeeSalary);
         employeeSalaryRepository.save(employeeSalary);
         return ResponseEntity.status(HttpStatus.CREATED).body("Salary added successfully");
-
     }
-
 
     public ResponseEntity<List<SalaryDTO>> getSalaryDetails(int eid) {
 
@@ -63,10 +62,8 @@ public class EmployeeSalaryService {
             salaryDTO.setTotalDeduction(totalDeduction);
             salaryDTO.setNetPay((int)netPay);
 
-
             salaryDTOs.add(salaryDTO);
         }
         return ResponseEntity.status(HttpStatus.OK).body(salaryDTOs);
-
     }
 }
