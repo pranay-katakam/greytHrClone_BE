@@ -1,16 +1,16 @@
 package com.nineleaps.greytHRClone.controller;
 
-import com.nineleaps.greytHRClone.model.Feed;
+import com.nineleaps.greytHRClone.dto.EmployeeLeaveDTO;
+import com.nineleaps.greytHRClone.model.EmployeeLeave;
 import com.nineleaps.greytHRClone.model.Holidays;
-import com.nineleaps.greytHRClone.service.FeedService;
 import com.nineleaps.greytHRClone.service.LeaveServices;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
+
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @Tag(name = "employee leaves controller", description = "Controller class deals with leave data to manage attendances")
@@ -22,7 +22,8 @@ public class LeaveController {
 
 
     @PostMapping(path = "/holidays")
-    public ResponseEntity<String> addHolidays( @RequestBody Iterable<Holidays> holidays) {
+    public ResponseEntity<String> addHolidays(@RequestBody Iterable<Holidays> holidays) {
+
         return leaveServices.addHolidays(holidays);
     }
 
@@ -31,4 +32,13 @@ public class LeaveController {
         return leaveServices.getHolidays();
     }
 
+    @PostMapping("/leave")
+    public ResponseEntity<String> applyLeave(@RequestBody EmployeeLeave employeeleave){
+        return  leaveServices.applyLeave(employeeleave);
+    }
+
+    @GetMapping("/leaves")
+    public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(@RequestAttribute int id ){
+        return leaveServices.getLeaves( id);
+    }
 }
