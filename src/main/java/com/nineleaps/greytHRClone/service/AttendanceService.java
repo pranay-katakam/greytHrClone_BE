@@ -1,12 +1,15 @@
 package com.nineleaps.greytHRClone.service;
 
 import com.nineleaps.greytHRClone.model.DoorAddress;
+import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.model.Swipe;
 import com.nineleaps.greytHRClone.repository.DoorAddressRepository;
 import com.nineleaps.greytHRClone.repository.SwipesRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AttendanceService {
@@ -35,8 +38,11 @@ public class AttendanceService {
 
     }
 
-//    public ResponseEntity<Iterable<Swipe>> getSwipes() {
-//        return ResponseEntity.status(HttpStatus.OK).body(swipesRepository.findAll());
-//
-//    }
+    public ResponseEntity<List<Swipe>> getSwipes() {
+//        EmployeeData user=new EmployeeData();
+//        user.setEmpId(1);
+        int user=1;
+        return ResponseEntity.status(HttpStatus.OK).body(swipesRepository.findByUser(user));
+
+    }
 }

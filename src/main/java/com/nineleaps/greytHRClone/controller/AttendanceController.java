@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @Tag(name = "employee swipe controller", description = "Controller class deals with swipes made by employees")
 @RestController
@@ -32,7 +34,7 @@ public class AttendanceController {
 
 
     @GetMapping(path = "/swipes")
-    public ResponseEntity<Iterable<Swipe>> getSwipes() {
+    public ResponseEntity<List<Swipe>> getSwipes() {
         return attendanceService.getSwipes();
     }
 

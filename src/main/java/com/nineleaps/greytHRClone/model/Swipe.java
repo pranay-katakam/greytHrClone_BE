@@ -17,15 +17,15 @@ public class Swipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int swipeId;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "empId", referencedColumnName = "empId")
     private EmployeeData user;
 
     @Column(name = "created_date")
     private Date createdDate = new Date();
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name="door_add_id")
     private DoorAddress doorAddress;
 
