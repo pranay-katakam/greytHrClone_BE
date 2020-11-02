@@ -1,7 +1,6 @@
 package com.nineleaps.greytHRClone.model;
 
 import lombok.Data;
-import org.springframework.http.ResponseEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -18,7 +17,6 @@ public class Holidays {
     private int holidayId;
 
     @NotNull
-    @NotEmpty
     @Column(name = "holiday_date")
     private Date holidayDate;
 

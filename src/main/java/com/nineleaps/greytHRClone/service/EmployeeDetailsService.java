@@ -30,7 +30,6 @@ import static org.springframework.http.HttpStatus.OK;
 public class EmployeeDetailsService {
 
     private EmployeeDataRepository employeeDataRepository;
-
     private EmployeeDepartmentRepository employeeDepartmentRepository;
     private EmployeeDesignationRepository employeeDesignationRepository;
     private FirebaseService firebaseService;
@@ -40,22 +39,22 @@ public class EmployeeDetailsService {
         this.employeeDataRepository = employeeDataRepository;
         this.employeeDepartmentRepository = employeeDepartmentRepository;
         this.employeeDesignationRepository = employeeDesignationRepository;
-        this.firebaseService=firebaseService;
+        this.firebaseService = firebaseService;
     }
-
 
 
     public ResponseEntity<ProfileDTO> profile(int id) {
         try {
-            EmployeeData dbprofile = employeeDataRepository.findById(id).orElseThrow(() -> new BadRequestException("Invalid Id"));;
+            EmployeeData dbprofile = employeeDataRepository.findById(id).orElseThrow(() -> new BadRequestException("Invalid Id"));
+            ;
             int mangerId = dbprofile.getManagerId();
-            int empId =dbprofile.getEmpId();
+            int empId = dbprofile.getEmpId();
             ProfileDTO profileDTO = new ProfileDTO();
             profileDTO.setName(dbprofile.getName());
 
-            List<String> departmentList=new ArrayList<>();//initialising a new list
+            List<String> departmentList = new ArrayList<>();//initialising a new list
 
-            for(EmployeeDepartment empD:dbprofile.getDepartments()){
+            for (EmployeeDepartment empD : dbprofile.getDepartments()) {
                 departmentList.add(empD.getDepartment());
             }
             profileDTO.setDepartment(departmentList);
@@ -64,7 +63,7 @@ public class EmployeeDetailsService {
             profileDTO.setLocation(dbprofile.getLocation());
             profileDTO.setEid(empId);
             System.out.println(dbprofile.getImageName());
-            if(dbprofile.getImageName()!=null) {
+            if (dbprofile.getImageName() != null) {
                 profileDTO.setImageName(FIREBASE_URL_PREFIX + dbprofile.getImageName() + FIREBASE_URL_SUFFIX);
             }
             String managerName = "not Assigned";
@@ -74,8 +73,7 @@ public class EmployeeDetailsService {
             profileDTO.setManagerName(managerName);
             return ResponseEntity.status(OK).body(profileDTO);
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
     }
@@ -104,8 +102,8 @@ public class EmployeeDetailsService {
     }
 
 
-    public ResponseEntity<String> updateName(String name,int eid) {
-        employeeDataRepository.updateName(name,eid);
+    public ResponseEntity<String> updateName(String name, int eid) {
+        employeeDataRepository.updateName(name, eid);
         return ResponseEntity.status(HttpStatus.CREATED).body("Updated successfully");
     }
 
@@ -117,34 +115,32 @@ public class EmployeeDetailsService {
     }
 
 
-    public ResponseEntity<String> uploadFile(MultipartFile file,int id) throws Exception {
-        System.out.println("size "+IsImageSize1MB(file.getSize()));
-        System.out.println("format"+checkForImageFormat(file.getContentType()));
-        if(IsImageSize1MB(file.getSize())&&checkForImageFormat(file.getContentType())) {
+    public ResponseEntity<String> uploadFile(MultipartFile file, int id) throws Exception {
+        System.out.println("size " + IsImageSize1MB(file.getSize()));
+        System.out.println("format" + checkForImageFormat(file.getContentType()));
+        if (IsImageSize1MB(file.getSize()) && checkForImageFormat(file.getContentType())) {
             String ImageName = firebaseService.uploadFile(file);
             employeeDataRepository.saveImageById(ImageName, id);
             return ResponseEntity.status(CREATED).body("image uploaded successsfully");
-        }else {
+        } else {
             throw new UnsupportedMediaTypeException("please upload  image Inside 1 MB and of type .png/jpg/jpeg/.gif ");
         }
     }
 
     // confirms whether file is in image format only
-    private boolean checkForImageFormat(String FileName){
+    private boolean checkForImageFormat(String FileName) {
         Pattern p = Pattern.compile(IMG_REGEX);
         Matcher m = p.matcher(FileName);
         return m.matches();
     }
 
-    private boolean IsImageSize1MB(long fileSize){
-        if(fileSize<=1048576){
+    private boolean IsImageSize1MB(long fileSize) {
+        if (fileSize <= 1048576) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
-
-
 
 
 }

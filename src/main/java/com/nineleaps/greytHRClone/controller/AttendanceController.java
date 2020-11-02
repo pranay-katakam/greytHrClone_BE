@@ -1,5 +1,6 @@
 package com.nineleaps.greytHRClone.controller;
 
+import com.nineleaps.greytHRClone.dto.SwipesDTO;
 import com.nineleaps.greytHRClone.model.DoorAddress;
 import com.nineleaps.greytHRClone.model.Swipe;
 import com.nineleaps.greytHRClone.service.AttendanceService;
@@ -34,8 +35,8 @@ public class AttendanceController {
 
 
     @GetMapping(path = "/swipes")
-    public ResponseEntity<List<Swipe>> getSwipes() {
-        return attendanceService.getSwipes();
+    public ResponseEntity<List<SwipesDTO>> getSwipes(@RequestAttribute("id") int id) {
+        return attendanceService.getSwipes(id);
     }
 
 

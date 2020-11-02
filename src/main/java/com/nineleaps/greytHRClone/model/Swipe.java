@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 import java.util.Date;
 
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 
 @Data
@@ -17,7 +18,8 @@ public class Swipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int swipeId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+
+    @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "empId", referencedColumnName = "empId")
     private EmployeeData user;
 
@@ -25,7 +27,7 @@ public class Swipe {
     private Date createdDate = new Date();
 
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name="door_add_id")
     private DoorAddress doorAddress;
 
