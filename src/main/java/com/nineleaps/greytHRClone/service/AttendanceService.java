@@ -65,5 +65,8 @@ public class AttendanceService {
     }
 
 
+    public void markAttendence() {
+        System.out.println(" in mark attendence");
+    }
 }
 
