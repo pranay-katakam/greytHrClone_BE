@@ -18,12 +18,14 @@ public class Swipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int swipeId;
 
+
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "empId", referencedColumnName = "empId")
     private EmployeeData user;
 
     @Column(name = "created_date")
     private Date createdDate = new Date();
+
 
     @ManyToOne(fetch = EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name="door_add_id")

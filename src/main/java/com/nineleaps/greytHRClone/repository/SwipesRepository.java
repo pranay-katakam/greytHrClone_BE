@@ -9,6 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 
 
 public interface SwipesRepository extends JpaRepository<Swipe, Integer> {
+
     @Query("select u from Swipe u where u.user=?1")
     Iterable<Swipe> getSwipes(EmployeeData employeeData);
 }

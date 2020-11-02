@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ public class AttendanceService {
 
     }
 
+
     public ResponseEntity<List<SwipesDTO>> getSwipes(int id) {
 
         EmployeeData employeeData = new EmployeeData();
@@ -65,8 +67,9 @@ public class AttendanceService {
     }
 
 
-    public void markAttendence() {
+   public void markAttendence() {
         System.out.println(" in mark attendence");
     }
+
 }
 
