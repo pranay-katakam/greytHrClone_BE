@@ -4,6 +4,7 @@ import com.nineleaps.greytHRClone.dto.SwipesDTO;
 import com.nineleaps.greytHRClone.model.DoorAddress;
 import com.nineleaps.greytHRClone.model.Swipe;
 import com.nineleaps.greytHRClone.service.AttendanceService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,22 +19,26 @@ public class AttendanceController {
     @Autowired
     private AttendanceService attendanceService;
 
+    @Operation(summary = "Add new door-address ", description = "To add all the avaliable door-address in organization", tags = { "addDoorAddress" })
     @PostMapping(path = "/door-address")
     public ResponseEntity<String> addDoorAddress(@RequestBody Iterable<DoorAddress> doorAddresses) {
         return attendanceService.addDoorAddress(doorAddresses);
     }
 
+    @Operation(summary = "View all the door-address ", description = "To get all available door-address added in organization", tags = { "getDoorAddress" })
     @GetMapping(path = "/door-address")
     public ResponseEntity<Iterable<DoorAddress>> getDoorAddress() {
         return attendanceService.getDoorAddress();
     }
 
+    @Operation(summary = "record recent swipes", description = "To record the recent swipes done by employee", tags = { "addSwipe" })
     @PostMapping(path = "/swipe")
     public ResponseEntity<String> addSwipe(@RequestBody Swipe swipe) {
         return attendanceService.addSwipe(swipe);
     }
 
 
+    @Operation(summary = "View all the swipes record of a employee ", description = "To get swipes record of employee based on date", tags = { "getSwipes" })
     @GetMapping(path = "/swipes")
     public ResponseEntity<List<SwipesDTO>> getSwipes(@RequestAttribute("id") int id) {
         return attendanceService.getSwipes(id);
