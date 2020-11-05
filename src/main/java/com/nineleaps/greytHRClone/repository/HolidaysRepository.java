@@ -1,5 +1,6 @@
 package com.nineleaps.greytHRClone.repository;
 
+import com.nineleaps.greytHRClone.model.DoorAddress;
 import com.nineleaps.greytHRClone.model.Holidays;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,5 +14,6 @@ import java.util.List;
 public interface HolidaysRepository extends JpaRepository<Holidays, Integer> {
 
     @Query("select holidayDate from Holidays")
-    Iterable<Date> findAllByHolidayDate();
+    List<Date> findAllByHolidayDate();
+//    List<Holidays> getHolidays();
 }

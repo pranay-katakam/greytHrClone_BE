@@ -1,13 +1,11 @@
 package com.nineleaps.greytHRClone.service;
 
-import com.nineleaps.greytHRClone.dto.CommentDTO;
-import com.nineleaps.greytHRClone.dto.FeedDTO;
-import com.nineleaps.greytHRClone.dto.LikeDTO;
-import com.nineleaps.greytHRClone.dto.ReplyCommentDTO;
+import com.nineleaps.greytHRClone.dto.*;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.model.*;
 import com.nineleaps.greytHRClone.repository.*;
 import org.json.simple.JSONObject;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,12 +38,23 @@ public class FeedService {
     }
 
 
-    public ResponseEntity<String> addFeed(Feed feed) {
+    public ResponseEntity<String> addFeed(FeedRequestDTO feedRequestDTO) {
+        ModelMapper modelMapper = new ModelMapper();
+        Feed feed = modelMapper.map(feedRequestDTO, Feed.class);
         feedRepository.save(feed);
         return ResponseEntity.status(HttpStatus.CREATED).body("Feed saved successfully");
     }
 
-    public ResponseEntity<String> addComment(Comment comment) {
+    public ResponseEntity<String> addComment(CommentRequestDTO commentRequestDTO) {
+
+        EmployeeData employeeData = new EmployeeData();
+        employeeData.setEmpId(commentRequestDTO.getUserId());
+
+        Comment comment = new Comment();
+        comment.setUser(employeeData);
+        comment.setFcId(commentRequestDTO.getFeedId());
+        comment.setComment(commentRequestDTO.getComment());
+
         commentRepository.save(comment);
         return ResponseEntity.status(HttpStatus.CREATED).body("Comment saved successfully");
     }
@@ -120,7 +129,14 @@ public class FeedService {
         return ResponseEntity.status(HttpStatus.OK).body(feedDTOList);
     }
 
-    public ResponseEntity<String> addLike(Liked liked) {
+    public ResponseEntity<String> addLike(LikeRequestDTO likeRequestDTO) {
+
+        EmployeeData employeeData = new EmployeeData();
+        employeeData.setEmpId(likeRequestDTO.getUserId());
+
+        Liked liked = new Liked();
+        liked.setUser(employeeData);
+        liked.setFlId(likeRequestDTO.getFeedId());
 
         int existById = likeRepository.existLike(liked.getUser(), liked.getFlId());
         System.out.println(existById + " ID");
@@ -139,7 +155,16 @@ public class FeedService {
 
     }
 
-    public ResponseEntity<String> replyComment(ReplyComment replyComment) {
+    public ResponseEntity<String> replyComment(ReplyCommentRequestDTO replyCommentRequestDTO) {
+
+        EmployeeData employeeData = new EmployeeData();
+        employeeData.setEmpId(replyCommentRequestDTO.getUserId());
+
+        ReplyComment replyComment =new ReplyComment();
+        replyComment.setUser(employeeData);
+        replyComment.setCid(replyCommentRequestDTO.getCommentId());
+        replyComment.setReply(replyCommentRequestDTO.getReply());
+
         replyCommentRepository.save(replyComment);
         return ResponseEntity.status(HttpStatus.CREATED).body("reply for comment successful");
 
