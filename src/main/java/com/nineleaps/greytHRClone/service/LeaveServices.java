@@ -2,6 +2,7 @@ package com.nineleaps.greytHRClone.service;
 
 import com.nineleaps.greytHRClone.dto.DoorAddressDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeLeaveDTO;
+
 import com.nineleaps.greytHRClone.dto.HolidayDTO;
 import com.nineleaps.greytHRClone.dto.SwipesDTO;
 import com.nineleaps.greytHRClone.model.*;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+
 import java.util.List;
 
 @Service
@@ -49,9 +52,19 @@ public class LeaveServices {
         return ResponseEntity.status(HttpStatus.OK).body(holidaysRepository.findAll());
     }
 
-    public ResponseEntity<String> applyLeave(EmployeeLeave employeeleave) {
-        employeeleave.setLeaveStatus(LeaveStatus.PENDING);
-        employeeLeaveRepository.save(employeeleave);
+    public ResponseEntity<String> applyLeave(EmployeeLeaveRequestDTO employeeLeaveRequestDTO) {
+        EmployeeData employeeData = new EmployeeData();
+        employeeData.setEmpId(employeeLeaveRequestDTO.getUserId());
+
+        EmployeeLeave employeeLeaves = new EmployeeLeave();
+        employeeLeaves.setUser(employeeData);
+        employeeLeaves.setLeavetype(employeeLeaveRequestDTO.getLeavetype());
+        employeeLeaves.setReason(employeeLeaveRequestDTO.getReason());
+        employeeLeaves.setFromDate(employeeLeaveRequestDTO.getFromDate());
+        employeeLeaves.setToDate(employeeLeaveRequestDTO.getToDate());
+        employeeLeaves.setLeaveStatus(LeaveStatus.PENDING);
+
+        employeeLeaveRepository.save(employeeLeaves);
         return ResponseEntity.status(HttpStatus.CREATED).body("Leave applied Successfully");
     }
 

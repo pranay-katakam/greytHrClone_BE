@@ -20,8 +20,9 @@ public class OpenApiConfig {
                         .description("Application for displaying employee details and tracking attendance info")
                         .version("0.0.1")
                         .termsOfService("http://swagger.io/terms/")
-                        .contact(new Contact().name("Shinaz |"+"Hitesh "+" |Anshu").email("greythrclone1@gmail.com"))
+                        .contact(new Contact().name(""+"Shinaz |"+" Hithesh "+" | Anshu").email("greythrclone1@gmail.com"))
                         .license(new License().name("Apache 2.0").url("http://springdoc.org"))
+
 
                 );
     }
