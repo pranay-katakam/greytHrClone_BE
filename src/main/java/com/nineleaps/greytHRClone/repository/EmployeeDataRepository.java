@@ -14,11 +14,8 @@ import java.util.List;
 @Repository
 public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Integer> {
 
-    EmployeeData findByName(String name);
-    //    @Query(value = " select name,designation,department,location,manager_id from employee_data where emp_id=?1 ", nativeQuery = true)
-//    JSONObject profile(int id);
 
-    @Query(value = "Select count(name) from employee_data where email=?1", nativeQuery = true)
+    @Query("Select count(e) from EmployeeData e where e.email=?1")
     int exist(String email);
 
     @Query(value = "select emp_id,email,password from employee_data where email=?1", nativeQuery = true)
@@ -56,4 +53,6 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     @Query("update EmployeeData set imageName=?1 where empId=?2")
     void saveImageById(String ImageName,int id);
 
+    @Query("select empId from EmployeeData")
+    List<Integer> findAlluserId();
 }

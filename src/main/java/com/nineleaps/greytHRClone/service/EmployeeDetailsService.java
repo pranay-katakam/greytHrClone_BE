@@ -60,7 +60,7 @@ public class EmployeeDetailsService {
             profileDTO.setDepartment(departmentList);
             profileDTO.setDesignation(dbprofile.getDesignation().getDesignation());
             profileDTO.setManagerId(mangerId);
-            profileDTO.setLocation(dbprofile.getLocation());
+            profileDTO.setLocation(String.valueOf(dbprofile.getLocation()));
             profileDTO.setEid(empId);
             System.out.println(dbprofile.getImageName());
             if (dbprofile.getImageName() != null) {
@@ -88,12 +88,12 @@ public class EmployeeDetailsService {
         return ResponseEntity.status(HttpStatus.CREATED).body("designation added successfully");
     }
 
-    public ResponseEntity<Iterable<EmployeeDepartment>> getDepartments() {
-        return ResponseEntity.status(HttpStatus.OK).body(employeeDepartmentRepository.findAll());
+    public ResponseEntity<List<EmployeeDepartment>> getDepartments() {
+        return ResponseEntity.status(HttpStatus.OK).body(employeeDepartmentRepository.getDepartments());
     }
 
-    public ResponseEntity<Iterable<EmployeeDesignation>> getDesignations() {
-        return ResponseEntity.status(HttpStatus.OK).body(employeeDesignationRepository.findAll());
+    public ResponseEntity<List<EmployeeDesignation>> getDesignations() {
+        return ResponseEntity.status(HttpStatus.OK).body(employeeDesignationRepository.getDesignations());
 
     }
 
