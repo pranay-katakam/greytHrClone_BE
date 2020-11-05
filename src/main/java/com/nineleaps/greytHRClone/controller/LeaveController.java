@@ -1,6 +1,9 @@
 package com.nineleaps.greytHRClone.controller;
 
+import com.nineleaps.greytHRClone.dto.DoorAddressDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeLeaveDTO;
+import com.nineleaps.greytHRClone.dto.HolidayDTO;
+import com.nineleaps.greytHRClone.model.DoorAddress;
 import com.nineleaps.greytHRClone.model.EmployeeLeave;
 import com.nineleaps.greytHRClone.model.Holidays;
 import com.nineleaps.greytHRClone.service.LeaveServices;
@@ -20,15 +23,15 @@ public class LeaveController {
     @Autowired
     private LeaveServices leaveServices;
 
-
     @PostMapping(path = "/holidays")
-    public ResponseEntity<String> addHolidays(@RequestBody Iterable<Holidays> holidays) {
+    public ResponseEntity<String> addHolidays(@RequestBody List<HolidayDTO> holidays) {
 
         return leaveServices.addHolidays(holidays);
     }
 
     @GetMapping(path = "/holidays")
-    public ResponseEntity<Iterable<Holidays>> getHolidays() {
+    public ResponseEntity<List<Holidays>> getHolidays() {
+
         return leaveServices.getHolidays();
     }
 

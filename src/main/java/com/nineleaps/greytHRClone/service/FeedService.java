@@ -78,7 +78,7 @@ public class FeedService {
                     ImageType = "otherImage";
             }
             feedDTO.setImageUrl(FIREBASE_URL_PREFIX + ImageType + "s%2F" + ImageType + imageNameSuffix + ".png" + FIREBASE_URL_SUFFIX);
-            feedDTO.setDate(feedObj.getCreatedDate());
+            feedDTO.setCreatedDate(feedObj.getCreatedDate());
             feedDTO.setNumberOfYears(feedObj.getNoOfYears());
             feedDTO.setEventType(eventType);
             feedDTO.setFeedType(feedObj.getFeedType());
