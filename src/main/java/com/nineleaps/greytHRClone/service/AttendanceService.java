@@ -1,6 +1,8 @@
 package com.nineleaps.greytHRClone.service;
 
+import com.nineleaps.greytHRClone.dto.SwipesDTO;
 import com.nineleaps.greytHRClone.model.DoorAddress;
+import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.model.Swipe;
 import com.nineleaps.greytHRClone.repository.DoorAddressRepository;
 import com.nineleaps.greytHRClone.repository.SwipesRepository;
@@ -8,9 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class AttendanceService {
-
 
     private DoorAddressRepository doorAddressRepository;
     private SwipesRepository swipesRepository;
@@ -35,8 +40,28 @@ public class AttendanceService {
 
     }
 
-//    public ResponseEntity<Iterable<Swipe>> getSwipes() {
-//        return ResponseEntity.status(HttpStatus.OK).body(swipesRepository.findAll());
-//
-//    }
+    public ResponseEntity<List<SwipesDTO>> getSwipes(int id) {
+
+        EmployeeData employeeData = new EmployeeData();
+        employeeData.setEmpId(id);
+        Iterable<Swipe> swipes = swipesRepository.getSwipes(employeeData);
+
+        List<SwipesDTO> swipesDTOs = new ArrayList<>();
+
+        for (Swipe swipe : swipes) {
+            SwipesDTO swipesDTO = new SwipesDTO();
+
+            swipesDTO.setSwipeId(swipe.getSwipeId());
+            swipesDTO.setEmployeeId(swipe.getUser().getEmpId());
+            swipesDTO.setCreatedDate(swipe.getCreatedDate());
+            swipesDTO.setEmployeeName(swipe.getUser().getName());
+            swipesDTO.setDoorAddress(swipe.getDoorAddress().getDoorName());
+
+            swipesDTOs.add(swipesDTO);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(swipesDTOs);
+    }
+
 }
+

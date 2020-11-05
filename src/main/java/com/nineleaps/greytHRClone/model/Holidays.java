@@ -1,7 +1,6 @@
 package com.nineleaps.greytHRClone.model;
 
 import lombok.Data;
-import org.springframework.http.ResponseEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;

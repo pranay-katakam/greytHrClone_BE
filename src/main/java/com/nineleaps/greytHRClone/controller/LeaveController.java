@@ -22,7 +22,7 @@ public class LeaveController {
 
 
     @PostMapping(path = "/holidays")
-    public ResponseEntity<String> addHolidays( @RequestBody  Iterable<Holidays> holidays) {
+    public ResponseEntity<String> addHolidays( @RequestBody Iterable<Holidays> holidays) {
         return leaveServices.addHolidays(holidays);
     }
 
