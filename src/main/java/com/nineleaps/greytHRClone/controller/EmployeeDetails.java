@@ -6,12 +6,14 @@ import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
+import javax.ws.rs.Produces;
 import java.util.List;
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
@@ -37,19 +39,21 @@ public class EmployeeDetails {
 
     @Operation(summary = "Add new designation ", description = "To add required designation", tags = {"addDesignation"})
     @PostMapping(path = "/designation")
-    public ResponseEntity<String> addDesignation(@Valid @RequestBody EmployeeDesignation employeeDesignation) {
+
+    public ResponseEntity<String> addDesignation(@Valid @RequestBody EmployeeDesignation employeeDesignation){
         return employeeDetailsService.addDesignation(employeeDesignation);
     }
 
     @Operation(summary = "View departments ", description = "To get available departments", tags = {"getDepartments"})
     @GetMapping(path = "/departments")
-    public ResponseEntity<Iterable<EmployeeDepartment>> getDepartments() {
+    @Produces({"application/json"})
+    public ResponseEntity<List<EmployeeDepartment>> getDepartments() {
         return employeeDetailsService.getDepartments();
     }
 
     @Operation(summary = "View designations ", description = "To get available designations", tags = {"getDesignations"})
     @GetMapping(path = "/designations")
-    public ResponseEntity<Iterable<EmployeeDesignation>> getDesignations() {
+    public ResponseEntity<List<EmployeeDesignation>> getDesignations() {
         return employeeDetailsService.getDesignations();
     }
 

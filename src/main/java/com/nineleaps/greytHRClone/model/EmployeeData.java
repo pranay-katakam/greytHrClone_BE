@@ -35,19 +35,25 @@ public class EmployeeData {
 //    @JsonFormat(pattern = "dd-MM-yyyy")
     private Date dob;
 
-    @Column(name = "location")
-    private String location;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinColumn(name="location_id")
+    private CompanyLocation location;
+
+    @Enumerated
+    private Gender gender;
+
+    @Column(name = "contact_number")
+    private long contactNumber;
 
     @Column(name = "created_date")
     private Timestamp createdDate = new Timestamp(System.currentTimeMillis());
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
+
+    @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     @JoinColumn(name = "dept_ids")
     private Set<EmployeeDepartment> departments = new HashSet<>();
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name="desig_id")
     private EmployeeDesignation designation;
 

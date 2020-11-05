@@ -2,6 +2,7 @@ package com.nineleaps.greytHRClone.controller;
 
 
 import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
+import com.nineleaps.greytHRClone.dto.EmployeeRegistrationDTO;
 import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,8 +26,8 @@ public class EmployeeAuthentication {
 
     @Operation(summary = "employee signup registration", description = "To add all the required details of employee", tags = {"Signup"})
     @PostMapping(path = "/employee")
-    public ResponseEntity<String> Signup(@RequestBody EmployeeData employeeData) {
-        return authenticationService.Signup(employeeData);
+    public ResponseEntity<String> Signup(@RequestBody EmployeeRegistrationDTO employeeRegistrationDTO) {
+        return authenticationService.Signup(employeeRegistrationDTO);
     }
 
     @Operation(summary = "user login", description = "To provide access to the user based on credentials", tags = {"Login"})

@@ -1,5 +1,6 @@
 package com.nineleaps.greytHRClone.controller;
 
+import com.nineleaps.greytHRClone.dto.EmployeeSalaryRequestDTO;
 import com.nineleaps.greytHRClone.dto.SalaryDTO;
 import com.nineleaps.greytHRClone.model.EmployeeSalary;
 import com.nineleaps.greytHRClone.service.EmployeeSalaryService;
@@ -23,8 +24,8 @@ public class EmployeeSalaryController {
 
     @Operation(summary = "to add total salary for a employee ", description = "To add total salary for each employee", tags = {"addSalary"})
     @PostMapping(path = "/addSalary")
-    public ResponseEntity<String> addSalary(@RequestBody EmployeeSalary employeeSalary) {
-        return employeeSalaryService.addSalary(employeeSalary);
+    public ResponseEntity<String> addSalary(@RequestBody EmployeeSalaryRequestDTO employeeSalaryRequestDTO) {
+        return employeeSalaryService.addSalary(employeeSalaryRequestDTO);
     }
 
     @Operation(summary = "To get employee salary details", description = "To get employee salary details based on requested id", tags = {"getSalaryDetails"})

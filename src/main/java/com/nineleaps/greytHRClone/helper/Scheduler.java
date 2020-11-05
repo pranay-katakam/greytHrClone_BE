@@ -7,6 +7,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
+
 
 @Component
 public class Scheduler {
@@ -30,9 +32,8 @@ public class Scheduler {
 
 
     @Async
-    @Scheduled(cron = "0 56 17 * * 1-5")//sec,min,hour,dayDate,monthDate,dayWeek/yearday of week (0 - 6) (0 is Sunday, or use names)
-    public void markAttendence() {
-
+    @Scheduled(cron = "0 39 10 * * 1-5")//sec,min,hour,dayDate,monthDate,dayWeek/yearday of week (0 - 6) (0 is Sunday, or use names)
+    public void markAttendence() throws ParseException {
         attendanceService.markAttendence();
     }
 

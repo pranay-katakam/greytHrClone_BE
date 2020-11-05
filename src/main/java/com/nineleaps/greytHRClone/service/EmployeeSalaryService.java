@@ -1,10 +1,13 @@
 package com.nineleaps.greytHRClone.service;
 
+import com.nineleaps.greytHRClone.dto.EmployeeSalaryRequestDTO;
 import com.nineleaps.greytHRClone.dto.SalaryDTO;
+import com.nineleaps.greytHRClone.model.EmployeeLeave;
 import com.nineleaps.greytHRClone.model.EmployeeSalary;
 import com.nineleaps.greytHRClone.repository.EmployeeSalaryRepository;
 import org.json.simple.JSONObject;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +23,16 @@ public class EmployeeSalaryService {
     @Autowired
     EmployeeSalaryRepository employeeSalaryRepository;
 
-    public ResponseEntity<String> addSalary(EmployeeSalary employeeSalary) {
-        System.out.println(employeeSalary);
+    public ResponseEntity<String> addSalary(EmployeeSalaryRequestDTO employeeSalaryRequestDTO) {
+
+        ModelMapper modelMapper = new ModelMapper();
+        EmployeeSalary employeeSalary = modelMapper.map(employeeSalaryRequestDTO, EmployeeSalary.class);
+
+
+//        EmployeeSalary employeeSalary = new EmployeeSalary();
+//        employeeSalary.setEid(employeeSalaryRequestDTO.getEid());
+//        employeeSalary.setTotalSalary(employeeSalaryRequestDTO.getTotalSalary());
+
         employeeSalaryRepository.save(employeeSalary);
         return ResponseEntity.status(HttpStatus.CREATED).body("Salary added successfully");
     }

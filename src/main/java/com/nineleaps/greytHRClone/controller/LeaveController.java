@@ -1,6 +1,7 @@
 package com.nineleaps.greytHRClone.controller;
 
 import com.nineleaps.greytHRClone.dto.EmployeeLeaveDTO;
+import com.nineleaps.greytHRClone.dto.EmployeeLeaveRequestDTO;
 import com.nineleaps.greytHRClone.model.EmployeeLeave;
 import com.nineleaps.greytHRClone.model.Holidays;
 import com.nineleaps.greytHRClone.service.LeaveServices;
@@ -24,6 +25,7 @@ public class LeaveController {
     @Operation(summary = "Add new public holidays", description = "To add new public holidays based on date", tags = { "addHolidays" })
     @PostMapping(path = "/holidays")
     public ResponseEntity<String> addHolidays(@RequestBody Iterable<Holidays> holidays) {
+
         return leaveServices.addHolidays(holidays);
     }
 
@@ -33,10 +35,11 @@ public class LeaveController {
         return leaveServices.getHolidays();
     }
 
+
     @Operation(summary = "apply for a leave", description = "apply leave for a required date", tags = { "applyLeave" })
     @PostMapping("/leave")
-    public ResponseEntity<String> applyLeave(@RequestBody EmployeeLeave employeeleave){
-        return  leaveServices.applyLeave(employeeleave);
+    public ResponseEntity<String> applyLeave(@RequestBody EmployeeLeaveRequestDTO employeeLeaveRequestDTO){
+        return  leaveServices.applyLeave(employeeLeaveRequestDTO);
     }
 
     @Operation(summary = "View all leaves taken", description = "To get list of all leaves taken", tags = { "getLeaves" })
