@@ -1,7 +1,9 @@
 package com.nineleaps.greytHRClone.controller;
 
+import com.nineleaps.greytHRClone.dto.CompanyLocationDTO;
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.helper.FirebaseService;
+import com.nineleaps.greytHRClone.model.CompanyLocation;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
@@ -77,6 +79,12 @@ public class EmployeeDetails {
     @PostMapping("/upload-image")
     public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file,@RequestAttribute("id") int id) throws Exception {
         return  employeeDetailsService.uploadFile(file,id);
+    }
+
+
+    @PostMapping("/company-location")
+    public ResponseEntity<String> addCompanyLocation(@RequestBody CompanyLocationDTO companyLocationDTO){
+        return employeeDetailsService.addCompanyLocation(companyLocationDTO);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.nineleaps.greytHRClone.service;
 
+import com.nineleaps.greytHRClone.controller.EmployeeDetails;
 import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeRegistrationDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
@@ -22,9 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -55,10 +54,13 @@ public class AuthenticationService {
             location.setLocationId(employeeRegistrationDTO.getLocationId());//changing employeeRegistrationDTO.getLocationId() to type CompanyLocation
             EmployeeDesignation designation=new EmployeeDesignation();
             designation.setDesId(employeeRegistrationDTO.getDesignationId());//changing employeeRegistrationDTO getDesignationId to type EmployeeDesignation
-            ModelMapper modelMapper = new ModelMapper();
-            System.out.println(employeeRegistrationDTO.getDepartmentId());
-            List<EmployeeDepartment> departments = Arrays.asList( modelMapper.map(employeeRegistrationDTO.getDepartmentId(), EmployeeDepartment[].class));//converting list of EmployeeDepartmentDepartmentDTO.DepartmentId to list of EmployeeDepartment
-            System.out.println("departments "+departments);
+            Set<EmployeeDepartment> employeeDepartments = new HashSet<>();
+            for (Integer departmentId:employeeRegistrationDTO.getDepartmentId()){
+                EmployeeDepartment employeeDepartment=new EmployeeDepartment();
+                employeeDepartment.setDepId(departmentId);
+                employeeDepartments.add(employeeDepartment);
+            }
+             System.out.println("departments "+employeeDepartments);
 
 
             EmployeeData employeeData=new EmployeeData();
@@ -70,7 +72,7 @@ public class AuthenticationService {
             employeeData.setGender(employeeRegistrationDTO.getGender());
             employeeData.setContactNumber(employeeRegistrationDTO.getContactNumber());
             employeeData.setManagerId(employeeRegistrationDTO.getManagerId());
-            employeeData.setDepartments((Set<EmployeeDepartment>) departments);
+            employeeData.setDepartments( employeeDepartments);
             employeeData.setDesignation(designation);
 
 
