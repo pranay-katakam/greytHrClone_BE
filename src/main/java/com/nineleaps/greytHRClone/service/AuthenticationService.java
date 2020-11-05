@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.service;
 import com.nineleaps.greytHRClone.controller.EmployeeDetails;
 import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeRegistrationDTO;
+import com.nineleaps.greytHRClone.dto.LoginDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.helper.MailContentBuilder;
 import com.nineleaps.greytHRClone.model.*;
@@ -78,13 +79,13 @@ public class AuthenticationService {
         return responseEntity;
     }
 
-    public ResponseEntity<ApiResponseDTO> Login(EmployeeData userCredentials, HttpServletResponse response) {
+    public ResponseEntity<ApiResponseDTO> Login(LoginDTO loginDTO, HttpServletResponse response) {
         try {
-            int existByEmail = employeeDataRepository.exist(userCredentials.getEmail());
+            int existByEmail = employeeDataRepository.exist(loginDTO.getEmail());
             if (existByEmail != 0) {
 
-                String email = userCredentials.getEmail();
-                String password = userCredentials.getPassword();
+                String email = loginDTO.getEmail();
+                String password = loginDTO.getPassword();
                 JSONObject dbuser = employeeDataRepository.UserByEmail(email);
 
                 String dbpassword = (String) dbuser.get("password");
@@ -134,10 +135,6 @@ public class AuthenticationService {
             return ResponseEntity.status(HttpServletResponse.SC_REQUEST_TIMEOUT).body("Session Expired");
 
         }
-//        Cookie cookie = new Cookie("userID", null);
-//        cookie.setMaxAge(0);
-//        response.addCookie(cookie);
-//        return ResponseEntity.status(OK).body("Successfully logged out");
     }
 }
 

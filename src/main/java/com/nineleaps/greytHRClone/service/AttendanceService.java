@@ -39,10 +39,7 @@ public class AttendanceService {
     }
 
     public ResponseEntity<List<DoorAddress>> getDoorAddress() {
-//        Iterable<DoorAddress> doorAddressesIterable=doorAddressRepository.findAll();
-//        List<DoorAddress> doorAddresses=StreamSupport.stream(doorAddressesIterable.spliterator(), false)
-//                .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.OK).body(doorAddressRepository.getDoorAddress());
+        return ResponseEntity.status(HttpStatus.OK).body(doorAddressRepository.findAll());
     }
 
     public ResponseEntity<String> addSwipe(SwipeDTO swipeDTO) {
@@ -70,7 +67,6 @@ public class AttendanceService {
 
         for (Swipe swipe : swipes) {
             SwipesDTO swipesDTO = new SwipesDTO();
-
             swipesDTO.setSwipeId(swipe.getSwipeId());
             swipesDTO.setEmployeeId(swipe.getUser().getEmpId());
             swipesDTO.setCreatedDate(swipe.getCreatedDate());

@@ -27,12 +27,6 @@ public class EmployeeSalaryService {
 
         ModelMapper modelMapper = new ModelMapper();
         EmployeeSalary employeeSalary = modelMapper.map(employeeSalaryRequestDTO, EmployeeSalary.class);
-
-
-//        EmployeeSalary employeeSalary = new EmployeeSalary();
-//        employeeSalary.setEid(employeeSalaryRequestDTO.getEid());
-//        employeeSalary.setTotalSalary(employeeSalaryRequestDTO.getTotalSalary());
-
         employeeSalaryRepository.save(employeeSalary);
         return ResponseEntity.status(HttpStatus.CREATED).body("Salary added successfully");
     }

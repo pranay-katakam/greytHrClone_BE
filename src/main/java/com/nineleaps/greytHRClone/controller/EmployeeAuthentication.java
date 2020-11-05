@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.controller;
 
 import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeRegistrationDTO;
+import com.nineleaps.greytHRClone.dto.LoginDTO;
 import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,8 +33,8 @@ public class EmployeeAuthentication {
 
     @Operation(summary = "user login", description = "To provide access to the user based on credentials", tags = {"Login"})
     @PostMapping(path = "/login")
-    public ResponseEntity<ApiResponseDTO> Login(@RequestBody EmployeeData userCredentials, HttpServletResponse response) {
-        return authenticationService.Login(userCredentials,response);
+    public ResponseEntity<ApiResponseDTO> Login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) {
+        return authenticationService.Login(loginDTO,response);
     }
 
     @Operation(summary = "user logout", description = "signout from the application", tags = {"Logout"})
