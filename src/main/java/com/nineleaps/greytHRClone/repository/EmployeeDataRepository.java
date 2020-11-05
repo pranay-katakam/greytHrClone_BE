@@ -45,8 +45,6 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     @Query(value = "UPDATE employee_data  SET name=?1 where emp_id =?2", nativeQuery = true)
     void updateName(String name, int eid);
 
-    @Query("select name from EmployeeData where empId=?1")
-    String getNameByID(int eid);
 
     @Transactional
     @Modifying

@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.service;
 import com.nineleaps.greytHRClone.controller.EmployeeDetails;
 import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeRegistrationDTO;
+import com.nineleaps.greytHRClone.dto.LoginDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.helper.MailContentBuilder;
 import com.nineleaps.greytHRClone.model.*;
@@ -42,7 +43,6 @@ public class AuthenticationService {
 
     public ResponseEntity<String> Signup(EmployeeRegistrationDTO employeeRegistrationDTO) {
         ResponseEntity<String> responseEntity;
-
         int existByEmail = employeeDataRepository.exist(employeeRegistrationDTO.getEmail());
 
         if (existByEmail != 0) {
@@ -60,8 +60,6 @@ public class AuthenticationService {
                 employeeDepartment.setDepId(departmentId);
                 employeeDepartments.add(employeeDepartment);
             }
-             System.out.println("departments "+employeeDepartments);
-
 
             EmployeeData employeeData=new EmployeeData();
             employeeData.setName(name);
@@ -74,10 +72,6 @@ public class AuthenticationService {
             employeeData.setManagerId(employeeRegistrationDTO.getManagerId());
             employeeData.setDepartments( employeeDepartments);
             employeeData.setDesignation(designation);
-
-
-
-
             employeeDataRepository.save(employeeData);
            // mailContentBuilder.sendWelcomeMail();
             responseEntity = ResponseEntity.status(OK).body("Signed up successfully !!");
@@ -85,13 +79,13 @@ public class AuthenticationService {
         return responseEntity;
     }
 
-    public ResponseEntity<ApiResponseDTO> Login(EmployeeData userCredentials, HttpServletResponse response) {
+    public ResponseEntity<ApiResponseDTO> Login(LoginDTO loginDTO, HttpServletResponse response) {
         try {
-            int existByEmail = employeeDataRepository.exist(userCredentials.getEmail());
+            int existByEmail = employeeDataRepository.exist(loginDTO.getEmail());
             if (existByEmail != 0) {
 
-                String email = userCredentials.getEmail();
-                String password = userCredentials.getPassword();
+                String email = loginDTO.getEmail();
+                String password = loginDTO.getPassword();
                 JSONObject dbuser = employeeDataRepository.UserByEmail(email);
 
                 String dbpassword = (String) dbuser.get("password");
@@ -141,10 +135,6 @@ public class AuthenticationService {
             return ResponseEntity.status(HttpServletResponse.SC_REQUEST_TIMEOUT).body("Session Expired");
 
         }
-//        Cookie cookie = new Cookie("userID", null);
-//        cookie.setMaxAge(0);
-//        response.addCookie(cookie);
-//        return ResponseEntity.status(OK).body("Successfully logged out");
     }
 }
 

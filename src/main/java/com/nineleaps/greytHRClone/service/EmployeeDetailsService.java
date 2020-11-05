@@ -1,14 +1,13 @@
 package com.nineleaps.greytHRClone.service;
 
 import com.nineleaps.greytHRClone.dto.CompanyLocationDTO;
+import com.nineleaps.greytHRClone.dto.EmployeeDepartmentDTO;
+import com.nineleaps.greytHRClone.dto.EmployeeDesignationDTO;
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.exception.UnsupportedMediaTypeException;
 import com.nineleaps.greytHRClone.helper.FirebaseService;
-import com.nineleaps.greytHRClone.model.CompanyLocation;
-import com.nineleaps.greytHRClone.model.EmployeeData;
-import com.nineleaps.greytHRClone.model.EmployeeDepartment;
-import com.nineleaps.greytHRClone.model.EmployeeDesignation;
+import com.nineleaps.greytHRClone.model.*;
 import com.nineleaps.greytHRClone.repository.CompanyLocationRepository;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 import com.nineleaps.greytHRClone.repository.EmployeeDepartmentRepository;
@@ -39,6 +38,7 @@ public class EmployeeDetailsService {
     private FirebaseService firebaseService;
     private CompanyLocationRepository companyLocationRepository;
 
+
     @Autowired
     public EmployeeDetailsService(EmployeeDataRepository employeeDataRepository, EmployeeDepartmentRepository employeeDepartmentRepository, EmployeeDesignationRepository employeeDesignationRepository, FirebaseService firebaseService,CompanyLocationRepository companyLocationRepository) {
         this.employeeDataRepository = employeeDataRepository;
@@ -49,10 +49,12 @@ public class EmployeeDetailsService {
     }
 
 
+
+
+
     public ResponseEntity<ProfileDTO> profile(int id) {
         try {
             EmployeeData dbprofile = employeeDataRepository.findById(id).orElseThrow(() -> new BadRequestException("Invalid Id"));
-            ;
             int mangerId = dbprofile.getManagerId();
             int empId = dbprofile.getEmpId();
             ProfileDTO profileDTO = new ProfileDTO();
@@ -66,9 +68,8 @@ public class EmployeeDetailsService {
             profileDTO.setDepartment(departmentList);
             profileDTO.setDesignation(dbprofile.getDesignation().getDesignation());
             profileDTO.setManagerId(mangerId);
-            profileDTO.setLocation(String.valueOf(dbprofile.getLocation()));
+            profileDTO.setLocation(dbprofile.getLocation().getLocationName());
             profileDTO.setEid(empId);
-            System.out.println(dbprofile.getImageName());
             if (dbprofile.getImageName() != null) {
                 profileDTO.setImageName(FIREBASE_URL_PREFIX + dbprofile.getImageName() + FIREBASE_URL_SUFFIX);
             }
@@ -84,12 +85,16 @@ public class EmployeeDetailsService {
         }
     }
 
-    public ResponseEntity<String> addDepartment(EmployeeDepartment employeeDepartment) {
+    public ResponseEntity<String> addDepartment(EmployeeDepartmentDTO employeeDepartmentDTO) {
+        ModelMapper modelMapper=new ModelMapper();
+        EmployeeDepartment employeeDepartment = modelMapper.map(employeeDepartmentDTO, EmployeeDepartment.class);
         employeeDepartmentRepository.save(employeeDepartment);
         return ResponseEntity.status(HttpStatus.CREATED).body("department added successfully");
     }
 
-    public ResponseEntity<String> addDesignation(EmployeeDesignation employeeDesignation) {
+    public ResponseEntity<String> addDesignation(EmployeeDesignationDTO employeeDesignationDTO) {
+        ModelMapper modelMapper=new ModelMapper();
+        EmployeeDesignation employeeDesignation=modelMapper.map(employeeDesignationDTO,EmployeeDesignation.class);
         employeeDesignationRepository.save(employeeDesignation);
         return ResponseEntity.status(HttpStatus.CREATED).body("designation added successfully");
     }

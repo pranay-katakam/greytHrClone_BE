@@ -1,6 +1,8 @@
 package com.nineleaps.greytHRClone.controller;
 
 import com.nineleaps.greytHRClone.dto.CompanyLocationDTO;
+import com.nineleaps.greytHRClone.dto.EmployeeDepartmentDTO;
+import com.nineleaps.greytHRClone.dto.EmployeeDesignationDTO;
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 
 import com.nineleaps.greytHRClone.helper.FirebaseService;
@@ -37,15 +39,14 @@ public class EmployeeDetails {
 
     @Operation(summary = "Add new department ", description = "To add required departments", tags = {"addDepartment"})
     @PostMapping(path = "/department")
-    public ResponseEntity<String> addDepartment(@RequestBody EmployeeDepartment employeeDepartment) {
-        return employeeDetailsService.addDepartment(employeeDepartment);
+    public ResponseEntity<String> addDepartment(@RequestBody EmployeeDepartmentDTO employeeDepartmentDTO) {
+        return employeeDetailsService.addDepartment(employeeDepartmentDTO);
     }
 
     @Operation(summary = "Add new designation ", description = "To add required designation", tags = {"addDesignation"})
     @PostMapping(path = "/designation")
-
-    public ResponseEntity<String> addDesignation(@Valid @RequestBody EmployeeDesignation employeeDesignation){
-        return employeeDetailsService.addDesignation(employeeDesignation);
+    public ResponseEntity<String> addDesignation(@RequestBody EmployeeDesignationDTO employeeDesignationDTO){
+        return employeeDetailsService.addDesignation(employeeDesignationDTO);
     }
 
     @Operation(summary = "View departments ", description = "To get available departments", tags = {"getDepartments"})
