@@ -42,7 +42,6 @@ public class AuthenticationService {
 
     public ResponseEntity<String> Signup(EmployeeRegistrationDTO employeeRegistrationDTO) {
         ResponseEntity<String> responseEntity;
-
         int existByEmail = employeeDataRepository.exist(employeeRegistrationDTO.getEmail());
 
         if (existByEmail != 0) {
@@ -60,8 +59,6 @@ public class AuthenticationService {
                 employeeDepartment.setDepId(departmentId);
                 employeeDepartments.add(employeeDepartment);
             }
-             System.out.println("departments "+employeeDepartments);
-
 
             EmployeeData employeeData=new EmployeeData();
             employeeData.setName(name);
@@ -74,10 +71,6 @@ public class AuthenticationService {
             employeeData.setManagerId(employeeRegistrationDTO.getManagerId());
             employeeData.setDepartments( employeeDepartments);
             employeeData.setDesignation(designation);
-
-
-
-
             employeeDataRepository.save(employeeData);
            // mailContentBuilder.sendWelcomeMail();
             responseEntity = ResponseEntity.status(OK).body("Signed up successfully !!");

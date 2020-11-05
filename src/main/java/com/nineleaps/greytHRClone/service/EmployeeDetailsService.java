@@ -52,7 +52,6 @@ public class EmployeeDetailsService {
     public ResponseEntity<ProfileDTO> profile(int id) {
         try {
             EmployeeData dbprofile = employeeDataRepository.findById(id).orElseThrow(() -> new BadRequestException("Invalid Id"));
-            ;
             int mangerId = dbprofile.getManagerId();
             int empId = dbprofile.getEmpId();
             ProfileDTO profileDTO = new ProfileDTO();
@@ -66,7 +65,7 @@ public class EmployeeDetailsService {
             profileDTO.setDepartment(departmentList);
             profileDTO.setDesignation(dbprofile.getDesignation().getDesignation());
             profileDTO.setManagerId(mangerId);
-            profileDTO.setLocation(String.valueOf(dbprofile.getLocation()));
+            profileDTO.setLocation(dbprofile.getLocation().getLocationName());
             profileDTO.setEid(empId);
             System.out.println(dbprofile.getImageName());
             if (dbprofile.getImageName() != null) {
