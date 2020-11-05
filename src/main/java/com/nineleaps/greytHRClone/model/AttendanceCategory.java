@@ -8,6 +8,7 @@ public enum AttendanceCategory {
     REGULARIZED,
     STATUS_UNKNOWN,
     LEAVE,
+    HALF_DAY,
     HOLIDAY,
     ALERT_FOR_DEDUCTION,
     DEDUCTION,

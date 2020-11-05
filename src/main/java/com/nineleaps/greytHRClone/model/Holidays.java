@@ -5,6 +5,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
 import java.sql.Date;
 
 @Data
@@ -20,8 +21,8 @@ public class Holidays {
     @Column(name = "holiday_date")
     private Date holidayDate;
 
-    @NotNull
     @NotEmpty
+    @NotNull
     @Column(name = "holiday_event")
     private String holidayEvent;
 
