@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @Service
 public class AttendanceService {
 
-
     private DoorAddressRepository doorAddressRepository;
     private SwipesRepository swipesRepository;
     private EmployeeDataRepository employeeDataRepository;
@@ -61,7 +60,6 @@ public class AttendanceService {
 
     }
 
-
     public ResponseEntity<List<SwipesDTO>> getSwipes(int id) {
 
         EmployeeData employeeData = new EmployeeData();
@@ -81,11 +79,9 @@ public class AttendanceService {
 
             swipesDTOs.add(swipesDTO);
         }
-        ;
+
         return ResponseEntity.status(HttpStatus.OK).body(swipesDTOs);
-
     }
-
 
    public void markAttendence() {
 
@@ -124,6 +120,7 @@ public class AttendanceService {
        System.out.println("allUserIds "+allUserIds);
         System.out.println(" in mark attendence");
     }
+
 
 }
 

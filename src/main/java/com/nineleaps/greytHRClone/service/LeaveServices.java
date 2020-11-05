@@ -1,7 +1,9 @@
 package com.nineleaps.greytHRClone.service;
 
+import com.nineleaps.greytHRClone.dto.DoorAddressDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeLeaveDTO;
-import com.nineleaps.greytHRClone.dto.EmployeeLeaveRequestDTO;
+
+import com.nineleaps.greytHRClone.dto.HolidayDTO;
 import com.nineleaps.greytHRClone.dto.SwipesDTO;
 import com.nineleaps.greytHRClone.model.*;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+
 import java.util.List;
 
 @Service
@@ -31,12 +34,21 @@ public class LeaveServices {
         this.employeeDataRepository = employeeDataRepository;
     }
 
-    public ResponseEntity<String> addHolidays(Iterable<Holidays> holidays) {
-        holidaysRepository.saveAll(holidays);
+    public ResponseEntity<String> addHolidays(List<HolidayDTO> holidayDTOS) {
+        ModelMapper modelMapper = new ModelMapper();
+        Iterable<Holidays> Holidays = Arrays.asList( modelMapper.map(holidayDTOS, Holidays[].class));
+        holidaysRepository.saveAll(Holidays);
         return ResponseEntity.status(HttpStatus.CREATED).body("holiday added successfully");
     }
 
-    public ResponseEntity<Iterable<Holidays>> getHolidays() {
+//    public ResponseEntity<List<DoorAddress>> getDoorAddress() {
+////        Iterable<DoorAddress> doorAddressesIterable=doorAddressRepository.findAll();
+////        List<DoorAddress> doorAddresses=StreamSupport.stream(doorAddressesIterable.spliterator(), false)
+////                .collect(Collectors.toList());
+//        return ResponseEntity.status(HttpStatus.OK).body(doorAddressRepository.getDoorAddress());
+//    }
+
+    public ResponseEntity<List<Holidays>> getHolidays() {
         return ResponseEntity.status(HttpStatus.OK).body(holidaysRepository.findAll());
     }
 

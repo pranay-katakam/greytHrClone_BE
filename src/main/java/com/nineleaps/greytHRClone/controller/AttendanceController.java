@@ -46,5 +46,4 @@ public class AttendanceController {
         return attendanceService.getSwipes(id);
     }
 
-
 }
