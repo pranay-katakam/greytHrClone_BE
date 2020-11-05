@@ -25,9 +25,9 @@ public class Interceptor implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login","/employee", "/logout",
 
-                        "/swagger-ui/**","/v3/api-docs",
+                        "/swagger-ui/**","/v3/api-docs","/company-location",
 
-                        "/employee","/designations","/departments","/designation","/department")
+                        "/designations","/departments","/designation","/department")
 
                 .order(1);
 
