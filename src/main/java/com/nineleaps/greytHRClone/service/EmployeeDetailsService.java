@@ -1,17 +1,11 @@
 package com.nineleaps.greytHRClone.service;
 
-import com.nineleaps.greytHRClone.dto.CompanyLocationDTO;
-import com.nineleaps.greytHRClone.dto.EmployeeDepartmentDTO;
-import com.nineleaps.greytHRClone.dto.EmployeeDesignationDTO;
-import com.nineleaps.greytHRClone.dto.ProfileDTO;
+import com.nineleaps.greytHRClone.dto.*;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.exception.UnsupportedMediaTypeException;
 import com.nineleaps.greytHRClone.helper.FirebaseService;
 import com.nineleaps.greytHRClone.model.*;
-import com.nineleaps.greytHRClone.repository.CompanyLocationRepository;
-import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
-import com.nineleaps.greytHRClone.repository.EmployeeDepartmentRepository;
-import com.nineleaps.greytHRClone.repository.EmployeeDesignationRepository;
+import com.nineleaps.greytHRClone.repository.*;
 import org.json.simple.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +42,8 @@ public class EmployeeDetailsService {
         this.companyLocationRepository=companyLocationRepository;
     }
 
+    @Autowired
+    private RoleRepository roleRepository;
 
 
 
@@ -127,8 +123,6 @@ public class EmployeeDetailsService {
 
 
     public ResponseEntity<String> uploadFile(MultipartFile file, int id) throws Exception {
-        System.out.println("size " + IsImageSize1MB(file.getSize()));
-        System.out.println("format" + checkForImageFormat(file.getContentType()));
         if (IsImageSize1MB(file.getSize()) && checkForImageFormat(file.getContentType())) {
             String ImageName = firebaseService.uploadFile(file);
             employeeDataRepository.saveImageById(ImageName, id);
@@ -159,5 +153,12 @@ public class EmployeeDetailsService {
         CompanyLocation companyLocation = modelMapper.map(companyLocationDTO, CompanyLocation.class);
         companyLocationRepository.save(companyLocation);
         return ResponseEntity.status(CREATED).body("location has been created");
+    }
+
+    public ResponseEntity<String> addRoles(RoleDTO roleDTO) {
+        ModelMapper modelMapper = new ModelMapper();
+        Role role = modelMapper.map(roleDTO, Role.class);
+        roleRepository.save(role);
+        return ResponseEntity.status(CREATED).body("role has been created");
     }
 }

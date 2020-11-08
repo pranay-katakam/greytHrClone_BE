@@ -1,6 +1,5 @@
 package com.nineleaps.greytHRClone.service;
 
-import com.nineleaps.greytHRClone.controller.EmployeeDetails;
 import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeRegistrationDTO;
 import com.nineleaps.greytHRClone.dto.LoginDTO;
@@ -9,9 +8,8 @@ import com.nineleaps.greytHRClone.helper.MailContentBuilder;
 import com.nineleaps.greytHRClone.model.*;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 
+import com.nineleaps.greytHRClone.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -34,21 +32,46 @@ public class AuthenticationService {
 
     private EmployeeDataRepository employeeDataRepository;
     private MailContentBuilder mailContentBuilder;
+    private RoleRepository roleRepository;
 
     @Autowired
-    public AuthenticationService(EmployeeDataRepository employeeDataRepository,MailContentBuilder mailContentBuilder) {
+    public AuthenticationService(EmployeeDataRepository employeeDataRepository,MailContentBuilder mailContentBuilder,RoleRepository roleRepository) {
         this.employeeDataRepository = employeeDataRepository;
         this.mailContentBuilder = mailContentBuilder;
+        this.roleRepository=roleRepository;
+
     }
+
+//    @Override
+//    public UserDto signup(UserDto userDto) {
+//        Role userRole;
+//        User user = userRepository.findByEmail(userDto.getEmail());
+//        if (user == null) {
+//            if (userDto.isAdmin()) {
+//                userRole = roleRepository.findByRole(UserRoles.ADMIN);
+//            } else {
+//                userRole = roleRepository.findByRole(UserRoles.PASSENGER);
+//            }
+//            user = new User()
+//                    .setEmail(userDto.getEmail())
+//                    .setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()))
+//                    .setRoles(new HashSet<>(Arrays.asList(userRole)))
+//                    .setFirstName(userDto.getFirstName())
+//                    .setLastName(userDto.getLastName())
+//                    .setMobileNumber(userDto.getMobileNumber());
+//            return UserMapper.toUserDto(userRepository.save(user));
+//        }
 
     public ResponseEntity<String> Signup(EmployeeRegistrationDTO employeeRegistrationDTO) {
         ResponseEntity<String> responseEntity;
+        Role userRole  = roleRepository.findByRole(UserRoles.USER);
         int existByEmail = employeeDataRepository.exist(employeeRegistrationDTO.getEmail());
 
         if (existByEmail != 0) {
             responseEntity = ResponseEntity.status(BAD_REQUEST).body("User Already Exists !!");
         }
         else {
+
             String name= StringUtils.capitalize(employeeRegistrationDTO.getName());//capitalize the first letter
             CompanyLocation location=new CompanyLocation();
             location.setLocationId(employeeRegistrationDTO.getLocationId());//changing employeeRegistrationDTO.getLocationId() to type CompanyLocation
@@ -72,38 +95,22 @@ public class AuthenticationService {
             employeeData.setManagerId(employeeRegistrationDTO.getManagerId());
             employeeData.setDepartments( employeeDepartments);
             employeeData.setDesignation(designation);
+            employeeData.setRoles(new HashSet<>(Arrays.asList(userRole)));
             employeeDataRepository.save(employeeData);
            // mailContentBuilder.sendWelcomeMail();
-            responseEntity = ResponseEntity.status(OK).body("Signed up successfully !!");
+            responseEntity = ResponseEntity.status(CREATED).body("Signed up successfully !!");
         }
         return responseEntity;
     }
 
     public ResponseEntity<ApiResponseDTO> Login(LoginDTO loginDTO, HttpServletResponse response) {
         try {
-            int existByEmail = employeeDataRepository.exist(loginDTO.getEmail());
-            if (existByEmail != 0) {
-
-                String email = loginDTO.getEmail();
-                String password = loginDTO.getPassword();
-                JSONObject dbuser = employeeDataRepository.UserByEmail(email);
-
-                String dbpassword = (String) dbuser.get("password");
-                int id = (int) dbuser.get("emp_id");
-                if (dbpassword.equals(password)) {
-                    generateCoookie(response, id);
-
-                    ApiResponseDTO apiResponseDTO = new ApiResponseDTO("Login Successful");
-                    return ResponseEntity.status(OK).body(apiResponseDTO);
-
-                }
-                else {
-                    throw new BadRequestException("wrong password");
-                }
-            }
-            else
-                {
-                throw new BadRequestException("please enter a valid name");
+            EmployeeData employeeData = Optional.ofNullable(employeeDataRepository.findByEmail(loginDTO.getEmail())).orElseThrow(()->new BadRequestException("email doesn't exist please signUp "));
+            if(employeeData.getPassword().equals(loginDTO.getPassword())){
+                generateCoookie(response, employeeData.getEmpId());
+                return ResponseEntity.status(OK).body(new ApiResponseDTO("Login Successful"));
+            }else {
+                throw new BadRequestException("Incorrect password\nType correct password");
             }
         }
         catch (Exception e) {

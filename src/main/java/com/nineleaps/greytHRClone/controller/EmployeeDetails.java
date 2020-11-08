@@ -1,14 +1,12 @@
 package com.nineleaps.greytHRClone.controller;
 
-import com.nineleaps.greytHRClone.dto.CompanyLocationDTO;
-import com.nineleaps.greytHRClone.dto.EmployeeDepartmentDTO;
-import com.nineleaps.greytHRClone.dto.EmployeeDesignationDTO;
-import com.nineleaps.greytHRClone.dto.ProfileDTO;
+import com.nineleaps.greytHRClone.dto.*;
 
 import com.nineleaps.greytHRClone.helper.FirebaseService;
 import com.nineleaps.greytHRClone.model.CompanyLocation;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
+import com.nineleaps.greytHRClone.model.Role;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -85,6 +83,11 @@ public class EmployeeDetails {
     @PostMapping("/company-location")
     public ResponseEntity<String> addCompanyLocation(@RequestBody CompanyLocationDTO companyLocationDTO){
         return employeeDetailsService.addCompanyLocation(companyLocationDTO);
+    }
+
+    @PostMapping("/role")
+    public ResponseEntity<String> addRoles(@RequestBody RoleDTO roleDTO){
+        return employeeDetailsService.addRoles(roleDTO);
     }
 
 }

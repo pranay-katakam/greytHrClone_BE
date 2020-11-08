@@ -14,13 +14,14 @@ import java.util.List;
 
 public interface SwipesRepository extends JpaRepository<Swipe, Integer> {
 
-    @Query("select u from Swipe u where u.user=?1")
-    Iterable<Swipe> getSwipes(EmployeeData employeeData);
+//    @Query("select u from Swipe u where u.user=?1")
+//    Iterable<Swipe> getSwipes(EmployeeData employeeData);
+
+    Iterable<Swipe> findByUser(EmployeeData employeeData);
 
 
     @Query("select u from Swipe u where  DATE(u.createdDate) = CURRENT_DATE ")
     List<Swipe> findByDate();
-
 
 
 }
