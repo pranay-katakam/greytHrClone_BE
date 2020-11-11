@@ -2,11 +2,9 @@ package com.nineleaps.greytHRClone.controller;
 
 import com.nineleaps.greytHRClone.dto.*;
 
-import com.nineleaps.greytHRClone.helper.FirebaseService;
-import com.nineleaps.greytHRClone.model.CompanyLocation;
+
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
-import com.nineleaps.greytHRClone.model.Role;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,9 +12,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import javax.validation.Valid;
 import javax.ws.rs.Produces;
 import java.util.List;
 
@@ -29,8 +27,11 @@ public class EmployeeDetails {
     private EmployeeDetailsService employeeDetailsService;
 
     @Operation(summary = "View Profile details", description = "To get the profile details of employee", tags = {"viewProfile"})
+    //@Secured("ROLE_USER")
+    @PreAuthorize("hasRole('USER')")
+    ////@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping(path = "/profile")
-    public ResponseEntity<ProfileDTO> profile(@RequestAttribute("id") int id) {
+    public ResponseEntity<ProfileDTO> profile(@RequestParam(value = "id") int id) {
         return employeeDetailsService.profile(id);
     }
 

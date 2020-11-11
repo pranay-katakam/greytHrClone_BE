@@ -13,6 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.WebUtils;
@@ -27,12 +33,13 @@ import java.util.*;
 import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
-@Service
+@Service(value = "authenticationService")
 public class AuthenticationService {
 
     private EmployeeDataRepository employeeDataRepository;
     private MailContentBuilder mailContentBuilder;
     private RoleRepository roleRepository;
+
 
     @Autowired
     public AuthenticationService(EmployeeDataRepository employeeDataRepository,MailContentBuilder mailContentBuilder,RoleRepository roleRepository) {
@@ -40,38 +47,20 @@ public class AuthenticationService {
         this.mailContentBuilder = mailContentBuilder;
         this.roleRepository=roleRepository;
 
+
     }
 
-//    @Override
-//    public UserDto signup(UserDto userDto) {
-//        Role userRole;
-//        User user = userRepository.findByEmail(userDto.getEmail());
-//        if (user == null) {
-//            if (userDto.isAdmin()) {
-//                userRole = roleRepository.findByRole(UserRoles.ADMIN);
-//            } else {
-//                userRole = roleRepository.findByRole(UserRoles.PASSENGER);
-//            }
-//            user = new User()
-//                    .setEmail(userDto.getEmail())
-//                    .setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()))
-//                    .setRoles(new HashSet<>(Arrays.asList(userRole)))
-//                    .setFirstName(userDto.getFirstName())
-//                    .setLastName(userDto.getLastName())
-//                    .setMobileNumber(userDto.getMobileNumber());
-//            return UserMapper.toUserDto(userRepository.save(user));
-//        }
+     BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
+
 
     public ResponseEntity<String> Signup(EmployeeRegistrationDTO employeeRegistrationDTO) {
         ResponseEntity<String> responseEntity;
-        Role userRole  = roleRepository.findByRole(UserRoles.USER);
         int existByEmail = employeeDataRepository.exist(employeeRegistrationDTO.getEmail());
 
         if (existByEmail != 0) {
             responseEntity = ResponseEntity.status(BAD_REQUEST).body("User Already Exists !!");
         }
         else {
-
             String name= StringUtils.capitalize(employeeRegistrationDTO.getName());//capitalize the first letter
             CompanyLocation location=new CompanyLocation();
             location.setLocationId(employeeRegistrationDTO.getLocationId());//changing employeeRegistrationDTO.getLocationId() to type CompanyLocation
@@ -87,7 +76,7 @@ public class AuthenticationService {
             EmployeeData employeeData=new EmployeeData();
             employeeData.setName(name);
             employeeData.setEmail(employeeRegistrationDTO.getEmail());
-            employeeData.setPassword(employeeRegistrationDTO.getPassword());
+            employeeData.setPassword(bCryptPasswordEncoder.encode(employeeRegistrationDTO.getPassword()));
             employeeData.setDob(employeeRegistrationDTO.getDob());
             employeeData.setLocation(location);
             employeeData.setGender(employeeRegistrationDTO.getGender());
@@ -95,18 +84,19 @@ public class AuthenticationService {
             employeeData.setManagerId(employeeRegistrationDTO.getManagerId());
             employeeData.setDepartments( employeeDepartments);
             employeeData.setDesignation(designation);
-            employeeData.setRoles(new HashSet<>(Arrays.asList(userRole)));
             employeeDataRepository.save(employeeData);
-           // mailContentBuilder.sendWelcomeMail();
+            mailContentBuilder.sendWelcomeMail();
             responseEntity = ResponseEntity.status(CREATED).body("Signed up successfully !!");
         }
         return responseEntity;
     }
 
+
+
     public ResponseEntity<ApiResponseDTO> Login(LoginDTO loginDTO, HttpServletResponse response) {
         try {
             EmployeeData employeeData = Optional.ofNullable(employeeDataRepository.findByEmail(loginDTO.getEmail())).orElseThrow(()->new BadRequestException("email doesn't exist please signUp "));
-            if(employeeData.getPassword().equals(loginDTO.getPassword())){
+            if(bCryptPasswordEncoder.matches(loginDTO.getPassword(), employeeData.getPassword())){
                 generateCoookie(response, employeeData.getEmpId());
                 return ResponseEntity.status(OK).body(new ApiResponseDTO("Login Successful"));
             }else {
@@ -143,6 +133,35 @@ public class AuthenticationService {
 
         }
     }
+
+//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+//        EmployeeData employeeData = employeeDataRepository.findByEmail(email);
+//
+//        User user= new User(employeeData.getEmail(),employeeData.getPassword(),true,true,true,true, (Collection<? extends GrantedAuthority>) employeeData.getRoles());
+//
+//        if(user == null){
+//            throw new UsernameNotFoundException("Invalid email or password.");
+//        }
+//        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(employeeData));
+//    }
+//
+//    private Set<SimpleGrantedAuthority> getAuthority(EmployeeData user) {
+//        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+//        user.getRoles().forEach(role -> {
+//            //authorities.add(new SimpleGrantedAuthority(role.getName()));
+//            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
+//        });
+//        return authorities;
+//        //return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+//    }
+
+
+
+
+
+
+
+
 }
 
 

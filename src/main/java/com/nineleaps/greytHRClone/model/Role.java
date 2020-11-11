@@ -2,8 +2,6 @@ package com.nineleaps.greytHRClone.model;
 
 import lombok.Data;
 import javax.persistence.*;
-import java.util.Collection;
-
 
 
 @Data
@@ -11,11 +9,9 @@ import java.util.Collection;
 @Table(name = "role")
 public class Role {
     @Id
+    @Column(name = "role_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int role_id;
-
-    @ManyToMany(mappedBy = "roles")
-    private Collection<EmployeeData> users;
+    private int id;
 
     @Enumerated(EnumType.STRING)
     private UserRoles role;
