@@ -17,6 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @Service(value = "authenticationService")
-public class AuthenticationService {
+public class AuthenticationService implements UserDetailsService {
 
     private EmployeeDataRepository employeeDataRepository;
     private MailContentBuilder mailContentBuilder;
@@ -133,27 +134,26 @@ public class AuthenticationService {
 
         }
     }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        EmployeeData user = employeeDataRepository.findByEmail(email);
+        if(user == null){
+            throw new UsernameNotFoundException("Invalid name or password.");
+        }
+        return new User(user.getEmail(), user.getPassword(), getAuthority(user));
+    }
 
-//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        EmployeeData employeeData = employeeDataRepository.findByEmail(email);
-//
-//        User user= new User(employeeData.getEmail(),employeeData.getPassword(),true,true,true,true, (Collection<? extends GrantedAuthority>) employeeData.getRoles());
-//
-//        if(user == null){
-//            throw new UsernameNotFoundException("Invalid email or password.");
-//        }
-//        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), getAuthority(employeeData));
-//    }
-//
-//    private Set<SimpleGrantedAuthority> getAuthority(EmployeeData user) {
-//        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-//        user.getRoles().forEach(role -> {
-//            //authorities.add(new SimpleGrantedAuthority(role.getName()));
-//            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
-//        });
-//        return authorities;
-//        //return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
-//    }
+    private Set<SimpleGrantedAuthority> getAuthority(EmployeeData user) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        user.getRoles().forEach(role -> {
+            //authorities.add(new SimpleGrantedAuthority(role.getName()));
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
+        });
+        return authorities;
+        //return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    }
+
+
 
 
 

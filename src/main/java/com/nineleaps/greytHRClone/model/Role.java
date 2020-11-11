@@ -9,10 +9,10 @@ import javax.persistence.*;
 @Table(name = "role")
 public class Role {
     @Id
-    @Column(name = "role_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int roleId;
 
-    @Enumerated(EnumType.STRING)
-    private UserRoles role;
+    @Column(name = "role")
+    private String role;
+
 }

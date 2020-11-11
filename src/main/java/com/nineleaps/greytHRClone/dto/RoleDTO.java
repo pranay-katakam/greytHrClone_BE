@@ -12,6 +12,6 @@ import javax.persistence.Enumerated;
 @NoArgsConstructor
 @Data
 public class RoleDTO {
-    @Enumerated(EnumType.STRING)
-    private UserRoles role;
+
+    private String role;
 }

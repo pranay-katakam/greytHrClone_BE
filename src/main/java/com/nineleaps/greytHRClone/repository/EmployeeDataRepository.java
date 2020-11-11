@@ -55,4 +55,6 @@ public interface EmployeeDataRepository extends JpaRepository<EmployeeData, Inte
 
 
     EmployeeData findByEmail(String email);
+
+    EmployeeData findByName(String username);
 }
