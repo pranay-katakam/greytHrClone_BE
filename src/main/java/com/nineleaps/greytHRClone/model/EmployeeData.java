@@ -1,7 +1,6 @@
 package com.nineleaps.greytHRClone.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import javax.persistence.*;
 import java.util.*;
@@ -57,6 +56,11 @@ public class EmployeeData {
     @JoinColumn(name="desig_id")
     private EmployeeDesignation designation;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    private Collection<Role> roles;
 
 
 }

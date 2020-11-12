@@ -32,7 +32,7 @@ public class Scheduler {
 
 
     @Async
-    @Scheduled(cron = "0 39 10 * * 1-5")//sec,min,hour,dayDate,monthDate,dayWeek/yearday of week (0 - 6) (0 is Sunday, or use names)
+    @Scheduled(cron = "0 48 7 * * 1-5")//sec,min,hour,dayDate,monthDate,dayWeek/yearday of week (0 - 6) (0 is Sunday, or use names)
     public void markAttendence() throws ParseException {
         attendanceService.markAttendence();
     }

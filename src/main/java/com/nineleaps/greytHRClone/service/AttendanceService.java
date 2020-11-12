@@ -1,5 +1,6 @@
 package com.nineleaps.greytHRClone.service;
 
+import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.dto.DoorAddressDTO;
 import com.nineleaps.greytHRClone.dto.SwipeDTO;
 import com.nineleaps.greytHRClone.dto.SwipesDTO;
@@ -13,8 +14,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class AttendanceService {
@@ -31,40 +37,36 @@ public class AttendanceService {
 
     }
 
-    public ResponseEntity<String> addDoorAddress(List<DoorAddressDTO> doorAddressDTOS) {
+    public ResponseEntity<ApiResponseDTO> addDoorAddress(List<DoorAddressDTO> doorAddressDTOS) {
         ModelMapper modelMapper = new ModelMapper();
         Iterable<DoorAddress> DoorAddresses = Arrays.asList( modelMapper.map(doorAddressDTOS, DoorAddress[].class));
         doorAddressRepository.saveAll(DoorAddresses);
-        return ResponseEntity.status(HttpStatus.CREATED).body("added door address successfully!");
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDTO("added door address successfully!"));
     }
 
     public ResponseEntity<List<DoorAddress>> getDoorAddress() {
         return ResponseEntity.status(HttpStatus.OK).body(doorAddressRepository.findAll());
     }
 
-    public ResponseEntity<String> addSwipe(SwipeDTO swipeDTO) {
-        EmployeeData employeeData=new EmployeeData();
+    public ResponseEntity<ApiResponseDTO> addSwipe(SwipeDTO swipeDTO) {
+        EmployeeData employeeData=new EmployeeData();//converting int userId to to type EmployeeData
         employeeData.setEmpId(swipeDTO.getUserId());
-
-        DoorAddress doorAddress=new DoorAddress();
+        DoorAddress doorAddress=new DoorAddress();//converting int doorAddressId to type DoorAddress
         doorAddress.setAddressId(swipeDTO.getDoorAddressId());
 
         Swipe swipe=new Swipe();
         swipe.setUser(employeeData);
         swipe.setDoorAddress(doorAddress);
         swipesRepository.save(swipe);
-        return ResponseEntity.status(HttpStatus.CREATED).body("recent swipe recorded successfully");
-
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDTO("recent swipe recorded successfully"));
     }
 
     public ResponseEntity<List<SwipesDTO>> getSwipes(int id) {
-
-        EmployeeData employeeData = new EmployeeData();
+        EmployeeData employeeData = new EmployeeData();//converting int id to type EmployeeData
         employeeData.setEmpId(id);
-        Iterable<Swipe> swipes = swipesRepository.getSwipes(employeeData);
-
+//        Iterable<Swipe> swipes = swipesRepository.getSwipes(employeeData);
+        Iterable<Swipe> swipes = swipesRepository.findByUser(employeeData);
         List<SwipesDTO> swipesDTOs = new ArrayList<>();
-
         for (Swipe swipe : swipes) {
             SwipesDTO swipesDTO = new SwipesDTO();
             swipesDTO.setSwipeId(swipe.getSwipeId());
@@ -72,40 +74,48 @@ public class AttendanceService {
             swipesDTO.setCreatedDate(swipe.getCreatedDate());
             swipesDTO.setEmployeeName(swipe.getUser().getName());
             swipesDTO.setDoorAddress(swipe.getDoorAddress().getDoorName());
-
             swipesDTOs.add(swipesDTO);
         }
-
         return ResponseEntity.status(HttpStatus.OK).body(swipesDTOs);
     }
 
    public void markAttendence() {
-
         List<Swipe> swipeUsers= swipesRepository.findByDate();
 
        List<EmployeeData> users=swipeUsers.stream()
                 .map(Swipe::getUser).distinct()
                 .collect(Collectors.toList());
 
-
        for(EmployeeData user:users){
+          List<LocalDateTime> AllSwipesPerUser=swipeUsers.stream()
+                   .filter(s ->s.getUser()==user)
+                   .map(Swipe::getCreatedDate)
+                  .collect(Collectors.toList());
 
+          LocalDateTime firstSwipe=AllSwipesPerUser.stream()
+                  .findFirst().get();
+
+          long count = AllSwipesPerUser.stream().count();
+          Stream<LocalDateTime> stream = AllSwipesPerUser.stream();
+          LocalDateTime lastSwipe=stream.skip(count - 1).findFirst().get();
+
+          Duration duration = Duration.between(lastSwipe, firstSwipe);
+          long diff = Math.abs(duration.toHours());
+           System.out.println("Difference "+diff);
        }
        System.out.println("user " +users);
-        //for loop to collect first swipe and last swipe of the day
-
-
        List<Integer> allUserIds=employeeDataRepository.findAlluserId();
 
         List<Integer> absenties=new ArrayList<>();
-
        for (Integer item : allUserIds) {
            if (!swipeUsers.contains(item)) {
                absenties.add(item);
            }
        }
+        //check for 4<8 of working hours::half day
+       //send alert mail to admin and user about time deduction
 
-       System.out.println(absenties);
+
 
        //amoung these absent did anyone had already applied for leave
        //change the attendance category from absent to leave
@@ -114,7 +124,7 @@ public class AttendanceService {
 
        System.out.println("swipeUsers "+swipeUsers);
        System.out.println("allUserIds "+allUserIds);
-        System.out.println(" in mark attendence");
+        System.out.println(" in mark attendence absenties"+absenties);
     }
 
 

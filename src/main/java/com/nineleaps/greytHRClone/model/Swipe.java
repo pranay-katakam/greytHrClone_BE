@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static javax.persistence.FetchType.EAGER;
@@ -24,7 +25,7 @@ public class Swipe {
     private EmployeeData user;
 
     @Column(name = "created_date")
-    private Date createdDate = new Date();
+    private LocalDateTime createdDate = LocalDateTime.now();
 
 
     @ManyToOne(fetch = EAGER, cascade = CascadeType.MERGE)
