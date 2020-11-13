@@ -41,7 +41,7 @@ public class MailContentBuilder {
         try {
             helper = new MimeMessageHelper(message, true);
 
-            helper.addInline("myLogo", new ClassPathResource("img/mylogo.gif"));//for reference
+//            helper.addInline("myLogo", new ClassPathResource("img/mylogo.gif"));//for reference
 
 
 
