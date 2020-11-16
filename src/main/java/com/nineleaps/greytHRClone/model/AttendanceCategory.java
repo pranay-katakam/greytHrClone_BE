@@ -12,5 +12,10 @@ public enum AttendanceCategory {
     HOLIDAY,
     ALERT_FOR_DEDUCTION,
     DEDUCTION,
-    ABSENT
+    ABSENT,
+    EARNED_LEAVE,
+    PATERNITY_LEAVE,
+    LOSS_OF_PAY,
+    SICK_LEAVE,
+    MEDICAL_WORK_FROM_HOME
 }

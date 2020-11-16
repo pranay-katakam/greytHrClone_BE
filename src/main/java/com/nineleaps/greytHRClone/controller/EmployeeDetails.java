@@ -31,7 +31,8 @@ public class EmployeeDetails {
     @PreAuthorize("hasRole('USER')")
     ////@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping(path = "/profile")
-    public ResponseEntity<ProfileDTO> profile(@RequestAttribute(value = "id") int id) {
+    public ResponseEntity<ProfileDTO> profile(@RequestAttribute int id) {
+
         return employeeDetailsService.profile(id);
     }
 

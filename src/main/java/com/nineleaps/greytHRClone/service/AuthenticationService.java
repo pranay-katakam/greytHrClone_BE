@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.service;
 import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeRegistrationDTO;
 import com.nineleaps.greytHRClone.dto.LoginDTO;
+import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.helper.MailContentBuilder;
 import com.nineleaps.greytHRClone.model.*;
@@ -31,11 +32,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.*;
 
+import static com.nineleaps.greytHRClone.common.Constants.FIREBASE_URL_PREFIX;
+import static com.nineleaps.greytHRClone.common.Constants.FIREBASE_URL_SUFFIX;
 import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @Service(value = "authenticationService")
-public class AuthenticationService /*implements UserDetailsService*/ {
+public class AuthenticationService /*implements UserDetailsService */{
+
 
     private EmployeeDataRepository employeeDataRepository;
     private MailContentBuilder mailContentBuilder;
@@ -86,7 +90,8 @@ public class AuthenticationService /*implements UserDetailsService*/ {
             employeeData.setDepartments( employeeDepartments);
             employeeData.setDesignation(designation);
             employeeDataRepository.save(employeeData);
-            mailContentBuilder.sendWelcomeMail();
+//            mailContentBuilder.sendWelcomeMail();
+
             responseEntity = ResponseEntity.status(CREATED).body("Signed up successfully !!");
         }
         return responseEntity;
@@ -99,6 +104,10 @@ public class AuthenticationService /*implements UserDetailsService*/ {
             EmployeeData employeeData = Optional.ofNullable(employeeDataRepository.findByEmail(loginDTO.getEmail())).orElseThrow(()->new BadRequestException("email doesn't exist please signUp "));
             if(bCryptPasswordEncoder.matches(loginDTO.getPassword(), employeeData.getPassword())){
                 generateCoookie(response, employeeData.getEmpId());
+                ProfileDTO profileDTO=new ProfileDTO();
+                profileDTO.setName(employeeData.getName());
+                profileDTO.setImageName(FIREBASE_URL_PREFIX + employeeData.getImageName() + FIREBASE_URL_SUFFIX);
+                mailContentBuilder.sendWelcomeMail(profileDTO);
                 return ResponseEntity.status(OK).body(new ApiResponseDTO("Login Successful"));
             }else {
                 throw new BadRequestException("Incorrect password\nType correct password");
