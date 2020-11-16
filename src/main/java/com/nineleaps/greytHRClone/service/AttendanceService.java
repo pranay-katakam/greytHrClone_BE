@@ -1,16 +1,11 @@
 package com.nineleaps.greytHRClone.service;
 
-import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
-import com.nineleaps.greytHRClone.dto.DoorAddressDTO;
-import com.nineleaps.greytHRClone.dto.SwipeDTO;
-import com.nineleaps.greytHRClone.dto.SwipesDTO;
-import com.nineleaps.greytHRClone.model.DoorAddress;
-import com.nineleaps.greytHRClone.model.EmployeeData;
-import com.nineleaps.greytHRClone.model.Swipe;
-import com.nineleaps.greytHRClone.repository.DoorAddressRepository;
-import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
-import com.nineleaps.greytHRClone.repository.SwipesRepository;
+import com.nineleaps.greytHRClone.dto.*;
+import com.nineleaps.greytHRClone.helper.MailContentBuilder;
+import com.nineleaps.greytHRClone.model.*;
+import com.nineleaps.greytHRClone.repository.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,14 +23,22 @@ public class AttendanceService {
     private DoorAddressRepository doorAddressRepository;
     private SwipesRepository swipesRepository;
     private EmployeeDataRepository employeeDataRepository;
+    private MailContentBuilder mailContentBuilder;
+    private EmployeeLeaveRepository employeeLeaveRepository;
+    private EmployeeAttendanceRepository employeeAttendanceRepository;
 
-
-    public AttendanceService(DoorAddressRepository doorAddressRepository, SwipesRepository swipesRepository,EmployeeDataRepository employeeDataRepository) {
+    @Autowired
+    public AttendanceService(DoorAddressRepository doorAddressRepository, SwipesRepository swipesRepository, EmployeeDataRepository employeeDataRepository, MailContentBuilder mailContentBuilder, EmployeeLeaveRepository employeeLeaveRepository, EmployeeAttendanceRepository employeeAttendanceRepository) {
         this.doorAddressRepository = doorAddressRepository;
         this.swipesRepository = swipesRepository;
-        this.employeeDataRepository=employeeDataRepository;
-
+        this.employeeDataRepository = employeeDataRepository;
+        this.mailContentBuilder = mailContentBuilder;
+        this.employeeLeaveRepository = employeeLeaveRepository;
+        this.employeeAttendanceRepository = employeeAttendanceRepository;
     }
+
+
+
 
     public ResponseEntity<ApiResponseDTO> addDoorAddress(List<DoorAddressDTO> doorAddressDTOS) {
         ModelMapper modelMapper = new ModelMapper();
@@ -80,52 +83,86 @@ public class AttendanceService {
     }
 
    public void markAttendence() {
-        List<Swipe> swipeUsers= swipesRepository.findByDate();
+       List<EmployeeAttendance> employeeAttendances = new ArrayList<>();
 
-       List<EmployeeData> users=swipeUsers.stream()
-                .map(Swipe::getUser).distinct()
-                .collect(Collectors.toList());
+       List<Swipe> swipeUsers = swipesRepository.findByDate();//10
+       List<TotalTimeDTO> totalTimeDTOS = getTotalTime(swipeUsers);//9
 
-       for(EmployeeData user:users){
-          List<LocalDateTime> AllSwipesPerUser=swipeUsers.stream()
-                   .filter(s ->s.getUser()==user)
-                   .map(Swipe::getCreatedDate)
-                  .collect(Collectors.toList());
+       List<Integer> allUserIds = employeeDataRepository.findAlluserId();//20
 
-          LocalDateTime firstSwipe=AllSwipesPerUser.stream()
-                  .findFirst().get();
+       //check for 4<8 of working hours::half day
+       //send alert mail to admin and user about time deduction
+       for (TotalTimeDTO totalTimeDTO : totalTimeDTOS) {
+           EmployeeAttendance employeeAttendance = new EmployeeAttendance();
+           if (totalTimeDTO.getTotalTime() < 8 && totalTimeDTO.getTotalTime() > 4) {
+               employeeAttendance.setAttendanceCategory(AttendanceCategory.HALF_DAY);
+               EmployeeData employeeData = new EmployeeData();
+               employeeData.setEmpId(totalTimeDTO.getEmployeeId());
+               employeeAttendance.setUser(employeeData);
+               employeeAttendances.add(employeeAttendance);
+               mailContentBuilder.sendDeductionMail(totalTimeDTO);
+               allUserIds.remove(totalTimeDTO.getEmployeeId());
 
-          long count = AllSwipesPerUser.stream().count();
-          Stream<LocalDateTime> stream = AllSwipesPerUser.stream();
-          LocalDateTime lastSwipe=stream.skip(count - 1).findFirst().get();
+           } else {
+               allUserIds.remove(totalTimeDTO.getEmployeeId());
 
-          Duration duration = Duration.between(lastSwipe, firstSwipe);
-          long diff = Math.abs(duration.toHours());
-           System.out.println("Difference "+diff);
-       }
-       System.out.println("user " +users);
-       List<Integer> allUserIds=employeeDataRepository.findAlluserId();
-
-        List<Integer> absenties=new ArrayList<>();
-       for (Integer item : allUserIds) {
-           if (!swipeUsers.contains(item)) {
-               absenties.add(item);
            }
        }
-        //check for 4<8 of working hours::half day
-       //send alert mail to admin and user about time deduction
-
-
 
        //amoung these absent did anyone had already applied for leave
        //change the attendance category from absent to leave
+       List<EmployeeLeave> employeeLeaves = employeeLeaveRepository.getAppliedLeave();
+       //allUserIds are the Ids after filtering presenties
+       for (Integer absenteeId : allUserIds) {
+           EmployeeAttendance employeeAttendance = new EmployeeAttendance();
+           EmployeeData employeeData=new EmployeeData();
+           employeeData.setEmpId(absenteeId);
+           //TODO check if the leave was approved or not
+           if (employeeLeaves.contains(absenteeId)) {
+               employeeAttendance.setUser(employeeData);
+               employeeAttendance.setAttendanceCategory(AttendanceCategory.LEAVE);
+               employeeAttendances.add(employeeAttendance);
+           }else{
+               employeeAttendance.setUser(employeeData);
+               employeeAttendance.setAttendanceCategory(AttendanceCategory.ABSENT);
+               employeeAttendances.add(employeeAttendance);
+           }
+       }
+
+       employeeAttendanceRepository.saveAll(employeeAttendances);
+   }
+
+    public List<TotalTimeDTO> getTotalTime(List<Swipe> swipes){
+        List<EmployeeData> users=swipes.stream()
+                .map(Swipe::getUser).distinct()
+                .collect(Collectors.toList());
+
+        List<TotalTimeDTO> totalTimeDTOS=new ArrayList<>();
 
 
+        for(EmployeeData user:users){
+            List<LocalDateTime> AllSwipesPerUser=swipes.stream()
+                    .filter(s ->s.getUser()==user)
+                    .map(Swipe::getCreatedDate)
+                    .collect(Collectors.toList());
 
-       System.out.println("swipeUsers "+swipeUsers);
-       System.out.println("allUserIds "+allUserIds);
-        System.out.println(" in mark attendence absenties"+absenties);
+            LocalDateTime firstSwipe=AllSwipesPerUser.stream()
+                    .findFirst().get();
+
+            long count = AllSwipesPerUser.stream().count();
+            Stream<LocalDateTime> stream = AllSwipesPerUser.stream();
+            LocalDateTime lastSwipe=stream.skip(count - 1).findFirst().get();
+
+            Duration duration = Duration.between(lastSwipe, firstSwipe);
+            long diff = Math.abs(duration.toHours());
+            TotalTimeDTO totalTimeDTO=new TotalTimeDTO(user.getEmpId(),user.getName(),firstSwipe,lastSwipe,diff);
+            totalTimeDTOS.add(totalTimeDTO);
+                    }
+        return totalTimeDTOS;
     }
+
+
+
 
 
 }

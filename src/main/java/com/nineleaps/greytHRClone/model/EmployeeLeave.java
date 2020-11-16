@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static javax.persistence.FetchType.EAGER;
@@ -34,11 +35,11 @@ public class EmployeeLeave {
 
     @NotNull
     @Column(name = "from_date")
-    private Date fromDate;
+    private LocalDateTime fromDate;
 
     @NotNull
     @Column(name = "to_date")
-    private Date toDate;
+    private LocalDateTime toDate;
 
     @Enumerated
     private LeaveStatus leaveStatus;
