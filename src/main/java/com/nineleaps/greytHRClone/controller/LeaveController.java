@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.controller;
 import com.nineleaps.greytHRClone.dto.DoorAddressDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeLeaveDTO;
 
+import com.nineleaps.greytHRClone.dto.EmployeeLeaveRequestDTO;
 import com.nineleaps.greytHRClone.dto.HolidayDTO;
 import com.nineleaps.greytHRClone.model.DoorAddress;
 import com.nineleaps.greytHRClone.model.EmployeeLeave;
@@ -33,7 +34,7 @@ public class LeaveController {
         return leaveServices.addHolidays(holidays);
     }
 
-    @Operation(summary = "View all the avaliable holidays", description = "To get all available holidays", tags = { "getHolidays" })
+    @Operation(summary = "View all the available holidays", description = "To get all available holidays", tags = { "getHolidays" })
     @GetMapping(path = "/holidays")
     public ResponseEntity<List<Holidays>> getHolidays() {
 

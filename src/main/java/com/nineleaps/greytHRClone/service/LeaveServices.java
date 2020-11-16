@@ -1,10 +1,7 @@
 package com.nineleaps.greytHRClone.service;
 
-import com.nineleaps.greytHRClone.dto.DoorAddressDTO;
-import com.nineleaps.greytHRClone.dto.EmployeeLeaveDTO;
+import com.nineleaps.greytHRClone.dto.*;
 
-import com.nineleaps.greytHRClone.dto.HolidayDTO;
-import com.nineleaps.greytHRClone.dto.SwipesDTO;
 import com.nineleaps.greytHRClone.model.*;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 import com.nineleaps.greytHRClone.repository.EmployeeLeaveRepository;
