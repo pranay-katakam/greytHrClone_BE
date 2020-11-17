@@ -26,7 +26,7 @@ public class EmployeeLeave {
     private EmployeeData user;
 
     @Enumerated
-    private Leavetype leavetype;
+    private AttendanceCategory leavetype;
 
     @NotNull
     @NotEmpty
