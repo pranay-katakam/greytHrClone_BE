@@ -1,10 +1,8 @@
 package com.nineleaps.greytHRClone.controller;
 
-import com.nineleaps.greytHRClone.dto.CompanyLocationDTO;
-import com.nineleaps.greytHRClone.dto.ProfileDTO;
+import com.nineleaps.greytHRClone.dto.*;
 
-import com.nineleaps.greytHRClone.helper.FirebaseService;
-import com.nineleaps.greytHRClone.model.CompanyLocation;
+
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
@@ -14,9 +12,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import javax.validation.Valid;
 import javax.ws.rs.Produces;
 import java.util.List;
 
@@ -29,23 +27,26 @@ public class EmployeeDetails {
     private EmployeeDetailsService employeeDetailsService;
 
     @Operation(summary = "View Profile details", description = "To get the profile details of employee", tags = {"viewProfile"})
+    //@Secured("ROLE_USER")
+    @PreAuthorize("hasRole('USER')")
+    ////@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping(path = "/profile")
-    public ResponseEntity<ProfileDTO> profile(@RequestAttribute("id") int id) {
+    public ResponseEntity<ProfileDTO> profile(@RequestAttribute int id) {
+
         return employeeDetailsService.profile(id);
     }
 
 
     @Operation(summary = "Add new department ", description = "To add required departments", tags = {"addDepartment"})
     @PostMapping(path = "/department")
-    public ResponseEntity<String> addDepartment(@RequestBody EmployeeDepartment employeeDepartment) {
-        return employeeDetailsService.addDepartment(employeeDepartment);
+    public ResponseEntity<String> addDepartment(@RequestBody EmployeeDepartmentDTO employeeDepartmentDTO) {
+        return employeeDetailsService.addDepartment(employeeDepartmentDTO);
     }
 
     @Operation(summary = "Add new designation ", description = "To add required designation", tags = {"addDesignation"})
     @PostMapping(path = "/designation")
-
-    public ResponseEntity<String> addDesignation(@Valid @RequestBody EmployeeDesignation employeeDesignation){
-        return employeeDetailsService.addDesignation(employeeDesignation);
+    public ResponseEntity<String> addDesignation(@RequestBody EmployeeDesignationDTO employeeDesignationDTO){
+        return employeeDetailsService.addDesignation(employeeDesignationDTO);
     }
 
     @Operation(summary = "View departments ", description = "To get available departments", tags = {"getDepartments"})
@@ -84,6 +85,11 @@ public class EmployeeDetails {
     @PostMapping("/company-location")
     public ResponseEntity<String> addCompanyLocation(@RequestBody CompanyLocationDTO companyLocationDTO){
         return employeeDetailsService.addCompanyLocation(companyLocationDTO);
+    }
+
+    @PostMapping("/role")
+    public ResponseEntity<String> addRoles(@RequestBody RoleDTO roleDTO){
+        return employeeDetailsService.addRoles(roleDTO);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.nineleaps.greytHRClone.controller;
 
+import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.dto.DoorAddressDTO;
 import com.nineleaps.greytHRClone.dto.SwipeDTO;
 import com.nineleaps.greytHRClone.dto.SwipesDTO;
@@ -23,7 +24,7 @@ public class AttendanceController {
 
     @Operation(summary = "Add new door-address ", description = "To add all the avaliable door-address in organization", tags = { "addDoorAddress" })
     @PostMapping(path = "/door-address")
-    public ResponseEntity<String> addDoorAddress(@RequestBody List<DoorAddressDTO> doorAddresses) {
+    public ResponseEntity<ApiResponseDTO> addDoorAddress(@RequestBody List<DoorAddressDTO> doorAddresses) {
         return attendanceService.addDoorAddress(doorAddresses);
     }
 
@@ -35,7 +36,7 @@ public class AttendanceController {
 
     @Operation(summary = "record recent swipes", description = "To record the recent swipes done by employee", tags = { "addSwipe" })
     @PostMapping(path = "/swipe")
-    public ResponseEntity<String> addSwipe(@RequestBody SwipeDTO swipeDTO) {
+    public ResponseEntity<ApiResponseDTO> addSwipe(@RequestBody SwipeDTO swipeDTO) {
         return attendanceService.addSwipe(swipeDTO);
     }
 

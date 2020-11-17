@@ -1,6 +1,6 @@
 package com.nineleaps.greytHRClone.Interceptor;
 
-import com.nineleaps.greytHRClone.exception.UnauthorisedException;
+import com.nineleaps.greytHRClone.exception.UnauthorizedException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.util.WebUtils;
@@ -19,7 +19,7 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         if(request.getMethod().equals("OPTIONS")) return true;
         Cookie userCookie = WebUtils.getCookie(request, "userID");
         if (userCookie == null) {
-            throw new UnauthorisedException("please login/ session time out");
+            throw new UnauthorizedException("please login/ session time out");
 
         } else {
             String retrievedId = userCookie.getValue();

@@ -1,6 +1,5 @@
 package com.nineleaps.greytHRClone.dto;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeeSalaryRequestDTO {
-    private int eid;
-    private int totalSalary;
+public class LoginDTO {
+    private String email;
+    private String password;
 }

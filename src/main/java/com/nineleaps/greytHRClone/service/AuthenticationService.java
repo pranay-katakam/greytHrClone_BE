@@ -1,19 +1,26 @@
 package com.nineleaps.greytHRClone.service;
 
-import com.nineleaps.greytHRClone.controller.EmployeeDetails;
 import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeRegistrationDTO;
+import com.nineleaps.greytHRClone.dto.LoginDTO;
+import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.helper.MailContentBuilder;
 import com.nineleaps.greytHRClone.model.*;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 
+import com.nineleaps.greytHRClone.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.WebUtils;
@@ -25,24 +32,34 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.*;
 
+import static com.nineleaps.greytHRClone.common.Constants.FIREBASE_URL_PREFIX;
+import static com.nineleaps.greytHRClone.common.Constants.FIREBASE_URL_SUFFIX;
 import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
-@Service
-public class AuthenticationService {
+@Service(value = "authenticationService")
+public class AuthenticationService /*implements UserDetailsService */{
+
 
     private EmployeeDataRepository employeeDataRepository;
     private MailContentBuilder mailContentBuilder;
+    private RoleRepository roleRepository;
+
 
     @Autowired
-    public AuthenticationService(EmployeeDataRepository employeeDataRepository,MailContentBuilder mailContentBuilder) {
+    public AuthenticationService(EmployeeDataRepository employeeDataRepository,MailContentBuilder mailContentBuilder,RoleRepository roleRepository) {
         this.employeeDataRepository = employeeDataRepository;
         this.mailContentBuilder = mailContentBuilder;
+        this.roleRepository=roleRepository;
+
+
     }
+
+     BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
+
 
     public ResponseEntity<String> Signup(EmployeeRegistrationDTO employeeRegistrationDTO) {
         ResponseEntity<String> responseEntity;
-
         int existByEmail = employeeDataRepository.exist(employeeRegistrationDTO.getEmail());
 
         if (existByEmail != 0) {
@@ -60,13 +77,11 @@ public class AuthenticationService {
                 employeeDepartment.setDepId(departmentId);
                 employeeDepartments.add(employeeDepartment);
             }
-             System.out.println("departments "+employeeDepartments);
-
 
             EmployeeData employeeData=new EmployeeData();
             employeeData.setName(name);
             employeeData.setEmail(employeeRegistrationDTO.getEmail());
-            employeeData.setPassword(employeeRegistrationDTO.getPassword());
+            employeeData.setPassword(bCryptPasswordEncoder.encode(employeeRegistrationDTO.getPassword()));
             employeeData.setDob(employeeRegistrationDTO.getDob());
             employeeData.setLocation(location);
             employeeData.setGender(employeeRegistrationDTO.getGender());
@@ -74,42 +89,28 @@ public class AuthenticationService {
             employeeData.setManagerId(employeeRegistrationDTO.getManagerId());
             employeeData.setDepartments( employeeDepartments);
             employeeData.setDesignation(designation);
-
-
-
-
             employeeDataRepository.save(employeeData);
-           // mailContentBuilder.sendWelcomeMail();
-            responseEntity = ResponseEntity.status(OK).body("Signed up successfully !!");
+//            mailContentBuilder.sendWelcomeMail();
+
+            responseEntity = ResponseEntity.status(CREATED).body("Signed up successfully !!");
         }
         return responseEntity;
     }
 
-    public ResponseEntity<ApiResponseDTO> Login(EmployeeData userCredentials, HttpServletResponse response) {
+
+
+    public ResponseEntity<ApiResponseDTO> Login(LoginDTO loginDTO, HttpServletResponse response) {
         try {
-            int existByEmail = employeeDataRepository.exist(userCredentials.getEmail());
-            if (existByEmail != 0) {
-
-                String email = userCredentials.getEmail();
-                String password = userCredentials.getPassword();
-                JSONObject dbuser = employeeDataRepository.UserByEmail(email);
-
-                String dbpassword = (String) dbuser.get("password");
-                int id = (int) dbuser.get("emp_id");
-                if (dbpassword.equals(password)) {
-                    generateCoookie(response, id);
-
-                    ApiResponseDTO apiResponseDTO = new ApiResponseDTO("Login Successful");
-                    return ResponseEntity.status(OK).body(apiResponseDTO);
-
-                }
-                else {
-                    throw new BadRequestException("wrong password");
-                }
-            }
-            else
-                {
-                throw new BadRequestException("please enter a valid name");
+            EmployeeData employeeData = Optional.ofNullable(employeeDataRepository.findByEmail(loginDTO.getEmail())).orElseThrow(()->new BadRequestException("email doesn't exist please signUp "));
+            if(bCryptPasswordEncoder.matches(loginDTO.getPassword(), employeeData.getPassword())){
+                generateCoookie(response, employeeData.getEmpId());
+                ProfileDTO profileDTO=new ProfileDTO();
+                profileDTO.setName(employeeData.getName());
+                profileDTO.setImageName(FIREBASE_URL_PREFIX + employeeData.getImageName() + FIREBASE_URL_SUFFIX);
+                mailContentBuilder.sendWelcomeMail(profileDTO);
+                return ResponseEntity.status(OK).body(new ApiResponseDTO("Login Successful"));
+            }else {
+                throw new BadRequestException("Incorrect password\nType correct password");
             }
         }
         catch (Exception e) {
@@ -141,11 +142,35 @@ public class AuthenticationService {
             return ResponseEntity.status(HttpServletResponse.SC_REQUEST_TIMEOUT).body("Session Expired");
 
         }
-//        Cookie cookie = new Cookie("userID", null);
-//        cookie.setMaxAge(0);
-//        response.addCookie(cookie);
-//        return ResponseEntity.status(OK).body("Successfully logged out");
     }
+//    @Override
+//    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+//        EmployeeData user = employeeDataRepository.findByEmail(email);
+//        if(user == null){
+//            throw new UsernameNotFoundException("Invalid name or password.");
+//        }
+//        return new User(user.getEmail(), user.getPassword(), getAuthority(user));
+//    }
+//
+//    private Set<SimpleGrantedAuthority> getAuthority(EmployeeData user) {
+//        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+//        user.getRoles().forEach(role -> {
+//            //authorities.add(new SimpleGrantedAuthority(role.getName()));
+//            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole()));
+//        });
+//        return authorities;
+//        //return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+//    }
+
+
+
+
+
+
+
+
+
+
 }
 
 

@@ -2,10 +2,12 @@ package com.nineleaps.greytHRClone.service;
 
 import com.nineleaps.greytHRClone.dto.*;
 
+import com.nineleaps.greytHRClone.exception.BadRequestException;
 import com.nineleaps.greytHRClone.model.*;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 import com.nineleaps.greytHRClone.repository.EmployeeLeaveRepository;
 import com.nineleaps.greytHRClone.repository.HolidaysRepository;
+import com.nineleaps.greytHRClone.repository.LeaveBalanceRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,11 +26,13 @@ public class LeaveServices {
     private HolidaysRepository holidaysRepository;
     private EmployeeLeaveRepository employeeLeaveRepository;
     private EmployeeDataRepository employeeDataRepository;
+    private LeaveBalanceRepository leaveBalanceRepository;
 
-    public LeaveServices(HolidaysRepository holidaysRepository, EmployeeLeaveRepository employeeLeaveRepository, EmployeeDataRepository employeeDataRepository) {
+    public LeaveServices(HolidaysRepository holidaysRepository, EmployeeLeaveRepository employeeLeaveRepository, EmployeeDataRepository employeeDataRepository, LeaveBalanceRepository leaveBalanceRepository) {
         this.holidaysRepository = holidaysRepository;
         this.employeeLeaveRepository = employeeLeaveRepository;
         this.employeeDataRepository = employeeDataRepository;
+        this.leaveBalanceRepository = leaveBalanceRepository;
     }
 
     public ResponseEntity<String> addHolidays(List<HolidayDTO> holidayDTOS) {
@@ -38,12 +42,6 @@ public class LeaveServices {
         return ResponseEntity.status(HttpStatus.CREATED).body("holiday added successfully");
     }
 
-//    public ResponseEntity<List<DoorAddress>> getDoorAddress() {
-////        Iterable<DoorAddress> doorAddressesIterable=doorAddressRepository.findAll();
-////        List<DoorAddress> doorAddresses=StreamSupport.stream(doorAddressesIterable.spliterator(), false)
-////                .collect(Collectors.toList());
-//        return ResponseEntity.status(HttpStatus.OK).body(doorAddressRepository.getDoorAddress());
-//    }
 
     public ResponseEntity<List<Holidays>> getHolidays() {
         return ResponseEntity.status(HttpStatus.OK).body(holidaysRepository.findAll());
@@ -93,5 +91,30 @@ public class LeaveServices {
 
         }
         return ResponseEntity.status(HttpStatus.OK).body(employeeLeaveDTOS);
+    }
+
+    //TODO get all employee id's
+    //TODO in each iteration increment earned leave balance by 1
+    //TODO make a query to update the same in the db (leave balance)
+    public void addEarnedLeaveMonthly() {
+        List<LeaveBalance> updatedLeaveBalances = new ArrayList<>();
+
+        List<Integer> empIDs = employeeDataRepository.findAlluserId(); //400
+        System.out.println("EMP IDsss" +empIDs);
+        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
+
+        EmployeeData employeeData = new EmployeeData();
+        int earnedLeave = 0;
+        for (Integer empID : empIDs){
+            System.out.println("EMPID" + empID);
+            employeeData.setEmpId(empID);
+            LeaveBalance leaveBalance = leaveBalances.stream().filter(t -> t.getUser().equals(employeeData)).findAny().orElse(new LeaveBalance());
+            System.out.println("LEAVE BALANCE" + leaveBalance);
+            earnedLeave = leaveBalance.getEarnedLeave() + 1;
+            leaveBalance.setEarnedLeave(earnedLeave);
+            leaveBalance.setUser(employeeData);
+            updatedLeaveBalances.add(leaveBalance);
+        }
+        leaveBalanceRepository.saveAll(updatedLeaveBalances);
     }
 }
