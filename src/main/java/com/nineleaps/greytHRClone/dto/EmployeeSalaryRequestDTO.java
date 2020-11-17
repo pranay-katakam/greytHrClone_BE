@@ -1,6 +1,6 @@
 package com.nineleaps.greytHRClone.dto;
 
-import com.nineleaps.greytHRClone.model.Leavetype;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
