@@ -85,10 +85,10 @@ public class AttendanceService {
    public void markAttendence() {
        List<EmployeeAttendance> employeeAttendances = new ArrayList<>();
 
-       List<Swipe> swipeUsers = swipesRepository.findByDate();//10
-       List<TotalTimeDTO> totalTimeDTOS = getTotalTime(swipeUsers);//9
+       List<Swipe> swipeUsers = swipesRepository.findByDate();//15
+       List<TotalTimeDTO> totalTimeDTOS = getTotalTime(swipeUsers);//15
 
-       List<Integer> allUserIds = employeeDataRepository.findAlluserId();//20
+       List<Integer> allUserIds = employeeDataRepository.findAlluserId();//10
 
        //check for 4<8 of working hours::half day
        //send alert mail to admin and user about time deduction
@@ -101,13 +101,10 @@ public class AttendanceService {
                employeeAttendance.setUser(employeeData);
                employeeAttendances.add(employeeAttendance);
                mailContentBuilder.sendDeductionMail(totalTimeDTO);
-               allUserIds.remove(totalTimeDTO.getEmployeeId());
-
-           } else {
-               allUserIds.remove(totalTimeDTO.getEmployeeId());
-
            }
-       }
+               allUserIds.remove(totalTimeDTO.getEmployeeId());
+           }
+
 
        //amoung these absent did anyone had already applied for leave
        //change the attendance category from absent to leave
@@ -117,20 +114,24 @@ public class AttendanceService {
            EmployeeAttendance employeeAttendance = new EmployeeAttendance();
            EmployeeData employeeData=new EmployeeData();
            employeeData.setEmpId(absenteeId);
-           //TODO check if the leave was approved or not
-           if (employeeLeaves.contains(absenteeId)) {
-               employeeAttendance.setUser(employeeData);
-               employeeAttendance.setAttendanceCategory(AttendanceCategory.LEAVE);
-               employeeAttendances.add(employeeAttendance);
-           }else{
-               employeeAttendance.setUser(employeeData);
-               employeeAttendance.setAttendanceCategory(AttendanceCategory.ABSENT);
-               employeeAttendances.add(employeeAttendance);
-           }
+           employeeAttendance.setUser(employeeData);
+           // check if the leave was approved or not
+           employeeAttendance.setAttendanceCategory(employeeLeaves.stream()
+                   .filter(l->l.getUser().getEmpId()==absenteeId)
+                   .filter(a->a.getLeaveStatus().equals(LeaveStatus.APPROVED))
+                   .map(EmployeeLeave::getLeavetype)
+                   .findAny()
+                   .orElse(AttendanceCategory.ABSENT));
+           employeeAttendances.add(employeeAttendance);
        }
 
        employeeAttendanceRepository.saveAll(employeeAttendances);
    }
+
+
+
+
+
 
     public List<TotalTimeDTO> getTotalTime(List<Swipe> swipes){
         List<EmployeeData> users=swipes.stream()
