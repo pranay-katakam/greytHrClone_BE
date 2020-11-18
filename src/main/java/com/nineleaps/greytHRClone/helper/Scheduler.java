@@ -2,6 +2,7 @@ package com.nineleaps.greytHRClone.helper;
 
 import com.nineleaps.greytHRClone.service.AttendanceService;
 import com.nineleaps.greytHRClone.service.FeedService;
+import com.nineleaps.greytHRClone.service.LeaveServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -16,11 +17,13 @@ public class Scheduler {
 
     private FeedService feedService;
     private AttendanceService attendanceService;
+    private LeaveServices leaveServices;
 
     @Autowired
-    public Scheduler(FeedService feedService, AttendanceService attendanceService) {
+    public Scheduler(FeedService feedService, AttendanceService attendanceService, LeaveServices leaveServices) {
         this.feedService = feedService;
         this.attendanceService = attendanceService;
+        this.leaveServices = leaveServices;
     }
 
     @Async
@@ -38,4 +41,9 @@ public class Scheduler {
     }
 
 
+    @Async
+    @Scheduled(cron = "0 19 14 17 * 1-5")//sec,min,hour,dayDate,monthDate,dayWeek/yearday of week (0 - 6) (0 is Sunday, or use names)
+    public void addEarnedLeaveMonthly() throws ParseException {
+        leaveServices.addEarnedLeaveMonthly();
+    }
 }

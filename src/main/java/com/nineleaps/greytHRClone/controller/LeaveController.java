@@ -31,7 +31,7 @@ public class LeaveController {
         return leaveServices.addHolidays(holidays);
     }
 
-    @Operation(summary = "View all the avaliable holidays", description = "To get all available holidays", tags = { "getHolidays" })
+    @Operation(summary = "View all the available holidays", description = "To get all available holidays", tags = { "getHolidays" })
     @GetMapping(path = "/holidays")
     public ResponseEntity<List<Holidays>> getHolidays() {
 

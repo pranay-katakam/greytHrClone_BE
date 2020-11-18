@@ -1,7 +1,8 @@
 package com.nineleaps.greytHRClone.dto;
 
+import com.nineleaps.greytHRClone.model.AttendanceCategory;
 import com.nineleaps.greytHRClone.model.LeaveStatus;
-import com.nineleaps.greytHRClone.model.Leavetype;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class EmployeeLeaveDTO {
     private String name;
     private int managerId;
     private String managerName;
-    private Leavetype leavetype;
+    private AttendanceCategory leavetype;
     private String reason;
     private LocalDateTime fromDate;
     private LocalDateTime toDate;
