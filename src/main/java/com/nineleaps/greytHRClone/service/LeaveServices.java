@@ -97,24 +97,19 @@ public class LeaveServices {
     //TODO in each iteration increment earned leave balance by 1
     //TODO make a query to update the same in the db (leave balance)
     public void addEarnedLeaveMonthly() {
-        List<LeaveBalance> updatedLeaveBalances = new ArrayList<>();
 
-        List<Integer> empIDs = employeeDataRepository.findAlluserId(); //400
-        System.out.println("EMP IDsss" +empIDs);
-        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
 
+        List<Integer> empIDs = employeeDataRepository.findAlluserId(); //1,2,3
+        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();//{lbId:1,emp:1},{lbId:2,emp:2}
         EmployeeData employeeData = new EmployeeData();
         int earnedLeave = 0;
         for (Integer empID : empIDs){
-            System.out.println("EMPID" + empID);
-            employeeData.setEmpId(empID);
-            LeaveBalance leaveBalance = leaveBalances.stream().filter(t -> t.getUser().equals(employeeData)).findAny().orElse(new LeaveBalance());
-            System.out.println("LEAVE BALANCE" + leaveBalance);
+            LeaveBalance leaveBalance = leaveBalances.stream().filter(t -> t.getUser().getEmpId()==empID).findAny().orElse(new LeaveBalance());
             earnedLeave = leaveBalance.getEarnedLeave() + 1;
             leaveBalance.setEarnedLeave(earnedLeave);
+            employeeData.setEmpId(empID);
             leaveBalance.setUser(employeeData);
-            updatedLeaveBalances.add(leaveBalance);
+            leaveBalanceRepository.save(leaveBalance);
         }
-        leaveBalanceRepository.saveAll(updatedLeaveBalances);
     }
 }

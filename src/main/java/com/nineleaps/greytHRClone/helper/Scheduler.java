@@ -36,14 +36,14 @@ public class Scheduler {
 
     @Async
     @Scheduled(cron = "0 48 7 * * 1-5")//sec,min,hour,dayDate,monthDate,dayWeek/yearday of week (0 - 6) (0 is Sunday, or use names)
-    public void markAttendence() throws ParseException {
+    public void markAttendence() {
         attendanceService.markAttendence();
     }
 
 
     @Async
-    @Scheduled(cron = "0 19 14 17 * 1-5")//sec,min,hour,dayDate,monthDate,dayWeek/yearday of week (0 - 6) (0 is Sunday, or use names)
-    public void addEarnedLeaveMonthly() throws ParseException {
+    @Scheduled(cron = "50 52 10 18 * *")//sec,min,hour,dayDate,monthDate,dayWeek/yearday of week (0 - 6) (0 is Sunday, or use names)
+    public void addEarnedLeaveMonthly()  {
         leaveServices.addEarnedLeaveMonthly();
     }
 }
