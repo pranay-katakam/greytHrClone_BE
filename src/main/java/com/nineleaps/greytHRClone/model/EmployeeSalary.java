@@ -4,6 +4,8 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -20,5 +22,11 @@ public class EmployeeSalary {
     @Column(name = "total_salary")
     @NotNull(message = "Total must not be null!")
     private  int totalSalary;
+
+    @Column(name = "from_date")
+    private LocalDateTime fromDate;
+
+    @Column(name = "to_date")
+    private LocalDateTime toDate;
 
 }
