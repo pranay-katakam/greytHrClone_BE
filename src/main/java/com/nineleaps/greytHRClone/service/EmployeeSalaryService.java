@@ -1,5 +1,6 @@
 package com.nineleaps.greytHRClone.service;
 
+import com.nineleaps.greytHRClone.dto.AnnualEarningsDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeSalaryRequestDTO;
 import com.nineleaps.greytHRClone.dto.SalaryDTO;
 import com.nineleaps.greytHRClone.model.EmployeeLeave;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 
 @Service
@@ -32,9 +34,12 @@ public class EmployeeSalaryService {
         return ResponseEntity.status(HttpStatus.CREATED).body("Salary added successfully");
     }
 
-    public ResponseEntity<List<SalaryDTO>> getSalaryDetails(int eid) {
+    public ResponseEntity<AnnualEarningsDTO> getSalaryDetails(int eid) {
+        AnnualEarningsDTO annualEarningsDTO = new AnnualEarningsDTO();
         List<SalaryDTO> salaryDTOs = new ArrayList<>();
-
+        int annualGrossPay = 0;
+        int annualDeduction = 0;
+        int annualNetPay = 0;
         List<EmployeeSalary> salaryDetails = employeeSalaryRepository.getSalaryDetails(eid);
 
         for (EmployeeSalary employeeSalary : salaryDetails) {
@@ -44,9 +49,26 @@ public class EmployeeSalaryService {
                 LocalDateTime currentIterationpayDate = date;
                 SalaryDTO salaryDTO = TotalSalaryDetails(employeeSalary.getTotalSalary(), employeeSalary.getEid(), currentIterationpayDate);
                 salaryDTOs.add(salaryDTO);
+                annualGrossPay = salaryDTO.getTotalEarning() + annualGrossPay;
+                annualDeduction = salaryDTO.getTotalDeduction() + annualDeduction;
+                annualNetPay = salaryDTO.getNetPay() + annualNetPay;
             }
+
         }
-        return ResponseEntity.status(HttpStatus.OK).body(salaryDTOs);
+        annualEarningsDTO.setAnnualGrossPay(annualGrossPay);
+        annualEarningsDTO.setAnnualNetDeduction(annualDeduction);
+        annualEarningsDTO.setAnnualNetPay(annualNetPay);
+
+        long count = salaryDTOs.stream().count();
+        Stream<SalaryDTO> stream = salaryDTOs.stream();
+        SalaryDTO currentMonthSalary = stream.skip(count - 1).findFirst().get();
+
+        annualEarningsDTO.setCurrentMonthSalary(currentMonthSalary);
+
+        annualEarningsDTO.setYearlySalary(salaryDTOs);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(annualEarningsDTO);
     }
 
     //
