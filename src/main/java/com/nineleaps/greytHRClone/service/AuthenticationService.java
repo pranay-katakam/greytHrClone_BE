@@ -107,7 +107,7 @@ public class AuthenticationService /*implements UserDetailsService */{
                 ProfileDTO profileDTO=new ProfileDTO();
                 profileDTO.setName(employeeData.getName());
                 profileDTO.setImageName(FIREBASE_URL_PREFIX + employeeData.getImageName() + FIREBASE_URL_SUFFIX);
-                mailContentBuilder.sendWelcomeMail(profileDTO);
+//                mailContentBuilder.sendWelcomeMail(profileDTO);
                 return ResponseEntity.status(OK).body(new ApiResponseDTO("Login Successful"));
             }else {
                 throw new BadRequestException("Incorrect password\nType correct password");
