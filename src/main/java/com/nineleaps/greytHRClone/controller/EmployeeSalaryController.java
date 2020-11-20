@@ -14,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.Year;
 import java.time.YearMonth;
+import java.util.Optional;
 
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
@@ -32,13 +34,13 @@ public class EmployeeSalaryController {
 
     @Operation(summary = "To get employee salary details", description = "To get employee salary details based on requested id", tags = {"getSalaryDetails"})
     @GetMapping(path = "/getSalaryDetails")
-    public ResponseEntity<AnnualEarningsDTO> getSalaryDetails(@RequestAttribute("id") int eid) {
-        return employeeSalaryService.getSalaryDetails(eid);
+    public ResponseEntity<AnnualEarningsDTO> getSalaryDetails(@RequestAttribute("id") int eid,@RequestParam(value = "year",required = false)Year year) {
+        return employeeSalaryService.getSalaryDetails(eid,year);
     }
 
     @GetMapping(path = "/salary")
-    public ResponseEntity<SalaryDTO> getSalary(@RequestAttribute("id") int eid,@RequestParam(value = "yearMonth",required = false)YearMonth yearMonth) {
-        System.out.println("IN CONTROLLER "+yearMonth);
+    public ResponseEntity<SalaryDTO> getSalary(@RequestAttribute("id") int eid, @RequestParam Optional<YearMonth> yearMonth) {
+
 
         return employeeSalaryService.getSalary(eid,yearMonth);
     }
