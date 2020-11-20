@@ -15,8 +15,6 @@ public class AnnualEarningsDTO {
     private int annualNetDeduction;
     private int annualNetPay;
     private int annualPf;
-
-    private SalaryDTO currentMonthSalary;
     private List<SalaryDTO> yearlySalary;
 
 }
