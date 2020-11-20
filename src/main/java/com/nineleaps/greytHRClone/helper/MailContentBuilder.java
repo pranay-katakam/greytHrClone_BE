@@ -4,7 +4,6 @@ package com.nineleaps.greytHRClone.helper;
 import com.nineleaps.greytHRClone.dto.ProfileDTO;
 import com.nineleaps.greytHRClone.dto.TotalTimeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -16,7 +15,6 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 
 @Service
@@ -43,15 +41,6 @@ public class MailContentBuilder {
 
     @Async
     public void sendWelcomeMail(ProfileDTO profileDTO) {
-        Map<String, String> inlineImages = new HashMap<>();
-        inlineImages.put("facebookIcon", "images/facebook.png");
-        inlineImages.put("instagramIcon", "images/instagram.png");
-        inlineImages.put("linkedinIcon", "images/linkedin.png");
-        inlineImages.put("nl_logo", "images/nl_logo.png");
-        inlineImages.put("OneLogo", "images/OneLogo.png");
-        inlineImages.put("topStartup", "images/topStartup.jpeg");
-        inlineImages.put("twitterIcon", "images/twitter.png");
-        inlineImages.put("welcome", "images/welcome.jpg");
 
         String text = generateMailContent(profileDTO);
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -59,19 +48,10 @@ public class MailContentBuilder {
         try {
             helper = new MimeMessageHelper(message, true);
 
-
-
-
-
             helper.setFrom("greythrclone1@gmail.com");
             helper.setTo("mohammad.shinaz@nineleaps.com");
-            helper.setSubject("This is a test mail from greythr clone" );
+            helper.setSubject("This is a test mail from greythr final clone" );
             helper.setText(text, true);
-
-            Set<String> setImageID = inlineImages.keySet();
-            for (String contentId : setImageID) {
-                helper.addInline(contentId, new ClassPathResource(inlineImages.get(contentId)));
-            }
 
             javaMailSender.send(message);
 

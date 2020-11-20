@@ -13,10 +13,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.chrono.ChronoLocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 
@@ -34,6 +40,9 @@ public class EmployeeSalaryService {
         return ResponseEntity.status(HttpStatus.CREATED).body("Salary added successfully");
     }
 
+
+
+
     public ResponseEntity<AnnualEarningsDTO> getSalaryDetails(int eid) {
         AnnualEarningsDTO annualEarningsDTO = new AnnualEarningsDTO();
         List<SalaryDTO> salaryDTOs = new ArrayList<>();
@@ -42,11 +51,13 @@ public class EmployeeSalaryService {
         int annualNetPay = 0;
         List<EmployeeSalary> salaryDetails = employeeSalaryRepository.getSalaryDetails(eid);
 
-        for (EmployeeSalary employeeSalary : salaryDetails) {
-            LocalDateTime ToDate = (employeeSalary.getToDate() == null) ? LocalDateTime.now().minusMonths(1) : employeeSalary.getToDate();
 
-            for (LocalDateTime date = employeeSalary.getFromDate(); date.isBefore(ToDate); date = date.plusMonths(1)) {
-                LocalDateTime currentIterationpayDate = date;
+
+        for (EmployeeSalary employeeSalary : salaryDetails) {
+            LocalDate ToDate = (employeeSalary.getToDate() == null) ? LocalDate.now().minusMonths(1) : employeeSalary.getToDate();
+
+            for (LocalDate date = employeeSalary.getFromDate(); date.isBefore(ToDate); date = date.plusMonths(1)) {
+                LocalDate currentIterationpayDate = date;
                 SalaryDTO salaryDTO = TotalSalaryDetails(employeeSalary.getTotalSalary(), employeeSalary.getEid(), currentIterationpayDate);
                 salaryDTOs.add(salaryDTO);
                 annualGrossPay = salaryDTO.getTotalEarning() + annualGrossPay;
@@ -72,7 +83,7 @@ public class EmployeeSalaryService {
     }
 
     //
-    private SalaryDTO TotalSalaryDetails(int totalSalary, int eid, LocalDateTime payDate) {
+    private SalaryDTO TotalSalaryDetails(int totalSalary, int eid, LocalDate payDate) {
 
 //TODO lookup-table
         double basic = totalSalary * .45;
@@ -108,4 +119,18 @@ public class EmployeeSalaryService {
     }
 
 
+    public ResponseEntity<SalaryDTO> getSalary(int eid, YearMonth yearMonth) {
+        List<EmployeeSalary> salaries=employeeSalaryRepository.findByEidOrderBySidDesc(eid);
+        int salary =0;
+        if(yearMonth==null){
+             salary=salaries.stream().findFirst().map(EmployeeSalary::getTotalSalary).get();
+        }else {
+            salary=salaries.stream().filter(s->s.getFromDate().isBefore(yearMonth.atDay(1))).findFirst().map(EmployeeSalary::getTotalSalary).orElse(0);
+            System.out.println("salary "+salary);
+        }
+        LocalDate date = yearMonth==null?LocalDate.now().minusMonths(1):yearMonth.atDay(1);
+
+        SalaryDTO salaryDTO=salary==0?new SalaryDTO():TotalSalaryDetails(salary,eid,date);
+        return ResponseEntity.status(HttpStatus.OK).body(salaryDTO);
+    }
 }

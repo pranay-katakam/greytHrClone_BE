@@ -74,7 +74,6 @@ public class LeaveServices {
 
         for (EmployeeLeave leave : leaves) {
             String managerName = employeeDataRepository.getManagerName(leave.getUser().getManagerId());
-
             EmployeeLeaveDTO employeeLeaveDTO = new EmployeeLeaveDTO();
             employeeLeaveDTO.setLeaveId(leave.getLeaveId());
             employeeLeaveDTO.setEmpId(leave.getUser().getEmpId());
@@ -93,18 +92,17 @@ public class LeaveServices {
         return ResponseEntity.status(HttpStatus.OK).body(employeeLeaveDTOS);
     }
 
-    //TODO get all employee id's
-    //TODO in each iteration increment earned leave balance by 1
-    //TODO make a query to update the same in the db (leave balance)
+
     public void addEarnedLeaveMonthly() {
-
-
-        List<Integer> empIDs = employeeDataRepository.findAlluserId(); //1,2,3
-        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();//{lbId:1,emp:1},{lbId:2,emp:2}
+        List<Integer> empIDs = employeeDataRepository.findAlluserId();
+        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
         EmployeeData employeeData = new EmployeeData();
         int earnedLeave = 0;
         for (Integer empID : empIDs){
-            LeaveBalance leaveBalance = leaveBalances.stream().filter(t -> t.getUser().getEmpId()==empID).findAny().orElse(new LeaveBalance());
+            LeaveBalance leaveBalance = leaveBalances.stream()
+                    .filter(t -> t.getUser().getEmpId()==empID)
+                    .findAny()
+                    .orElse(new LeaveBalance());
             earnedLeave = leaveBalance.getEarnedLeave() + 1;
             leaveBalance.setEarnedLeave(earnedLeave);
             employeeData.setEmpId(empID);
