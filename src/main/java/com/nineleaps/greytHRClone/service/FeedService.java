@@ -41,6 +41,22 @@ public class FeedService {
     public ResponseEntity<String> addFeed(FeedRequestDTO feedRequestDTO) {
         ModelMapper modelMapper = new ModelMapper();
         Feed feed = modelMapper.map(feedRequestDTO, Feed.class);
+        Random random = new Random();
+        int imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
+        EventType eventType = feedRequestDTO.getEventType();
+        String ImageType = "";
+        switch (eventType) {
+            case Birthday:
+                ImageType = "birthdayImage";
+                break;
+            case Anniversary:
+                ImageType = "anniversaryImage";
+                break;
+            default:
+                ImageType = "otherImage";
+        }
+        String imageUrl=ImageType+imageNameSuffix;
+        feed.setImageUrl(imageUrl);
         feedRepository.save(feed);
         return ResponseEntity.status(HttpStatus.CREATED).body("Feed saved successfully");
     }
@@ -65,16 +81,12 @@ public class FeedService {
 
 
         String ImageType = "";
-        int imageNameSuffix = 0;
         EventType eventType;
 
         for (Feed feedObj : feed) {
             FeedDTO feedDTO = new FeedDTO();
             feedDTO.setFeedId(feedObj.getFeedId());
             feedDTO.setName(feedObj.getName());
-            Random random = new Random();
-            imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
-
             eventType = feedObj.getEventType();
             switch (eventType) {
                 case Birthday:
@@ -86,7 +98,8 @@ public class FeedService {
                 default:
                     ImageType = "otherImage";
             }
-            feedDTO.setImageUrl(FIREBASE_URL_PREFIX + ImageType + "s%2F" + ImageType + imageNameSuffix + ".png" + FIREBASE_URL_SUFFIX);
+            String imageName=feedObj.getImageUrl();
+            feedDTO.setImageUrl(FIREBASE_URL_PREFIX + ImageType + "s%2F" + imageName + ".png" + FIREBASE_URL_SUFFIX);
             feedDTO.setCreatedDate(feedObj.getCreatedDate());
             feedDTO.setNumberOfYears(feedObj.getNoOfYears());
             feedDTO.setEventType(eventType);
@@ -173,12 +186,15 @@ public class FeedService {
     public void createEventFeed() {
         List<JSONObject> birthdayList = employeeDataRepository.BirthdayList();
         List<JSONObject> anniversaryList = employeeDataRepository.AnniversaryList();
-
+        Random random = new Random();
+        int imageNameSuffix = 0;
         for (JSONObject eventObj : birthdayList) {
             Feed feed = new Feed();
             feed.setEventType(EventType.Birthday);
             feed.setFeedType(FeedType.EVENTS);
             feed.setName((String) eventObj.get("name"));
+            imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
+            feed.setImageUrl("birthdayImage"+imageNameSuffix);
             feedRepository.save(feed);
         }
         for (JSONObject eventObj : anniversaryList) {
@@ -186,6 +202,8 @@ public class FeedService {
             feed.setEventType(EventType.Anniversary);
             feed.setFeedType(FeedType.EVENTS);
             feed.setName((String) eventObj.get("name"));
+            imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
+            feed.setImageUrl("anniversaryImage"+imageNameSuffix);
             BigInteger noOfYears = (BigInteger) eventObj.get("difference");
             int anniversaryYears = noOfYears.intValue() / 365;
             feed.setNoOfYears(anniversaryYears);

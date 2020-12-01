@@ -11,10 +11,5 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TotalTimeDTO {
     private int employeeId;
-    private String name;
-    private LocalDateTime firstIn;
-    private LocalDateTime lastOut;
     private long totalTime;
-
-
 }

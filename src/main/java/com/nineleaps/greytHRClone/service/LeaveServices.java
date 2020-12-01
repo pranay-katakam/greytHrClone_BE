@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -50,16 +51,18 @@ public class LeaveServices {
     public ResponseEntity<String> applyLeave(EmployeeLeaveRequestDTO employeeLeaveRequestDTO) {
         EmployeeData employeeData = new EmployeeData();
         employeeData.setEmpId(employeeLeaveRequestDTO.getUserId());
-
-        EmployeeLeave employeeLeaves = new EmployeeLeave();
-        employeeLeaves.setUser(employeeData);
-        employeeLeaves.setLeavetype(employeeLeaveRequestDTO.getLeavetype());
-        employeeLeaves.setReason(employeeLeaveRequestDTO.getReason());
-        employeeLeaves.setFromDate(employeeLeaveRequestDTO.getFromDate());
-        employeeLeaves.setToDate(employeeLeaveRequestDTO.getToDate());
-        employeeLeaves.setLeaveStatus(LeaveStatus.PENDING);
-
-        employeeLeaveRepository.save(employeeLeaves);
+        LocalDateTime toDate=employeeLeaveRequestDTO.getToDate().plusDays(1);
+        List<EmployeeLeave> employeeLeaves=new ArrayList<>();
+        for (LocalDateTime date = employeeLeaveRequestDTO.getFromDate(); date.isBefore(toDate); date = date.plusDays(1)){
+            EmployeeLeave employeeLeave = new EmployeeLeave();
+            employeeLeave.setUser(employeeData);
+            employeeLeave.setLeavetype(employeeLeaveRequestDTO.getLeavetype());
+            employeeLeave.setReason(employeeLeaveRequestDTO.getReason());
+            employeeLeave.setLeaveDate(date);
+            employeeLeave.setLeaveStatus(LeaveStatus.PENDING);
+            employeeLeaves.add(employeeLeave);
+        }
+        employeeLeaveRepository.saveAll(employeeLeaves);
         return ResponseEntity.status(HttpStatus.CREATED).body("Leave applied Successfully");
     }
 
@@ -82,8 +85,7 @@ public class LeaveServices {
             employeeLeaveDTO.setManagerName(managerName);
             employeeLeaveDTO.setLeavetype(leave.getLeavetype());
             employeeLeaveDTO.setLeaveStatus(leave.getLeaveStatus());
-            employeeLeaveDTO.setFromDate(leave.getFromDate());
-            employeeLeaveDTO.setToDate(leave.getToDate());
+            employeeLeaveDTO.setToDate(leave.getLeaveDate());
             employeeLeaveDTO.setReason(leave.getReason());
 
             employeeLeaveDTOS.add(employeeLeaveDTO);

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import java.util.List;
 public interface HolidaysRepository extends JpaRepository<Holidays, Integer> {
 
     @Query("select holidayDate from Holidays")
-    List<Date> findAllByHolidayDate();
+    List<LocalDate> findAllByHolidayDate();
+
+    List<Holidays> findByHolidayDateBetween(LocalDate beginDate, LocalDate lastDate);
 //    List<Holidays> getHolidays();
 }
