@@ -33,4 +33,5 @@ public class EmployeeSalary {
     @Column(name = "to_date")
     private LocalDate toDate;
 
+
 }

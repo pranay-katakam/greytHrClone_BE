@@ -34,15 +34,16 @@ public class EmployeeSalaryController {
 
     @Operation(summary = "To get employee salary details", description = "To get employee salary details based on requested id", tags = {"getSalaryDetails"})
     @GetMapping(path = "/getSalaryDetails")
-    public ResponseEntity<AnnualEarningsDTO> getSalaryDetails(@RequestAttribute("id") int eid,@RequestParam(value = "year",required = false)Year year) {
-        return employeeSalaryService.getSalaryDetails(eid,year);
+    public ResponseEntity<AnnualEarningsDTO> getSalaryDetails(@RequestAttribute("id") int eid, @RequestParam(value = "year", required = false) Year year) {
+        return employeeSalaryService.getSalaryDetails(eid, year);
     }
+
 
     @GetMapping(path = "/salary")
     public ResponseEntity<SalaryDTO> getSalary(@RequestAttribute("id") int eid, @RequestParam Optional<YearMonth> yearMonth) {
+
         return employeeSalaryService.getSalary(eid,yearMonth);
     }
-
 
 
 }

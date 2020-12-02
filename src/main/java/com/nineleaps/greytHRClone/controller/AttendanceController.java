@@ -46,6 +46,13 @@ public class AttendanceController {
         return attendanceService.getSwipes(id);
     }
 
+   @Operation(summary = "View recent 4 swipes record of a employee ", description = "To get recent swipes record of employee based on date", tags = { "getRecentSwipes" })
+    @GetMapping(path = "/recentSwipes")
+    public ResponseEntity<List<SwipesDTO>> getRecentSwipes(@RequestAttribute("id") int id) {
+        return attendanceService.getRecentSwipes(id);
+    }
+
+
     @Operation(summary = "View the attendance summary based on id ", description = "To get attendance summary of employee based  on record calculated from month begin to current date", tags = { "getMonthSummary" })
     @GetMapping(path = "/attendance-summary")
     public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(@RequestAttribute("id") int id, @RequestParam Optional<LocalDate> startDate,@RequestParam Optional<LocalDate> endDate) {

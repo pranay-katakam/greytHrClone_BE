@@ -44,11 +44,9 @@ public class AttendanceService {
     @Autowired
     private MailContentBuilder mailContentBuilder;
 
-
-
     public ResponseEntity<ApiResponseDTO> addDoorAddress(List<DoorAddressDTO> doorAddressDTOS) {
         ModelMapper modelMapper = new ModelMapper();
-        Iterable<DoorAddress> DoorAddresses = Arrays.asList( modelMapper.map(doorAddressDTOS, DoorAddress[].class));
+        Iterable<DoorAddress> DoorAddresses = Arrays.asList(modelMapper.map(doorAddressDTOS, DoorAddress[].class));
         doorAddressRepository.saveAll(DoorAddresses);
         return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponseDTO("added door address successfully!"));
     }
@@ -58,12 +56,12 @@ public class AttendanceService {
     }
 
     public ResponseEntity<ApiResponseDTO> addSwipe(SwipeDTO swipeDTO) {
-        EmployeeData employeeData=new EmployeeData();//converting int userId to to type EmployeeData
+        EmployeeData employeeData = new EmployeeData();//converting int userId to to type EmployeeData
         employeeData.setEmpId(swipeDTO.getUserId());
-        DoorAddress doorAddress=new DoorAddress();//converting int doorAddressId to type DoorAddress
+        DoorAddress doorAddress = new DoorAddress();//converting int doorAddressId to type DoorAddress
         doorAddress.setAddressId(swipeDTO.getDoorAddressId());
 
-        Swipe swipe=new Swipe();
+        Swipe swipe = new Swipe();
         swipe.setUser(employeeData);
         swipe.setDoorAddress(doorAddress);
         swipesRepository.save(swipe);
@@ -73,8 +71,21 @@ public class AttendanceService {
     public ResponseEntity<List<SwipesDTO>> getSwipes(int id) {
         EmployeeData employeeData = new EmployeeData();//converting int id to type EmployeeData
         employeeData.setEmpId(id);
+        Iterable<Swipe> allSwipes = swipesRepository.findByUser(employeeData);
+        return ResponseEntity.status(HttpStatus.OK).body(swipesResponse(allSwipes));
+
+    }
+
+    public ResponseEntity<List<SwipesDTO>> getRecentSwipes(int id) {
+        EmployeeData employeeData = new EmployeeData();//converting int id to type EmployeeData
+        employeeData.setEmpId(id);
+        Iterable<Swipe> recentSwipes = swipesRepository.getRecentSwipes(employeeData);
+        return ResponseEntity.status(HttpStatus.OK).body(swipesResponse(recentSwipes));
+    }
+
+    public List<SwipesDTO> swipesResponse(Iterable<Swipe> swipes) {
 //        Iterable<Swipe> swipes = swipesRepository.getSwipes(employeeData);
-        List<Swipe> swipes = swipesRepository.findByUser(employeeData);
+
         List<SwipesDTO> swipesDTOs = new ArrayList<>();
         for (Swipe swipe : swipes) {
             SwipesDTO swipesDTO = new SwipesDTO();
@@ -85,7 +96,8 @@ public class AttendanceService {
             swipesDTO.setDoorAddress(swipe.getDoorAddress().getDoorName());
             swipesDTOs.add(swipesDTO);
         }
-        return ResponseEntity.status(OK).body(swipesDTOs);
+
+        return swipesDTOs;
     }
 
    public void markAttendence() {
@@ -109,29 +121,31 @@ public class AttendanceService {
                 .map(Swipe::getUser).distinct()
                 .collect(Collectors.toList());
 
-        List<TotalTimeDTO> totalTimeDTOS=new ArrayList<>();
+        List<TotalTimeDTO> totalTimeDTOS = new ArrayList<>();
 
 
-        for(EmployeeData user:users){
-            List<LocalDateTime> AllSwipesPerUser=swipes.stream()
-                    .filter(s ->s.getUser()==user)
+        for (EmployeeData user : users) {
+            List<LocalDateTime> AllSwipesPerUser = swipes.stream()
+                    .filter(s -> s.getUser() == user)
                     .map(Swipe::getCreatedDate)
                     .collect(Collectors.toList());
 
-            LocalDateTime firstSwipe=AllSwipesPerUser.stream()
+            LocalDateTime firstSwipe = AllSwipesPerUser.stream()
                     .findFirst().get();
 
             long count = AllSwipesPerUser.stream().count();
             Stream<LocalDateTime> stream = AllSwipesPerUser.stream();
-            LocalDateTime lastSwipe=stream.skip(count - 1).findFirst().get();
+            LocalDateTime lastSwipe = stream.skip(count - 1).findFirst().get();
 
             Duration duration = Duration.between(lastSwipe, firstSwipe);
             long diff = Math.abs(duration.toHours());
+
             TotalTimeDTO totalTimeDTO=new TotalTimeDTO(user.getEmpId(),diff);
             totalTimeDTOS.add(totalTimeDTO);
-                    }
+        }
         return totalTimeDTOS;
     }
+
 
 
     public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(int id, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
