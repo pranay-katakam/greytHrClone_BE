@@ -30,8 +30,7 @@ public class FeedDTO {
     @Enumerated(EnumType.STRING)
     private FeedType feedType;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
-    private Date date;
+    private Date createdDate;
     private List<CommentDTO> comments;
     private List<LikeDTO> likes;
     private int numberOfYears=0;

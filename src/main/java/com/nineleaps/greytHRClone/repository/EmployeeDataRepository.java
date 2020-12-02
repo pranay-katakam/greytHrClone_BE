@@ -2,27 +2,23 @@ package com.nineleaps.greytHRClone.repository;
 
 import com.nineleaps.greytHRClone.model.EmployeeData;
 import org.json.simple.JSONObject;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
-public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Integer> {
+public interface EmployeeDataRepository extends JpaRepository<EmployeeData, Integer> {
 
-    EmployeeData findByName(String name);
-    //    @Query(value = " select name,designation,department,location,manager_id from employee_data where emp_id=?1 ", nativeQuery = true)
-//    JSONObject profile(int id);
 
-    @Query(value = "Select count(name) from employee_data where email=?1", nativeQuery = true)
+    @Query("Select count(e) from EmployeeData e where e.email=?1")
     int exist(String email);
 
-    @Query(value = "select emp_id,email,password from employee_data where email=?1", nativeQuery = true)
-    JSONObject UserByEmail(String email);
 
     @Query(value = "select name from employee_data where MONTH(dob)=MONTH(CURDATE()) and DAY(dob)=DAY(CURDATE())", nativeQuery = true)
     List<JSONObject> BirthdayList();
@@ -48,12 +44,17 @@ public interface EmployeeDataRepository extends CrudRepository<EmployeeData, Int
     @Query(value = "UPDATE employee_data  SET name=?1 where emp_id =?2", nativeQuery = true)
     void updateName(String name, int eid);
 
-    @Query("select name from EmployeeData where empId=?1")
-    String getNameByID(int eid);
 
     @Transactional
     @Modifying
     @Query("update EmployeeData set imageName=?1 where empId=?2")
     void saveImageById(String ImageName,int id);
+
+    @Query("select empId from EmployeeData")
+    List<Integer> findAlluserId();
+
+
+    EmployeeData findByEmail(String email);
+
 
 }

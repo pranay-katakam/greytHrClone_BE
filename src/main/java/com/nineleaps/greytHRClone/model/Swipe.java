@@ -1,14 +1,15 @@
 package com.nineleaps.greytHRClone.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
 
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import static javax.persistence.FetchType.EAGER;
-import static javax.persistence.FetchType.LAZY;
 
 @Data
 @Entity
@@ -24,7 +25,7 @@ public class Swipe {
     private EmployeeData user;
 
     @Column(name = "created_date")
-    private Date createdDate = new Date();
+    private LocalDateTime createdDate = LocalDateTime.now();
 
 
     @ManyToOne(fetch = EAGER, cascade = CascadeType.MERGE)

@@ -15,4 +15,6 @@ public class DoorAddress {
 
     @Column(name="door_name")
     private String doorName;
+
+
 }

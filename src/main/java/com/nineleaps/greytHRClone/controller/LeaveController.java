@@ -1,16 +1,19 @@
 package com.nineleaps.greytHRClone.controller;
 
-import com.nineleaps.greytHRClone.model.Feed;
+import com.nineleaps.greytHRClone.dto.EmployeeLeaveDTO;
+
+import com.nineleaps.greytHRClone.dto.EmployeeLeaveRequestDTO;
+import com.nineleaps.greytHRClone.dto.HolidayDTO;
 import com.nineleaps.greytHRClone.model.Holidays;
-import com.nineleaps.greytHRClone.service.FeedService;
 import com.nineleaps.greytHRClone.service.LeaveServices;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
+
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @Tag(name = "employee leaves controller", description = "Controller class deals with leave data to manage attendances")
@@ -20,15 +23,31 @@ public class LeaveController {
     @Autowired
     private LeaveServices leaveServices;
 
+    @Operation(summary = "Add new public holidays", description = "To add new public holidays based on date", tags = { "addHolidays" })
 
     @PostMapping(path = "/holidays")
-    public ResponseEntity<String> addHolidays( @RequestBody Iterable<Holidays> holidays) {
+    public ResponseEntity<String> addHolidays(@RequestBody List<HolidayDTO> holidays) {
+
         return leaveServices.addHolidays(holidays);
     }
 
+    @Operation(summary = "View all the available holidays", description = "To get all available holidays", tags = { "getHolidays" })
     @GetMapping(path = "/holidays")
-    public ResponseEntity<Iterable<Holidays>> getHolidays() {
+    public ResponseEntity<List<Holidays>> getHolidays() {
+
         return leaveServices.getHolidays();
     }
 
+
+    @Operation(summary = "apply for a leave", description = "apply leave for a required date", tags = { "applyLeave" })
+    @PostMapping("/leave")
+    public ResponseEntity<String> applyLeave(@RequestBody EmployeeLeaveRequestDTO employeeLeaveRequestDTO){
+        return  leaveServices.applyLeave(employeeLeaveRequestDTO);
+    }
+
+    @Operation(summary = "View all leaves taken", description = "To get list of all leaves taken", tags = { "getLeaves" })
+    @GetMapping("/leaves")
+    public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(@RequestAttribute int id ){
+        return leaveServices.getLeaves( id);
+    }
 }

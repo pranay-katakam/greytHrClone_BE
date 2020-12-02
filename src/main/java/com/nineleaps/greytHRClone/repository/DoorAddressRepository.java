@@ -2,8 +2,9 @@ package com.nineleaps.greytHRClone.repository;
 
 
 import com.nineleaps.greytHRClone.model.DoorAddress;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DoorAddressRepository extends CrudRepository<DoorAddress, Integer> {
+
+public interface DoorAddressRepository extends JpaRepository<DoorAddress, Integer> {
 
 }
