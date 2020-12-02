@@ -2,10 +2,12 @@ package com.nineleaps.greytHRClone.repository;
 
 import com.nineleaps.greytHRClone.model.EmployeeData;
 import com.nineleaps.greytHRClone.model.EmployeeLeave;
+import com.nineleaps.greytHRClone.model.LeaveStatus;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -18,4 +20,5 @@ public interface EmployeeLeaveRepository extends CrudRepository<EmployeeLeave, I
     List<EmployeeLeave> getAppliedLeave();
 
 
+    List<EmployeeLeave> findByUserAndLeaveDateBetweenAndLeavetype(EmployeeData employeeData, LocalDate beginDate, LocalDate lastDate, LeaveStatus approved);
 }

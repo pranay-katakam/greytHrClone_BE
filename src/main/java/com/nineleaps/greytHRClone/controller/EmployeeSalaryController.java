@@ -41,7 +41,8 @@ public class EmployeeSalaryController {
 
     @GetMapping(path = "/salary")
     public ResponseEntity<SalaryDTO> getSalary(@RequestAttribute("id") int eid, @RequestParam Optional<YearMonth> yearMonth) {
-        return employeeSalaryService.getSalary(eid, yearMonth);
+
+        return employeeSalaryService.getSalary(eid,yearMonth);
     }
 
 

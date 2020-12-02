@@ -41,6 +41,22 @@ public class FeedService {
     public ResponseEntity<String> addFeed(FeedRequestDTO feedRequestDTO) {
         ModelMapper modelMapper = new ModelMapper();
         Feed feed = modelMapper.map(feedRequestDTO, Feed.class);
+        Random random = new Random();
+        int imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
+        EventType eventType = feedRequestDTO.getEventType();
+        String ImageType = "";
+        switch (eventType) {
+            case Birthday:
+                ImageType = "birthdayImage";
+                break;
+            case Anniversary:
+                ImageType = "anniversaryImage";
+                break;
+            default:
+                ImageType = "otherImage";
+        }
+        String imageUrl=ImageType+imageNameSuffix;
+        feed.setImageUrl(imageUrl);
         feedRepository.save(feed);
         return ResponseEntity.status(HttpStatus.CREATED).body("Feed saved successfully");
     }
@@ -52,7 +68,7 @@ public class FeedService {
 
         Comment comment = new Comment();
         comment.setUser(employeeData);
-        comment.setFcId(commentRequestDTO.getFeedId());
+        comment.setFeedId(commentRequestDTO.getFeedId());
         comment.setComment(commentRequestDTO.getComment());
 
         commentRepository.save(comment);
@@ -65,16 +81,12 @@ public class FeedService {
 
 
         String ImageType = "";
-        int imageNameSuffix = 0;
         EventType eventType;
 
         for (Feed feedObj : feed) {
             FeedDTO feedDTO = new FeedDTO();
             feedDTO.setFeedId(feedObj.getFeedId());
             feedDTO.setName(feedObj.getName());
-            Random random = new Random();
-            imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
-
             eventType = feedObj.getEventType();
             switch (eventType) {
                 case Birthday:
@@ -86,7 +98,8 @@ public class FeedService {
                 default:
                     ImageType = "otherImage";
             }
-            feedDTO.setImageUrl(FIREBASE_URL_PREFIX + ImageType + "s%2F" + ImageType + imageNameSuffix + ".png" + FIREBASE_URL_SUFFIX);
+            String imageName=feedObj.getImageUrl();
+            feedDTO.setImageUrl(FIREBASE_URL_PREFIX + ImageType + "s%2F" + imageName + ".png" + FIREBASE_URL_SUFFIX);
             feedDTO.setCreatedDate(feedObj.getCreatedDate());
             feedDTO.setNumberOfYears(feedObj.getNoOfYears());
             feedDTO.setEventType(eventType);
@@ -129,29 +142,28 @@ public class FeedService {
         return ResponseEntity.status(HttpStatus.OK).body(feedDTOList);
     }
 
-    public ResponseEntity<String> addLike(LikeRequestDTO likeRequestDTO) {
+    public ResponseEntity<LikeResponseDTO> addLike(LikeRequestDTO likeRequestDTO) {
 
         EmployeeData employeeData = new EmployeeData();
         employeeData.setEmpId(likeRequestDTO.getUserId());
 
         Liked liked = new Liked();
         liked.setUser(employeeData);
-        liked.setFlId(likeRequestDTO.getFeedId());
+        liked.setFeedId(likeRequestDTO.getFeedId());
 
-        int existById = likeRepository.existLike(liked.getUser(), liked.getFlId());
-        System.out.println(existById + " ID");
+        int existById = likeRepository.existLike(liked.getUser(), liked.getFeedId());
         if (existById == 0) {
             likeRepository.save(liked);
-            return ResponseEntity.status(HttpStatus.CREATED).body("User of ID :" + liked.getUser().getEmpId() + " liked for a feed");
+            return ResponseEntity.status(HttpStatus.CREATED).body(new LikeResponseDTO(liked.getUser().getEmpId(),LikeStatus.LIKE)  );
         } else {
-            return deleteLike(liked.getUser(), liked.getFlId());
+            return deleteLike(liked.getUser(), liked.getFeedId());
 
         }
     }
 
-    private ResponseEntity<String> deleteLike(EmployeeData user, int fl_id) {
-        likeRepository.deleteLike(user, fl_id);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User of ID :" + user.getEmpId() + " disliked for a feed");
+    private ResponseEntity<LikeResponseDTO> deleteLike(EmployeeData user, int feedId) {
+        likeRepository.deleteLike(user, feedId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new LikeResponseDTO( user.getEmpId(),LikeStatus.DISLIKE));
 
     }
 
@@ -173,12 +185,15 @@ public class FeedService {
     public void createEventFeed() {
         List<JSONObject> birthdayList = employeeDataRepository.BirthdayList();
         List<JSONObject> anniversaryList = employeeDataRepository.AnniversaryList();
-
+        Random random = new Random();
+        int imageNameSuffix = 0;
         for (JSONObject eventObj : birthdayList) {
             Feed feed = new Feed();
             feed.setEventType(EventType.Birthday);
             feed.setFeedType(FeedType.EVENTS);
             feed.setName((String) eventObj.get("name"));
+            imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
+            feed.setImageUrl("birthdayImage"+imageNameSuffix);
             feedRepository.save(feed);
         }
         for (JSONObject eventObj : anniversaryList) {
@@ -186,6 +201,8 @@ public class FeedService {
             feed.setEventType(EventType.Anniversary);
             feed.setFeedType(FeedType.EVENTS);
             feed.setName((String) eventObj.get("name"));
+            imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
+            feed.setImageUrl("anniversaryImage"+imageNameSuffix);
             BigInteger noOfYears = (BigInteger) eventObj.get("difference");
             int anniversaryYears = noOfYears.intValue() / 365;
             feed.setNoOfYears(anniversaryYears);

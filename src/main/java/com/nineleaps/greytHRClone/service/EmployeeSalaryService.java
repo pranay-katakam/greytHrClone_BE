@@ -60,7 +60,6 @@ public class EmployeeSalaryService {
             for (LocalDate date = employeeSalary.getFromDate(); date.isBefore(ToDate); date = date.plusMonths(1)) {
                 SalaryDTO salaryDTO = getDateSalary(employeeSalary, date);
                 preSalaryDTOs.add(salaryDTO);
-
             }
         }
 
