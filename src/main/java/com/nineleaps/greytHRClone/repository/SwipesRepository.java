@@ -23,5 +23,6 @@ public interface SwipesRepository extends JpaRepository<Swipe, Integer> {
     @Query("select u from Swipe u where  DATE(u.createdDate) = CURRENT_DATE ")
     List<Swipe> findByDate();
 
-
+    @Query(value = "select * from swipes where emp_id=3 order by created_date desc limit 4",nativeQuery = true)
+    Iterable<Swipe> getRecentSwipes(EmployeeData user);
 }
