@@ -1,11 +1,7 @@
 package com.nineleaps.greytHRClone.controller;
 
-import com.nineleaps.greytHRClone.dto.ApiResponseDTO;
-import com.nineleaps.greytHRClone.dto.DoorAddressDTO;
-import com.nineleaps.greytHRClone.dto.SwipeDTO;
-import com.nineleaps.greytHRClone.dto.SwipesDTO;
+import com.nineleaps.greytHRClone.dto.*;
 import com.nineleaps.greytHRClone.model.DoorAddress;
-import com.nineleaps.greytHRClone.model.Swipe;
 import com.nineleaps.greytHRClone.service.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @Tag(name = "employee swipe controller", description = "Controller class deals with swipes made by employees")
@@ -46,5 +45,14 @@ public class AttendanceController {
     public ResponseEntity<List<SwipesDTO>> getSwipes(@RequestAttribute("id") int id) {
         return attendanceService.getSwipes(id);
     }
+
+    @Operation(summary = "View the attendance summary based on id ", description = "To get attendance summary of employee based  on record calculated from month begin to current date", tags = { "getMonthSummary" })
+    @GetMapping(path = "/attendance-summary")
+    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(@RequestAttribute("id") int id, @RequestParam Optional<LocalDate> startDate,@RequestParam Optional<LocalDate> endDate) {
+        return attendanceService.getAttendanceSummary(id,startDate,endDate);
+    }
+
+
+
 
 }

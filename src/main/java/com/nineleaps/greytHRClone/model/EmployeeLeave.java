@@ -33,13 +33,18 @@ public class EmployeeLeave {
     @Column(name = "reason")
     private String reason;
 
-    @NotNull
-    @Column(name = "from_date")
-    private LocalDateTime fromDate;
+    @Column(name="leave_date")
+    private LocalDateTime leaveDate;
 
-    @NotNull
-    @Column(name = "to_date")
-    private LocalDateTime toDate;
+
+
+//    @NotNull
+//    @Column(name = "from_date")
+//    private LocalDateTime fromDate;
+//
+//    @NotNull
+//    @Column(name = "to_date")
+//    private LocalDateTime toDate;
 
     @Enumerated
     private LeaveStatus leaveStatus;
