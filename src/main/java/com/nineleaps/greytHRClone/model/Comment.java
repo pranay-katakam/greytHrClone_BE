@@ -26,8 +26,8 @@ public class Comment {
     @JoinColumn(name = "empId", referencedColumnName = "empId")
     private EmployeeData user;
 
-    @Column(name = "fc_id")
-    private int fcId;
+    @Column(name = "feed_id")
+    private int feedId;
 
     @Column(name = "created_date")
     private Date createdDate = new Date();

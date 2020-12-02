@@ -68,7 +68,7 @@ public class FeedService {
 
         Comment comment = new Comment();
         comment.setUser(employeeData);
-        comment.setFcId(commentRequestDTO.getFeedId());
+        comment.setFeedId(commentRequestDTO.getFeedId());
         comment.setComment(commentRequestDTO.getComment());
 
         commentRepository.save(comment);
@@ -142,29 +142,28 @@ public class FeedService {
         return ResponseEntity.status(HttpStatus.OK).body(feedDTOList);
     }
 
-    public ResponseEntity<String> addLike(LikeRequestDTO likeRequestDTO) {
+    public ResponseEntity<LikeResponseDTO> addLike(LikeRequestDTO likeRequestDTO) {
 
         EmployeeData employeeData = new EmployeeData();
         employeeData.setEmpId(likeRequestDTO.getUserId());
 
         Liked liked = new Liked();
         liked.setUser(employeeData);
-        liked.setFlId(likeRequestDTO.getFeedId());
+        liked.setFeedId(likeRequestDTO.getFeedId());
 
-        int existById = likeRepository.existLike(liked.getUser(), liked.getFlId());
-        System.out.println(existById + " ID");
+        int existById = likeRepository.existLike(liked.getUser(), liked.getFeedId());
         if (existById == 0) {
             likeRepository.save(liked);
-            return ResponseEntity.status(HttpStatus.CREATED).body("User of ID :" + liked.getUser().getEmpId() + " liked for a feed");
+            return ResponseEntity.status(HttpStatus.CREATED).body(new LikeResponseDTO(liked.getUser().getEmpId(),LikeStatus.LIKE)  );
         } else {
-            return deleteLike(liked.getUser(), liked.getFlId());
+            return deleteLike(liked.getUser(), liked.getFeedId());
 
         }
     }
 
-    private ResponseEntity<String> deleteLike(EmployeeData user, int fl_id) {
-        likeRepository.deleteLike(user, fl_id);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User of ID :" + user.getEmpId() + " disliked for a feed");
+    private ResponseEntity<LikeResponseDTO> deleteLike(EmployeeData user, int feedId) {
+        likeRepository.deleteLike(user, feedId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new LikeResponseDTO( user.getEmpId(),LikeStatus.DISLIKE));
 
     }
 

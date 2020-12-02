@@ -33,10 +33,10 @@ public class Feed {
     @Column(name = "no_of_years")
     private int noOfYears = 0;
 
-    @OneToMany( mappedBy="fcId",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany( mappedBy="feedId",cascade=CascadeType.ALL, fetch = FetchType.LAZY)//here feedId is from comment table
     private List< Comment > comments ;
 
-    @OneToMany( mappedBy="flId",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany( mappedBy="feedId",cascade=CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Liked> likes;
 
 

@@ -219,15 +219,14 @@ public class AttendanceService {
                         attendanceDetailsDTO.setEarlyOutHours(hourFormat.format(balance));
                         earlyOutDays=earlyOutDays+1;
                     }
-                    else{
-                        attendanceDetailsDTO.setStatus(AttendanceCategory.PRESENT);
-                        presentDays=presentDays+1;
-                    }
+
 
                     attendanceDetailsDTO.setFirstIn(hourFormat.format(firstSwipe));
                     attendanceDetailsDTO.setLastOut(hourFormat.format(lastSwipe));
                     attendanceDetailsDTO.setTotalWorkHours(hourFormat.format(diff));
-                    if(diff>9) {
+                    if(diff>9||diff==9) {
+                        attendanceDetailsDTO.setStatus(AttendanceCategory.PRESENT);
+                        presentDays=presentDays+1;
                         balance = Math.toIntExact(diff) - 9;
                         attendanceDetailsDTO.setExcessHours(hourFormat.format(balance));
                     }
