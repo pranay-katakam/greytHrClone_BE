@@ -100,7 +100,7 @@ public class LeaveServices {
         List<LeaveBalance> updatedLeaveBalances = new ArrayList<>();
 
         List<Integer> empIDs = employeeDataRepository.findAlluserId(); //400
-        System.out.println("EMP IDsss" +empIDs);
+        System.out.println("EMP IDs" +empIDs);
         List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
 
         EmployeeData employeeData = new EmployeeData();
