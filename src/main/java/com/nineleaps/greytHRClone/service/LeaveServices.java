@@ -14,12 +14,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
 import java.util.List;
+
+import static java.time.temporal.TemporalAdjusters.lastDayOfYear;
 
 @Service
 public class LeaveServices {
@@ -47,6 +50,11 @@ public class LeaveServices {
     public ResponseEntity<List<Holidays>> getHolidays() {
         return ResponseEntity.status(HttpStatus.OK).body(holidaysRepository.findAll());
     }
+
+    public ResponseEntity<List<Holidays>> getUpcomingHolidays() {
+        return ResponseEntity.status(HttpStatus.OK).body(holidaysRepository.findByHolidayDateBetween(LocalDate.now() ,LocalDate.now().with(lastDayOfYear())));
+    }
+
 
     public ResponseEntity<String> applyLeave(EmployeeLeaveRequestDTO employeeLeaveRequestDTO) {
         EmployeeData employeeData = new EmployeeData();
@@ -112,4 +120,6 @@ public class LeaveServices {
             leaveBalanceRepository.save(leaveBalance);
         }
     }
+
+
 }

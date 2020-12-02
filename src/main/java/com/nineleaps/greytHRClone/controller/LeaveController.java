@@ -34,8 +34,13 @@ public class LeaveController {
     @Operation(summary = "View all the available holidays", description = "To get all available holidays", tags = { "getHolidays" })
     @GetMapping(path = "/holidays")
     public ResponseEntity<List<Holidays>> getHolidays() {
-
         return leaveServices.getHolidays();
+    }
+
+    @Operation(summary = "View upcoming holidays", description = "To get upcoming holidays", tags = { "getUpcomingHolidays" })
+    @GetMapping(path = "/upcoming-holidays")
+    public ResponseEntity<List<Holidays>> getUpcomingHolidays() {
+        return leaveServices.getUpcomingHolidays();
     }
 
 
