@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
@@ -33,7 +34,7 @@ public class FeedData {
 
     @Operation(summary = "To add new comment for a feed", description = "To add new comment for any post", tags = {"AddComment"})
     @PostMapping(path = "/comment")
-    public ResponseEntity<String> AddComment(@RequestBody CommentRequestDTO commentRequestDTO) {
+    public ResponseEntity<String> AddComment(@RequestBody @Valid CommentRequestDTO commentRequestDTO) {
         return feedService.addComment(commentRequestDTO);
 
     }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
@@ -24,8 +25,8 @@ public class EmployeeAuthentication {
     AuthenticationService authenticationService;
 
     @Operation(summary = "employee signup registration", description = "To add all the required details of employee", tags = {"Signup"})
-    @PostMapping(path = "/employee")
-    public ResponseEntity<String> Signup(@RequestBody EmployeeRegistrationDTO employeeRegistrationDTO) {
+    @PostMapping(path = "/register")
+    public ResponseEntity<String> Signup(@RequestBody @Valid EmployeeRegistrationDTO employeeRegistrationDTO) {
         return authenticationService.Signup(employeeRegistrationDTO);
     }
 

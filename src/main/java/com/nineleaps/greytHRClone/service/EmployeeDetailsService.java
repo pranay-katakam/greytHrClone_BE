@@ -161,4 +161,9 @@ public class EmployeeDetailsService {
         roleRepository.save(role);
         return ResponseEntity.status(CREATED).body("role has been created");
     }
+
+
+    public ResponseEntity<List<CompanyLocation>> getCompanyLocation() {
+        return ResponseEntity.status(OK).body(companyLocationRepository.findAll());
+    }
 }

@@ -147,7 +147,7 @@ public class AttendanceService {
     }
 
 
-
+    //TODO for id attribute check for null and empty validation
     public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(int id, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
         LocalDate beginDate= startDate.orElse(startDate.get().withDayOfMonth(1));
         LocalDate lastDate=endDate.orElse(LocalDate.now());
