@@ -57,7 +57,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getDefaultMessage());
         }
-        return ResponseEntity.status(BAD_REQUEST).body(errors);
+        return new ResponseEntity<>(errors,HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
 

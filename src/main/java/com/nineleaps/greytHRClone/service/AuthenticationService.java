@@ -124,7 +124,7 @@ public class AuthenticationService /*implements UserDetailsService */{
         ResponseCookie resCookie = ResponseCookie.from("userID", cookieValue)
                 .httpOnly(true)
                 .sameSite("None")
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(Math.toIntExact(timeOfExpire))
                 .build();
