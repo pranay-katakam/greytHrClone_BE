@@ -45,9 +45,15 @@ public class Scheduler {
 
 
     @Async
-    @Scheduled(cron = "50 52 10 18 * *")//sec,min,hour,dayDate,monthDate,dayWeek/yearday of week (0 - 6) (0 is Sunday, or use names)
+    @Scheduled(cron = "50 52 10 18 * *")//monthly cron
     public void addEarnedLeaveMonthly()  {
-        leaveServices.addEarnedLeaveMonthly();
+        leaveServices.leaveBalanceUpdater("EarnedLeave");;
+    }
+
+    @Async
+    @Scheduled(cron = "50 52 10 18 * *")//yearly cron
+    public void addSLPLYearly()  {
+        leaveServices.leaveBalanceUpdater("SickLeavePaternityLeave");;
     }
 
 

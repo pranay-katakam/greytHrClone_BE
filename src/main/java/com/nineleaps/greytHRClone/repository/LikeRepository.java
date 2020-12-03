@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface LikeRepository extends JpaRepository<Liked, Integer> {
-    @Query("select count(flId) from Liked where user=?1 and flId=?2 ")
+    @Query("select count(feedId) from Liked where user=?1 and feedId=?2 ")
     int existLike(EmployeeData user, int flId);
 
     @Transactional
     @Modifying
-    @Query("Delete from Liked where user=?1 and flId=?2")
+    @Query("Delete from Liked where user=?1 and feedId=?2")
     void deleteLike(EmployeeData user, int flId);
 }

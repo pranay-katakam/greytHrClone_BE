@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
+import java.time.LocalDate;
 
 import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
@@ -22,6 +23,8 @@ public class LeaveBalance {
     @JoinColumn(name = "empId", referencedColumnName = "empId")
     private EmployeeData user;
 
+    @Column(name = "date")
+    private LocalDate date=LocalDate.now();
 
     @Column(name = "earned_leave")
     private int EarnedLeave;

@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.model;
 
 import lombok.*;
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.*;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -32,7 +33,7 @@ public class EmployeeData {
 
     @Column(name = "dob")
 //    @JsonFormat(pattern = "dd-MM-yyyy")
-    private Date dob;
+    private LocalDate dob;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name="location_id")
@@ -45,7 +46,7 @@ public class EmployeeData {
     private long contactNumber;
 
     @Column(name = "created_date")
-    private Timestamp createdDate = new Timestamp(System.currentTimeMillis());
+    private LocalDate createdDate = LocalDate.now();
 
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
