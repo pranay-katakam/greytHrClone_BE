@@ -24,8 +24,8 @@ public class Feed {
     @Column(name = "name")
     private String name;
 
-    @Column(name="image_url")
-    private String imageUrl;
+    @Column(name="image_suffix")
+    private int imageSuffix;
 
     @Column(name = "created_date")
     private Date createdDate = new Date();

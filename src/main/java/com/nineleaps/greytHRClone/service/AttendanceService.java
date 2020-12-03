@@ -187,6 +187,7 @@ public class AttendanceService {
                         .filter(s -> s.getCreatedDate().equals(loopDate))
                         .map(Swipe::getCreatedDate)
                         .collect(Collectors.toList());
+               attendanceDetailsDTO.setSwipes(AllSwipesPerDay);
                LocalDateTime firstSwipe = AllSwipesPerDay.stream()
                         .findFirst()
                         .orElse(null);//case for Absent,leave

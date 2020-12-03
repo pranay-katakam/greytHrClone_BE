@@ -43,20 +43,8 @@ public class FeedService {
         Feed feed = modelMapper.map(feedRequestDTO, Feed.class);
         Random random = new Random();
         int imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
-        EventType eventType = feedRequestDTO.getEventType();
-        String ImageType = "";
-        switch (eventType) {
-            case Birthday:
-                ImageType = "birthdayImage";
-                break;
-            case Anniversary:
-                ImageType = "anniversaryImage";
-                break;
-            default:
-                ImageType = "otherImage";
-        }
-        String imageUrl=ImageType+imageNameSuffix;
-        feed.setImageUrl(imageUrl);
+        feed.setImageSuffix(imageNameSuffix);
+        System.out.println("imageNameSuffix"+imageNameSuffix);
         feedRepository.save(feed);
         return ResponseEntity.status(HttpStatus.CREATED).body("Feed saved successfully");
     }
@@ -98,8 +86,8 @@ public class FeedService {
                 default:
                     ImageType = "otherImage";
             }
-            String imageName=feedObj.getImageUrl();
-            feedDTO.setImageUrl(FIREBASE_URL_PREFIX + ImageType + "s%2F" + imageName + ".png" + FIREBASE_URL_SUFFIX);
+            int imageSuffix=feedObj.getImageSuffix();
+            feedDTO.setImageUrl(FIREBASE_URL_PREFIX + ImageType + "s%2F" + ImageType+imageSuffix + ".png" + FIREBASE_URL_SUFFIX);
             feedDTO.setCreatedDate(feedObj.getCreatedDate());
             feedDTO.setNumberOfYears(feedObj.getNoOfYears());
             feedDTO.setEventType(eventType);
@@ -193,7 +181,7 @@ public class FeedService {
             feed.setFeedType(FeedType.EVENTS);
             feed.setName((String) eventObj.get("name"));
             imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
-            feed.setImageUrl("birthdayImage"+imageNameSuffix);
+            feed.setImageSuffix(imageNameSuffix);
             feedRepository.save(feed);
         }
         for (JSONObject eventObj : anniversaryList) {
@@ -202,7 +190,7 @@ public class FeedService {
             feed.setFeedType(FeedType.EVENTS);
             feed.setName((String) eventObj.get("name"));
             imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
-            feed.setImageUrl("anniversaryImage"+imageNameSuffix);
+            feed.setImageSuffix(imageNameSuffix);
             BigInteger noOfYears = (BigInteger) eventObj.get("difference");
             int anniversaryYears = noOfYears.intValue() / 365;
             feed.setNoOfYears(anniversaryYears);

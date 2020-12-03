@@ -36,7 +36,8 @@ public class EmployeeLeave {
     @Column(name="leave_date")
     private LocalDateTime leaveDate;
 
-
+    @Column(name="applied_date")
+    private LocalDateTime appliedDate;
 
 //    @NotNull
 //    @Column(name = "from_date")

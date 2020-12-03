@@ -14,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -95,18 +97,31 @@ public class LeaveServices {
     }
 
 
-    public void addEarnedLeaveMonthly() {
+
+    public void leaveBalanceUpdater(String leaveType) {
         List<Integer> empIDs = employeeDataRepository.findAlluserId();
         List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
         EmployeeData employeeData = new EmployeeData();
         int earnedLeave = 0;
-        for (Integer empID : empIDs){
+        int sickLeave = 0;
+        int paternityLeave = 0;
+        LocalDate date=LocalDate.now();
+        int leaveCount = (date.getMonth().equals(Month.DECEMBER)) ? 2 : 1;//FACT: earned leave is incremented by 2 for DEC month
+        for (Integer empID : empIDs) {
             LeaveBalance leaveBalance = leaveBalances.stream()
-                    .filter(t -> t.getUser().getEmpId()==empID)
+                    .filter(t -> t.getUser().getEmpId() == empID)
                     .findAny()
                     .orElse(new LeaveBalance());
-            earnedLeave = leaveBalance.getEarnedLeave() + 1;
-            leaveBalance.setEarnedLeave(earnedLeave);
+            if(leaveType.equals("SickLeavePaternityLeave")) {
+                sickLeave = leaveBalance.getSickLeave() + 1;
+                paternityLeave = leaveBalance.getPaternityLeave() + 1;
+                leaveBalance.setEarnedLeave(sickLeave);
+                leaveBalance.setPaternityLeave(paternityLeave);
+            }else {
+                earnedLeave = leaveBalance.getEarnedLeave() +leaveCount ;
+                leaveBalance.setPaternityLeave(earnedLeave);
+            }
+
             employeeData.setEmpId(empID);
             leaveBalance.setUser(employeeData);
             leaveBalanceRepository.save(leaveBalance);
