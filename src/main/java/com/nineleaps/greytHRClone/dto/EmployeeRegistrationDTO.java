@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Enumerated;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
@@ -17,7 +18,7 @@ public class EmployeeRegistrationDTO {
     private String name;
     private String email;
     private String password;
-    private Date dob;
+    private Timestamp dob;
     private int locationId;
     private long contactNumber;
     @Enumerated

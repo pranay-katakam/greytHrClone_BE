@@ -8,12 +8,14 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AttendanceDetailsDTO {
     private String date;
+    private List<LocalDateTime> swipes;
     private String firstIn;
     private String lastOut;
     private AttendanceCategory status;
