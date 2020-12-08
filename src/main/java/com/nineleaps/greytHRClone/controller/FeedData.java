@@ -27,7 +27,7 @@ public class FeedData {
 
     @Operation(summary = "To give like for the feed", description = "To give like for the post (one like per user)", tags = {"addLike"})
     @PostMapping(path = "/like")
-    public ResponseEntity<String> addLike(@RequestBody LikeRequestDTO likeRequestDTO) {
+    public ResponseEntity<LikeResponseDTO> addLike(@RequestBody LikeRequestDTO likeRequestDTO) {
         return feedService.addLike(likeRequestDTO);
     }
 

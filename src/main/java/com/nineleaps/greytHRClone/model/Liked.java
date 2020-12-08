@@ -15,8 +15,8 @@ public class Liked {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int likeId;
 
-    @Column(name="fl_id")
-    private int flId;
+    @Column(name="feed_id")
+    private int feedId;
 
     @Column(name = "created_date")
     private Date createdDate = new Date();

@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -33,13 +34,19 @@ public class EmployeeLeave {
     @Column(name = "reason")
     private String reason;
 
-    @NotNull
-    @Column(name = "from_date")
-    private LocalDateTime fromDate;
+    @Column(name="leave_date")
+    private LocalDate leaveDate;
 
-    @NotNull
-    @Column(name = "to_date")
-    private LocalDateTime toDate;
+    @Column(name="applied_date")
+    private LocalDate appliedDate = LocalDate.now();
+
+//    @NotNull
+//    @Column(name = "from_date")
+//    private LocalDateTime fromDate;
+//
+//    @NotNull
+//    @Column(name = "to_date")
+//    private LocalDateTime toDate;
 
     @Enumerated
     private LeaveStatus leaveStatus;

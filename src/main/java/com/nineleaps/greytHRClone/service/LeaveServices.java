@@ -14,11 +14,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LeaveServices {
@@ -50,16 +54,18 @@ public class LeaveServices {
     public ResponseEntity<String> applyLeave(EmployeeLeaveRequestDTO employeeLeaveRequestDTO) {
         EmployeeData employeeData = new EmployeeData();
         employeeData.setEmpId(employeeLeaveRequestDTO.getUserId());
-
-        EmployeeLeave employeeLeaves = new EmployeeLeave();
-        employeeLeaves.setUser(employeeData);
-        employeeLeaves.setLeavetype(employeeLeaveRequestDTO.getLeavetype());
-        employeeLeaves.setReason(employeeLeaveRequestDTO.getReason());
-        employeeLeaves.setFromDate(employeeLeaveRequestDTO.getFromDate());
-        employeeLeaves.setToDate(employeeLeaveRequestDTO.getToDate());
-        employeeLeaves.setLeaveStatus(LeaveStatus.PENDING);
-
-        employeeLeaveRepository.save(employeeLeaves);
+        LocalDate toDate=employeeLeaveRequestDTO.getToDate().plusDays(1);
+        List<EmployeeLeave> employeeLeaves=new ArrayList<>();
+        for (LocalDate date = employeeLeaveRequestDTO.getFromDate(); date.isBefore(toDate); date = date.plusDays(1)){
+            EmployeeLeave employeeLeave = new EmployeeLeave();
+            employeeLeave.setUser(employeeData);
+            employeeLeave.setLeavetype(employeeLeaveRequestDTO.getLeavetype());
+            employeeLeave.setReason(employeeLeaveRequestDTO.getReason());
+            employeeLeave.setLeaveDate(date);
+            employeeLeave.setLeaveStatus(LeaveStatus.PENDING);
+            employeeLeaves.add(employeeLeave);
+        }
+        employeeLeaveRepository.saveAll(employeeLeaves);
         return ResponseEntity.status(HttpStatus.CREATED).body("Leave applied Successfully");
     }
 
@@ -74,7 +80,6 @@ public class LeaveServices {
 
         for (EmployeeLeave leave : leaves) {
             String managerName = employeeDataRepository.getManagerName(leave.getUser().getManagerId());
-
             EmployeeLeaveDTO employeeLeaveDTO = new EmployeeLeaveDTO();
             employeeLeaveDTO.setLeaveId(leave.getLeaveId());
             employeeLeaveDTO.setEmpId(leave.getUser().getEmpId());
@@ -83,8 +88,7 @@ public class LeaveServices {
             employeeLeaveDTO.setManagerName(managerName);
             employeeLeaveDTO.setLeavetype(leave.getLeavetype());
             employeeLeaveDTO.setLeaveStatus(leave.getLeaveStatus());
-            employeeLeaveDTO.setFromDate(leave.getFromDate());
-            employeeLeaveDTO.setToDate(leave.getToDate());
+            employeeLeaveDTO.setToDate(leave.getLeaveDate());
             employeeLeaveDTO.setReason(leave.getReason());
 
             employeeLeaveDTOS.add(employeeLeaveDTO);
@@ -93,28 +97,41 @@ public class LeaveServices {
         return ResponseEntity.status(HttpStatus.OK).body(employeeLeaveDTOS);
     }
 
-    //TODO get all employee id's
-    //TODO in each iteration increment earned leave balance by 1
-    //TODO make a query to update the same in the db (leave balance)
-    public void addEarnedLeaveMonthly() {
-        List<LeaveBalance> updatedLeaveBalances = new ArrayList<>();
 
-        List<Integer> empIDs = employeeDataRepository.findAlluserId(); //400
-        System.out.println("EMP IDs" +empIDs);
+    public void leaveBalanceUpdater(String leaveType) {
+        List<Integer> empIDs = employeeDataRepository.findAlluserId();
         List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
-
         EmployeeData employeeData = new EmployeeData();
         int earnedLeave = 0;
-        for (Integer empID : empIDs){
-            System.out.println("EMPID" + empID);
+        int sickLeave = 0;
+        int paternityLeave = 0;
+        LocalDate date=LocalDate.now();
+        int leaveCount = (date.getMonth().equals(Month.DECEMBER)) ? 2 : 1;//FACT: earned leave is incremented by 2 for DEC month
+        for (Integer empID : empIDs) {
+            LeaveBalance leaveBalance = leaveBalances.stream()
+                    .filter(t -> t.getUser().getEmpId() == empID)
+                    .findAny()
+                    .orElse(new LeaveBalance());
+            if(leaveType.equals("SickLeavePaternityLeave")) {
+                sickLeave = leaveBalance.getSickLeave() + 1;
+                paternityLeave = leaveBalance.getPaternityLeave() + 1;
+                leaveBalance.setEarnedLeave(sickLeave);
+                leaveBalance.setPaternityLeave(paternityLeave);
+            }else {
+                earnedLeave = leaveBalance.getEarnedLeave() +leaveCount ;
+                leaveBalance.setPaternityLeave(earnedLeave);
+            }
+
             employeeData.setEmpId(empID);
-            LeaveBalance leaveBalance = leaveBalances.stream().filter(t -> t.getUser().equals(employeeData)).findAny().orElse(new LeaveBalance());
-            System.out.println("LEAVE BALANCE" + leaveBalance);
-            earnedLeave = leaveBalance.getEarnedLeave() + 1;
-            leaveBalance.setEarnedLeave(earnedLeave);
             leaveBalance.setUser(employeeData);
-            updatedLeaveBalances.add(leaveBalance);
+            leaveBalanceRepository.save(leaveBalance);
         }
-        leaveBalanceRepository.saveAll(updatedLeaveBalances);
+    }
+
+    public ResponseEntity<List<EmployeeLeaveRequestDTO>> getRecentLeaveTransaction(int id) {
+        List<EmployeeLeave> employeeLeaves = employeeLeaveRepository.limitedLeaveTransaction();
+        List<EmployeeLeaveRequestDTO> employeeLeaveRequestDTOS = employeeLeaves.stream().map(y -> new EmployeeLeaveRequestDTO(id, y.getLeavetype(), y.getReason(), y.getLeaveDate(), y.getAppliedDate())).collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.OK).body(employeeLeaveRequestDTOS);
+
     }
 }

@@ -77,13 +77,14 @@ public class AuthenticationService /*implements UserDetailsService */{
                 employeeDepartment.setDepId(departmentId);
                 employeeDepartments.add(employeeDepartment);
             }
-
+//            String ImageName=(employeeRegistrationDTO.getGender().equals(Gender.FEMALE))?"":"";
             EmployeeData employeeData=new EmployeeData();
             employeeData.setName(name);
             employeeData.setEmail(employeeRegistrationDTO.getEmail());
             employeeData.setPassword(bCryptPasswordEncoder.encode(employeeRegistrationDTO.getPassword()));
-            employeeData.setDob(employeeRegistrationDTO.getDob());
+            employeeData.setDob(employeeRegistrationDTO.getDob().toLocalDateTime().toLocalDate());
             employeeData.setLocation(location);
+//            employeeData.setImageName();
             employeeData.setGender(employeeRegistrationDTO.getGender());
             employeeData.setContactNumber(employeeRegistrationDTO.getContactNumber());
             employeeData.setManagerId(employeeRegistrationDTO.getManagerId());
@@ -107,7 +108,6 @@ public class AuthenticationService /*implements UserDetailsService */{
                 ProfileDTO profileDTO=new ProfileDTO();
                 profileDTO.setName(employeeData.getName());
                 profileDTO.setImageName(FIREBASE_URL_PREFIX + employeeData.getImageName() + FIREBASE_URL_SUFFIX);
-                mailContentBuilder.sendWelcomeMail(profileDTO);
                 return ResponseEntity.status(OK).body(new ApiResponseDTO("Login Successful"));
             }else {
                 throw new BadRequestException("Incorrect password\nType correct password");

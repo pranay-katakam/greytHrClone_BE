@@ -50,4 +50,10 @@ public class LeaveController {
     public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(@RequestAttribute int id ){
         return leaveServices.getLeaves( id);
     }
+
+    @Operation(summary = "View all leaves taken", description = "To get list of all leaves taken", tags = { "getLeaves" })
+    @GetMapping("/recentLeaveTransaction")
+    public ResponseEntity<List<EmployeeLeaveRequestDTO>> getRecentLeaveTransaction(@RequestAttribute int id ){
+        return leaveServices.getRecentLeaveTransaction( id);
+    }
 }
