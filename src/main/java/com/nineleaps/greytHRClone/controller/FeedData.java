@@ -47,8 +47,8 @@ public class FeedData {
 
     @Operation(summary = "To get all the feeds and events", description = "To get all the feeds and events", tags = {"getFeed"})
     @GetMapping(path = "/feeds")
-    public ResponseEntity<List<FeedDTO>> getFeed() {
-        return feedService.getFeed();
+    public ResponseEntity<List<FeedDTO>> getFeed(@RequestParam(value = "feedType",required = false) FeedType feedType) {
+        return feedService.getFeed(feedType);
     }
 
 }

@@ -130,6 +130,7 @@ public class LeaveServices {
     }
 
     public ResponseEntity<String> approveLeaves(int id) {
+//        employeeDataRepository.findEmpIdByManagerId(id);
 //        List<Integer> reportees=employeeDataRepository.find
     return null;
     }

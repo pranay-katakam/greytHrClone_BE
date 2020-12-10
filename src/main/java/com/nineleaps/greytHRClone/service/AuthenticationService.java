@@ -60,6 +60,7 @@ public class AuthenticationService /*implements UserDetailsService */{
 
     public ResponseEntity<String> Signup(EmployeeRegistrationDTO employeeRegistrationDTO) {
         ResponseEntity<String> responseEntity;
+        System.out.println("employeeRegistrationDTO :"+employeeRegistrationDTO);
         int existByEmail = employeeDataRepository.exist(employeeRegistrationDTO.getEmail());
 
         if (existByEmail != 0) {

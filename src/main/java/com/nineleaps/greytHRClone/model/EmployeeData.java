@@ -43,7 +43,7 @@ public class EmployeeData {
     private Gender gender;
 
     @Column(name = "contact_number")
-    private long contactNumber;
+    private String contactNumber;
 
     @Column(name = "created_date")
     private LocalDate createdDate = LocalDate.now();

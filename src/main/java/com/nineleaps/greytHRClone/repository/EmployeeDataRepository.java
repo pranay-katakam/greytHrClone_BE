@@ -57,6 +57,9 @@ public interface EmployeeDataRepository extends JpaRepository<EmployeeData, Inte
 
     EmployeeData findByEmail(String email);
 
+//    @Query("SELECT r.empId FROM EmployeeData r where r.name = :name")
+//    List<Integer> findEmpIdByManagerId(@Param("name") int id);
+
     @Query("select u.createdDate from EmployeeData u where empId=?1")
     LocalDate findcreatedDateById(int eid);
 }
