@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Year;
 import java.util.List;
 
 
@@ -52,7 +53,7 @@ public class LeaveController {
 
     @Operation(summary = "View all leaves taken", description = "To get list of all leaves taken", tags = { "getLeaves" })
     @GetMapping("/leaves")
-    public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(@RequestAttribute int id ){
-        return leaveServices.getLeaves( id);
+    public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(@RequestAttribute int id, @RequestParam(value = "year", required = false )Year year){
+        return leaveServices.getLeaves( id,year);
     }
 }
