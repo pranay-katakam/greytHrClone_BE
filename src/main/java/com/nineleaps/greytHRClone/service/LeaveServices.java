@@ -59,6 +59,7 @@ public class LeaveServices {
             EmployeeLeave employeeLeave = new EmployeeLeave();
             employeeLeave.setUser(employeeData);
             employeeLeave.setLeavetype(employeeLeaveRequestDTO.getLeavetype());
+
             employeeLeave.setReason(employeeLeaveRequestDTO.getReason());
             employeeLeave.setLeaveDate(date);
             employeeLeave.setLeaveStatus(LeaveStatus.PENDING);
@@ -126,5 +127,10 @@ public class LeaveServices {
             leaveBalance.setUser(employeeData);
             leaveBalanceRepository.save(leaveBalance);
         }
+    }
+
+    public ResponseEntity<String> approveLeaves(int id) {
+//        employeeDataRepository.findEmpIdByManagerId(id);
+    return null;
     }
 }
