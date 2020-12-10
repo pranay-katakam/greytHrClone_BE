@@ -59,6 +59,7 @@ public class LeaveServices {
             EmployeeLeave employeeLeave = new EmployeeLeave();
             employeeLeave.setUser(employeeData);
             employeeLeave.setLeavetype(employeeLeaveRequestDTO.getLeavetype());
+
             employeeLeave.setReason(employeeLeaveRequestDTO.getReason());
             employeeLeave.setLeaveDate(date);
             employeeLeave.setLeaveStatus(LeaveStatus.PENDING);
@@ -72,7 +73,7 @@ public class LeaveServices {
         EmployeeData employeeData = new EmployeeData();
         employeeData.setEmpId(id);
 
-        Iterable<EmployeeLeave> leaves = employeeLeaveRepository.getLeaves(employeeData);
+        List<EmployeeLeave> leaves = employeeLeaveRepository.getLeaves(employeeData);//filter:interval between year begining to current month, leave status=approved
 
         List<EmployeeLeaveDTO> employeeLeaveDTOS = new ArrayList<>();
 
@@ -126,5 +127,10 @@ public class LeaveServices {
             leaveBalance.setUser(employeeData);
             leaveBalanceRepository.save(leaveBalance);
         }
+    }
+
+    public ResponseEntity<String> approveLeaves(int id) {
+//        List<Integer> reportees=employeeDataRepository.find
+    return null;
     }
 }

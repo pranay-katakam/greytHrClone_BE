@@ -50,4 +50,11 @@ public class LeaveController {
     public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(@RequestAttribute int id ){
         return leaveServices.getLeaves( id);
     }
+
+    //TODO manager to approve applied leaves
+    @GetMapping("/approveLeaves")
+    public ResponseEntity<String> approveLeaves(@RequestAttribute int id ){
+        return leaveServices.approveLeaves( id);
+    }
+
 }

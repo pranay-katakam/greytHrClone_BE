@@ -148,13 +148,15 @@ public class AttendanceService {
 
 
     //TODO for id attribute check for null and empty validation
-    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(int id, Optional<LocalDate> startDate, Optional<LocalDate> endDate) {
-        LocalDate beginDate= startDate.orElse(startDate.get().withDayOfMonth(1));
-        LocalDate lastDate=endDate.orElse(LocalDate.now());
+    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(int id, LocalDate startDate, LocalDate endDate) {
+        LocalDate beginDate= (startDate==null)?LocalDate.now().withDayOfMonth(1):startDate;
+        LocalDate lastDate=(endDate==null)?LocalDate.now():endDate;
         DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
         DateFormat hourFormat = new SimpleDateFormat("hh:mm a");
         EmployeeData employeeData=new EmployeeData();
         employeeData.setEmpId(id);
+        System.out.println("beginDate"+beginDate);
+        System.out.println("lastDate+"+lastDate);
         List<Swipe> swipes = swipesRepository.findByUserAndCreatedDateBetween(employeeData,beginDate,lastDate);
         List<EmployeeLeave> employeeLeaves =employeeLeaveRepository.findByUserAndLeaveDateBetweenAndLeavetype(employeeData,beginDate,lastDate,LeaveStatus.APPROVED);
         List<Holidays> holidays=holidaysRepository.findByHolidayDateBetween(beginDate,lastDate);
