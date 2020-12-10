@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -148,19 +149,18 @@ public class AttendanceService {
 
 
     //TODO for id attribute check for null and empty validation
-    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(int id, LocalDate startDate, LocalDate endDate) {
-        LocalDate beginDate= (startDate==null)?LocalDate.now().withDayOfMonth(1):startDate;
-        LocalDate lastDate=(endDate==null)?LocalDate.now():endDate;
-        DateFormat dateFormat = new SimpleDateFormat("dd-MMM-yyyy");
-        DateFormat hourFormat = new SimpleDateFormat("hh:mm a");
+    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(int id, Optional<LocalDate> startDate, Optional<LocalDate> endDate)  {
+        LocalDate beginDate= startDate.orElse(LocalDate.now().withDayOfMonth(1));
+        LocalDate lastDate=endDate.orElse(LocalDate.now());
+        DateTimeFormatter dateFormat =DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+        DateTimeFormatter hourFormat = DateTimeFormatter.ofPattern("hh:mm a");
+        SimpleDateFormat hourFormat1 = new SimpleDateFormat("hh:mm");
         EmployeeData employeeData=new EmployeeData();
         employeeData.setEmpId(id);
-        System.out.println("beginDate"+beginDate);
-        System.out.println("lastDate+"+lastDate);
-        List<Swipe> swipes = swipesRepository.findByUserAndCreatedDateBetween(employeeData,beginDate,lastDate);
-        List<EmployeeLeave> employeeLeaves =employeeLeaveRepository.findByUserAndLeaveDateBetweenAndLeavetype(employeeData,beginDate,lastDate,LeaveStatus.APPROVED);
+        List<Swipe> swipes = swipesRepository.findByUserAndCreatedDateBetween(employeeData,beginDate.atTime(00,00),lastDate.atTime(23,59));
+        List<EmployeeLeave> employeeLeaves =employeeLeaveRepository.findByUserAndLeaveDateBetween(employeeData,beginDate,lastDate);
         List<Holidays> holidays=holidaysRepository.findByHolidayDateBetween(beginDate,lastDate);
-        List<RegularizationData> regularizationData=regularizationRepository.findByUserAndDateBetweenAndStatus(employeeData,beginDate,lastDate,LeaveStatus.APPROVED);
+        List<RegularizationData> regularizationData=regularizationRepository.findByUserAndDateBetween(employeeData,beginDate,lastDate);
         List<AttendanceDetailsDTO> attendanceDetailsDTOS=new ArrayList<>();
         int presentDays=0;
         int absent=0;
@@ -172,6 +172,7 @@ public class AttendanceService {
             LocalDate loopDate = date;
             RegularizationData regularization=regularizationData.stream()
                     .filter(r->r.getDate().equals(loopDate))
+                    .filter(i->i.getStatus().equals(LeaveStatus.APPROVED))
                     .findFirst()
                     .orElse(null);
             AttendanceDetailsDTO attendanceDetailsDTO=new AttendanceDetailsDTO();
@@ -189,18 +190,18 @@ public class AttendanceService {
            }
            else if(regularization!=null ) {
                Duration duration = Duration.between(regularization.getLastOut(), regularization.getFirstIn());
-               long diff = Math.abs(duration.toHours());
+               Integer diff = Math.toIntExact(Math.abs(duration.toHours()));
                attendanceDetailsDTO.setStatus(AttendanceCategory.REGULARIZED);
                attendanceDetailsDTO.setFirstIn(hourFormat.format(regularization.getFirstIn()));
                attendanceDetailsDTO.setLastOut(hourFormat.format(regularization.getLastOut()));
-               attendanceDetailsDTO.setTotalWorkHours(hourFormat.format(diff));
+               attendanceDetailsDTO.setTotalWorkHours(hourFormat1.format(diff));
                attendanceDetailsDTO.setRegularizedBy(regularization.getRegularizedBy());
                attendanceDetailsDTO.setRegularizedOn(regularization.getRegularizedOn());
                attendanceDetailsDTO.setRemark(regularization.getRemarks());
            }
            else {
                List<LocalDateTime> AllSwipesPerDay = swipes.stream()
-                        .filter(s -> s.getCreatedDate().equals(loopDate))
+                        .filter(s -> s.getCreatedDate().toLocalDate().equals(loopDate))
                         .map(Swipe::getCreatedDate)
                         .collect(Collectors.toList());
                attendanceDetailsDTO.setSwipes(AllSwipesPerDay);
@@ -210,6 +211,7 @@ public class AttendanceService {
 
                EmployeeLeave employeeLeave = employeeLeaves.stream()
                         .filter(s -> s.getLeaveDate().equals(loopDate))
+                       .filter(a->a.getLeaveStatus().equals(LeaveStatus.APPROVED))
                         .findFirst()
                         .orElse(null);// he has not applied for leave
                if (firstSwipe == null && employeeLeave == null) {
@@ -228,24 +230,25 @@ public class AttendanceService {
                             .get();
 
                     Duration duration = Duration.between(lastSwipe, firstSwipe);
-                    long diff = Math.abs(duration.toHours());
-                    int balance=0;
+                    Long diff = duration.toHours();
+
+                    Integer balance=0;
                     if (diff < 9 && diff > 4){
                         balance= 9-Math.toIntExact(diff);
                         attendanceDetailsDTO.setStatus(AttendanceCategory.HALF_DAY);
-                        attendanceDetailsDTO.setEarlyOutHours(hourFormat.format(balance));
+                        attendanceDetailsDTO.setEarlyOutHours(hourFormat1.format(balance));
                         earlyOutDays=earlyOutDays+1;
                     }
 
 
                     attendanceDetailsDTO.setFirstIn(hourFormat.format(firstSwipe));
                     attendanceDetailsDTO.setLastOut(hourFormat.format(lastSwipe));
-                    attendanceDetailsDTO.setTotalWorkHours(hourFormat.format(diff));
+                    attendanceDetailsDTO.setTotalWorkHours(hourFormat1.format(diff));
                     if(diff>9||diff==9) {
                         attendanceDetailsDTO.setStatus(AttendanceCategory.PRESENT);
                         presentDays=presentDays+1;
                         balance = Math.toIntExact(diff) - 9;
-                        attendanceDetailsDTO.setExcessHours(hourFormat.format(balance));
+                        attendanceDetailsDTO.setExcessHours(hourFormat1.format(balance));
                     }
                     if(firstSwipe.isAfter(loopDate.atTime(10, 15))){
                         attendanceDetailsDTO.setLateInHours(hourFormat.format(firstSwipe));

@@ -56,7 +56,7 @@ public class AttendanceController {
     //TODO make dto to handle start date and end date
     @Operation(summary = "View the attendance summary based on id ", description = "To get attendance summary of employee based  on record calculated from month begin to current date", tags = { "getMonthSummary" })
     @GetMapping(path = "/attendance-summary")
-    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(@RequestAttribute("id") int id , @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(@RequestAttribute("id") int id , @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate, @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> endDate) {
         return attendanceService.getAttendanceSummary(id,startDate,endDate);
     }
 

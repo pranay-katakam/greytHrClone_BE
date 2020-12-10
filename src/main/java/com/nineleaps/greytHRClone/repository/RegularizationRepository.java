@@ -9,5 +9,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface RegularizationRepository extends JpaRepository<RegularizationData,Integer> {
-    List<RegularizationData> findByUserAndDateBetweenAndStatus(EmployeeData employeeData, LocalDate beginDate, LocalDate lastDate, LeaveStatus approved);
+    List<RegularizationData> findByUserAndDateBetween(EmployeeData employeeData, LocalDate beginDate, LocalDate lastDate);
 }

@@ -53,9 +53,9 @@ public class LeaveServices {
     public ResponseEntity<String> applyLeave(EmployeeLeaveRequestDTO employeeLeaveRequestDTO) {
         EmployeeData employeeData = new EmployeeData();
         employeeData.setEmpId(employeeLeaveRequestDTO.getUserId());
-        LocalDateTime toDate=employeeLeaveRequestDTO.getToDate().plusDays(1);
+        LocalDate toDate=employeeLeaveRequestDTO.getToDate().plusDays(1);
         List<EmployeeLeave> employeeLeaves=new ArrayList<>();
-        for (LocalDateTime date = employeeLeaveRequestDTO.getFromDate(); date.isBefore(toDate); date = date.plusDays(1)){
+        for (LocalDate date = employeeLeaveRequestDTO.getFromDate(); date.isBefore(toDate); date = date.plusDays(1)){
             EmployeeLeave employeeLeave = new EmployeeLeave();
             employeeLeave.setUser(employeeData);
             employeeLeave.setLeavetype(employeeLeaveRequestDTO.getLeavetype());
