@@ -6,13 +6,14 @@ import com.nineleaps.greytHRClone.service.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
+
 
 @CrossOrigin(allowCredentials = "true", allowedHeaders = "*")
 @Tag(name = "employee swipe controller", description = "Controller class deals with swipes made by employees")
@@ -52,10 +53,10 @@ public class AttendanceController {
         return attendanceService.getRecentSwipes(id);
     }
 
-
+    //TODO make dto to handle start date and end date
     @Operation(summary = "View the attendance summary based on id ", description = "To get attendance summary of employee based  on record calculated from month begin to current date", tags = { "getMonthSummary" })
     @GetMapping(path = "/attendance-summary")
-    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(@RequestAttribute("id") int id, @RequestParam Optional<LocalDate> startDate,@RequestParam Optional<LocalDate> endDate) {
+    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(@RequestAttribute("id") int id , @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate, @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> endDate) {
         return attendanceService.getAttendanceSummary(id,startDate,endDate);
     }
 

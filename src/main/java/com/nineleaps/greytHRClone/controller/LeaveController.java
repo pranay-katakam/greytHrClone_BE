@@ -56,4 +56,11 @@ public class LeaveController {
     public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(@RequestAttribute int id, @RequestParam(value = "year", required = false )Year year){
         return leaveServices.getLeaves( id,year);
     }
+
+    //TODO manager to approve applied leaves
+    @GetMapping("/approveLeaves")
+    public ResponseEntity<String> approveLeaves(@RequestAttribute int id ){
+        return leaveServices.approveLeaves( id);
+    }
+
 }

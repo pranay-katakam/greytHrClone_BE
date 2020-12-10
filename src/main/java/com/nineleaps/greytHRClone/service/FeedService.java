@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -63,8 +65,9 @@ public class FeedService {
         return ResponseEntity.status(HttpStatus.CREATED).body("Comment saved successfully");
     }
 
-    public ResponseEntity<List<FeedDTO>> getFeed() {
-        Iterable<Feed> feed = feedRepository.findAll();
+    public ResponseEntity<List<FeedDTO>> getFeed(FeedType feedType) {
+
+        Iterable<Feed> feed =(feedType==null)? feedRepository.findAll():feedRepository.findByFeedType(feedType);
         List<FeedDTO> feedDTOList = new ArrayList<>();
 
 
@@ -94,7 +97,9 @@ public class FeedService {
             feedDTO.setFeedType(feedObj.getFeedType());
 
             List<CommentDTO> commentDTOS = new ArrayList<>();
-            for (Comment commentObj : feedObj.getComments()) {
+            List<Comment> reverseComment= feedObj.getComments();
+            Collections.reverse(reverseComment);
+            for (Comment commentObj :reverseComment) {
                 CommentDTO commentDTO = new CommentDTO();
                 commentDTO.setCommentId(commentObj.getCommentId());
                 commentDTO.setCommentedBy(commentObj.getUser().getName());
@@ -102,7 +107,9 @@ public class FeedService {
                 commentDTO.setCommentedOn(commentObj.getCreatedDate());
                 commentDTO.setComment(commentObj.getComment());
                 List<ReplyCommentDTO> replyCommentDTOS = new ArrayList<>();
-                for (ReplyComment replyObj : commentObj.getReplies()) {
+                List<ReplyComment> reverseReplyComments=commentObj.getReplies();
+                Collections.reverse(reverseReplyComments);
+                for (ReplyComment replyObj :  reverseReplyComments) {
                     ReplyCommentDTO replyCommentDTO = new ReplyCommentDTO();
                     replyCommentDTO.setRepliedBy(replyObj.getUser().getName());
                     replyCommentDTO.setRepliedByImage(FIREBASE_URL_PREFIX + replyObj.getUser().getImageName() + FIREBASE_URL_SUFFIX);
@@ -178,7 +185,7 @@ public class FeedService {
         for (JSONObject eventObj : birthdayList) {
             Feed feed = new Feed();
             feed.setEventType(EventType.Birthday);
-            feed.setFeedType(FeedType.EVENTS);
+            feed.setFeedType(FeedType.events);
             feed.setName((String) eventObj.get("name"));
             imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
             feed.setImageSuffix(imageNameSuffix);
@@ -187,7 +194,7 @@ public class FeedService {
         for (JSONObject eventObj : anniversaryList) {
             Feed feed = new Feed();
             feed.setEventType(EventType.Anniversary);
-            feed.setFeedType(FeedType.EVENTS);
+            feed.setFeedType(FeedType.events);
             feed.setName((String) eventObj.get("name"));
             imageNameSuffix = random.nextInt(RANDOM_MAX - RANDOM_MIN + 1);
             feed.setImageSuffix(imageNameSuffix);

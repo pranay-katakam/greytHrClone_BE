@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,7 @@ public interface SwipesRepository extends JpaRepository<Swipe, Integer> {
     @Query(value = "select * from swipes where emp_id=3 order by created_date desc limit 4",nativeQuery = true)
     Iterable<Swipe> getRecentSwipes(EmployeeData user);
 
-    List<Swipe> findByUserAndCreatedDateBetween(EmployeeData employeeData, LocalDate beginDate, LocalDate lastDate);
+    List<Swipe> findByUserAndCreatedDateBetween(EmployeeData employeeData, LocalDateTime beginDate, LocalDateTime lastDate);
 
 //    @Query("SELECT e FROM Swipe e WHERE e.createdDate BETWEEN :beginDate AND :endDate ")
 //    List<Swipe> limitedSwipes(EmployeeData employeeData, LocalDate beginDate,LocalDate endDate);

@@ -64,6 +64,7 @@ public class LeaveServices {
             EmployeeLeave employeeLeave = new EmployeeLeave();
             employeeLeave.setUser(employeeData);
             employeeLeave.setLeavetype(employeeLeaveRequestDTO.getLeavetype());
+
             employeeLeave.setReason(employeeLeaveRequestDTO.getReason());
             employeeLeave.setLeaveDate(date);
             employeeLeave.setAppliedDate(LocalDate.now());
@@ -99,7 +100,7 @@ leaveDetailsDTO.getFrom();
         // iterare from first to last month
         //add details
 
-        Iterable<EmployeeLeave> leaves = employeeLeaveRepository.getLeaves(employeeData);
+        List<EmployeeLeave> leaves = employeeLeaveRepository.getLeaves(employeeData);//filter:interval between year begining to current month, leave status=approved
 
         List<EmployeeLeaveDTO> employeeLeaveDTOS = new ArrayList<>();
 
@@ -156,4 +157,9 @@ leaveDetailsDTO.getFrom();
     }
 
 
+    public ResponseEntity<String> approveLeaves(int id) {
+//        employeeDataRepository.findEmpIdByManagerId(id);
+//        List<Integer> reportees=employeeDataRepository.find
+    return null;
+    }
 }

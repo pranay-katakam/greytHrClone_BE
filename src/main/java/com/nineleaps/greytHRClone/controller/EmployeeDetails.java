@@ -3,6 +3,7 @@ package com.nineleaps.greytHRClone.controller;
 import com.nineleaps.greytHRClone.dto.*;
 
 
+import com.nineleaps.greytHRClone.model.CompanyLocation;
 import com.nineleaps.greytHRClone.model.EmployeeDepartment;
 import com.nineleaps.greytHRClone.model.EmployeeDesignation;
 import com.nineleaps.greytHRClone.service.EmployeeDetailsService;
@@ -91,5 +92,11 @@ public class EmployeeDetails {
     public ResponseEntity<String> addRoles(@RequestBody RoleDTO roleDTO){
         return employeeDetailsService.addRoles(roleDTO);
     }
+
+    @GetMapping("/companyLocations")
+    public ResponseEntity<List<CompanyLocation>> getCompanyLocation(){
+        return employeeDetailsService.getCompanyLocation();
+    }
+
 
 }
