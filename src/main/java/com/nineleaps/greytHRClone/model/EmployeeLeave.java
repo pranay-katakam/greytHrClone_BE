@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -34,10 +35,10 @@ public class EmployeeLeave {
     private String reason;
 
     @Column(name="leave_date")
-    private LocalDateTime leaveDate;
+    private LocalDate leaveDate;
 
     @Column(name="applied_date")
-    private LocalDateTime appliedDate;
+    private LocalDate appliedDate;
 
 //    @NotNull
 //    @Column(name = "from_date")
