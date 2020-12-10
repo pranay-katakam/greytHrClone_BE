@@ -17,11 +17,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
+import java.time.Year;
+import java.util.*;
 
-import java.util.List;
+import static java.time.temporal.TemporalAdjusters.*;
 
 @Service
 public class LeaveServices {
@@ -30,6 +29,7 @@ public class LeaveServices {
     private EmployeeLeaveRepository employeeLeaveRepository;
     private EmployeeDataRepository employeeDataRepository;
     private LeaveBalanceRepository leaveBalanceRepository;
+
 
     public LeaveServices(HolidaysRepository holidaysRepository, EmployeeLeaveRepository employeeLeaveRepository, EmployeeDataRepository employeeDataRepository, LeaveBalanceRepository leaveBalanceRepository) {
         this.holidaysRepository = holidaysRepository;
@@ -50,6 +50,11 @@ public class LeaveServices {
         return ResponseEntity.status(HttpStatus.OK).body(holidaysRepository.findAll());
     }
 
+    public ResponseEntity<List<Holidays>> getUpcomingHolidays() {
+        return ResponseEntity.status(HttpStatus.OK).body(holidaysRepository.findByHolidayDateBetween(LocalDate.now() ,LocalDate.now().with(lastDayOfYear())));
+    }
+
+
     public ResponseEntity<String> applyLeave(EmployeeLeaveRequestDTO employeeLeaveRequestDTO) {
         EmployeeData employeeData = new EmployeeData();
         employeeData.setEmpId(employeeLeaveRequestDTO.getUserId());
@@ -62,6 +67,7 @@ public class LeaveServices {
 
             employeeLeave.setReason(employeeLeaveRequestDTO.getReason());
             employeeLeave.setLeaveDate(date);
+            employeeLeave.setAppliedDate(LocalDate.now());
             employeeLeave.setLeaveStatus(LeaveStatus.PENDING);
             employeeLeaves.add(employeeLeave);
         }
@@ -69,9 +75,30 @@ public class LeaveServices {
         return ResponseEntity.status(HttpStatus.CREATED).body("Leave applied Successfully");
     }
 
-    public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(int id) {
+    public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(int id, Year year) {
         EmployeeData employeeData = new EmployeeData();
         employeeData.setEmpId(id);
+//        LocalDate now = LocalDate.now(); // 2015-11-23
+//        LocalDate firstDay = now.with(firstDayOfYear()); // 2015-01-01
+//        LocalDate lastDay = now.with(lastDayOfYear());
+        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
+        System.out.println(leaveBalances);
+
+        for (LocalDate date = LocalDate.now().with(firstDayOfYear()); date.isBefore(LocalDate.now().with(firstDayOfMonth())); date = date.plusMonths(1)) {
+
+            List<LeaveDetailsDTO> leaveDetailsDTOS = new ArrayList<>();
+
+
+            for (LeaveBalance leaveBalance : leaveBalances) {
+                LeaveDetailsDTO leaveDetailsDTO = new LeaveDetailsDTO();
+leaveDetailsDTO.getFrom();
+
+            }
+            }
+//Todo startdate=firstmonthof year enddate=lastmonth of year
+        //get leaves of approved
+        // iterare from first to last month
+        //add details
 
         List<EmployeeLeave> leaves = employeeLeaveRepository.getLeaves(employeeData);//filter:interval between year begining to current month, leave status=approved
 
@@ -128,6 +155,7 @@ public class LeaveServices {
             leaveBalanceRepository.save(leaveBalance);
         }
     }
+
 
     public ResponseEntity<String> approveLeaves(int id) {
 //        employeeDataRepository.findEmpIdByManagerId(id);
