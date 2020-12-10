@@ -15,7 +15,7 @@ import java.util.List;
 public interface EmployeeLeaveRepository extends JpaRepository<EmployeeLeave, Integer> {
 
     @Query("select u from EmployeeLeave u where u.user=?1")
-    Iterable<EmployeeLeave> getLeaves(EmployeeData employeeData);
+    List<EmployeeLeave> getLeaves(EmployeeData employeeData);
 
 //    @Query("SELECT u from EmployeeLeave u where CURRENT_DATE  BETWEEN fromDate AND toDate")
 //    List<EmployeeLeave> getAppliedLeave();

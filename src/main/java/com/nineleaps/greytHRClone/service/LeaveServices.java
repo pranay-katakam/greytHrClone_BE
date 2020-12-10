@@ -73,7 +73,7 @@ public class LeaveServices {
         EmployeeData employeeData = new EmployeeData();
         employeeData.setEmpId(id);
 
-        Iterable<EmployeeLeave> leaves = employeeLeaveRepository.getLeaves(employeeData);
+        List<EmployeeLeave> leaves = employeeLeaveRepository.getLeaves(employeeData);//filter:interval between year begining to current month, leave status=approved
 
         List<EmployeeLeaveDTO> employeeLeaveDTOS = new ArrayList<>();
 
@@ -131,6 +131,7 @@ public class LeaveServices {
 
     public ResponseEntity<String> approveLeaves(int id) {
 //        employeeDataRepository.findEmpIdByManagerId(id);
+//        List<Integer> reportees=employeeDataRepository.find
     return null;
     }
 }

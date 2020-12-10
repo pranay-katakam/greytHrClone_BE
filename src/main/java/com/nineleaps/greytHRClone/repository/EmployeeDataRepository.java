@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,4 +59,7 @@ public interface EmployeeDataRepository extends JpaRepository<EmployeeData, Inte
 
 //    @Query("SELECT r.empId FROM EmployeeData r where r.name = :name")
 //    List<Integer> findEmpIdByManagerId(@Param("name") int id);
+
+    @Query("select u.createdDate from EmployeeData u where empId=?1")
+    LocalDate findcreatedDateById(int eid);
 }
