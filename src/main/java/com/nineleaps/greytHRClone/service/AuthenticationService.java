@@ -14,12 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -105,7 +99,7 @@ public class AuthenticationService /*implements UserDetailsService */{
         try {
             EmployeeData employeeData = Optional.ofNullable(employeeDataRepository.findByEmail(loginDTO.getEmail())).orElseThrow(()->new BadRequestException("email doesn't exist please signUp "));
             if(bCryptPasswordEncoder.matches(loginDTO.getPassword(), employeeData.getPassword())){
-                generateCoookie(response, employeeData.getEmpId());
+                generateCookie(response, employeeData.getEmpId());
                 ProfileDTO profileDTO=new ProfileDTO();
                 profileDTO.setName(employeeData.getName());
                 profileDTO.setImageName(FIREBASE_URL_PREFIX + employeeData.getImageName() + FIREBASE_URL_SUFFIX);
@@ -119,13 +113,13 @@ public class AuthenticationService /*implements UserDetailsService */{
         }
     }
 
-    private void generateCoookie(HttpServletResponse response, int id) {
+    private void generateCookie(HttpServletResponse response, int id) {
         String cookieValue = String.valueOf(id);
         int timeOfExpire=(1 * 24 * 60 * 60); // expires in 1 day
         ResponseCookie resCookie = ResponseCookie.from("userID", cookieValue)
                 .httpOnly(true)
                 .sameSite("None")
-                .secure(true)
+                .secure(false)
                 .path("/")
                 .maxAge(Math.toIntExact(timeOfExpire))
                 .build();

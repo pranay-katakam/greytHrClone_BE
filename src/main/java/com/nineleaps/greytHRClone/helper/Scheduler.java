@@ -45,7 +45,7 @@ public class Scheduler {
 
 
     @Async
-    @Scheduled(cron = "50 52 10 18 * *")//monthly cron
+    @Scheduled(cron = "00 27 17 16 * *")//monthly cron
     public void addEarnedLeaveMonthly()  {
         leaveServices.leaveBalanceUpdater("EarnedLeave");;
     }

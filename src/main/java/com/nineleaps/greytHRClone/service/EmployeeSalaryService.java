@@ -61,6 +61,7 @@ public class EmployeeSalaryService {
         int annualGrossPay = 0;
         int annualDeduction = 0;
         int annualNetPay = 0;
+        int annualPf=0;
         List<EmployeeSalary> salaryDetails = employeeSalaryRepository.getSalaryDetails(eid);
         List<EmployeeSalary> yearMatchingSalaryDetailsData;
         List<EmployeeSalary> lowerBoundSalaryDetailsData;
@@ -100,11 +101,13 @@ public class EmployeeSalaryService {
             annualGrossPay = salaryDTO.getTotalEarning() + annualGrossPay;
             annualDeduction = salaryDTO.getTotalDeduction() + annualDeduction;
             annualNetPay = salaryDTO.getNetPay() + annualNetPay;
+            annualPf=salaryDTO.getPf()+annualPf;
         }
 
         annualEarningsDTO.setAnnualGrossPay(annualGrossPay);
         annualEarningsDTO.setAnnualNetDeduction(annualDeduction);
         annualEarningsDTO.setAnnualNetPay(annualNetPay);
+        annualEarningsDTO.setAnnualPf(annualPf);
         annualEarningsDTO.setYearlySalary(postSalaryDTOs);
         return ResponseEntity.status(HttpStatus.OK).body(annualEarningsDTO);
     }
