@@ -190,7 +190,7 @@ public class AttendanceService {
            }
            else if(regularization!=null ) {
                Duration duration = Duration.between(regularization.getLastOut(), regularization.getFirstIn());
-               Integer diff = Math.toIntExact(Math.abs(duration.toHours()));
+               Long diff = duration.toHours();
                attendanceDetailsDTO.setStatus(AttendanceCategory.REGULARIZED);
                attendanceDetailsDTO.setFirstIn(hourFormat.format(regularization.getFirstIn()));
                attendanceDetailsDTO.setLastOut(hourFormat.format(regularization.getLastOut()));
@@ -229,9 +229,11 @@ public class AttendanceService {
                             .findFirst()
                             .get();
 
-                    Duration duration = Duration.between(lastSwipe, firstSwipe);
+                    Duration duration = Duration.between(firstSwipe,lastSwipe);
                     Long diff = duration.toHours();
-
+                   System.out.println("firstSwipe"+firstSwipe);
+                   System.out.println("lastSwipe"+lastSwipe);
+                   System.out.println("diff"+diff);
                     Integer balance=0;
                     if (diff < 9 && diff > 4){
                         balance= 9-Math.toIntExact(diff);

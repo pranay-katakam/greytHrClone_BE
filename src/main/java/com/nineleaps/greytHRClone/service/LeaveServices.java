@@ -8,6 +8,8 @@ import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 import com.nineleaps.greytHRClone.repository.EmployeeLeaveRepository;
 import com.nineleaps.greytHRClone.repository.HolidaysRepository;
 import com.nineleaps.greytHRClone.repository.LeaveBalanceRepository;
+import jdk.nashorn.api.scripting.JSObject;
+import org.json.simple.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import java.time.Year;
 import java.util.*;
 
 import static java.time.temporal.TemporalAdjusters.*;
+import static javax.security.auth.callback.ConfirmationCallback.OK;
 
 @Service
 public class LeaveServices {
@@ -67,7 +70,7 @@ public class LeaveServices {
 
             employeeLeave.setReason(employeeLeaveRequestDTO.getReason());
             employeeLeave.setLeaveDate(date);
-            employeeLeave.setAppliedDate(LocalDate.now());
+            employeeLeave.setAppliedDate(LocalDateTime.now());
             employeeLeave.setLeaveStatus(LeaveStatus.PENDING);
             employeeLeaves.add(employeeLeave);
         }
@@ -75,32 +78,10 @@ public class LeaveServices {
         return ResponseEntity.status(HttpStatus.CREATED).body("Leave applied Successfully");
     }
 
-    public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(int id, Year year) {
+    public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(int id, Integer year) {
         EmployeeData employeeData = new EmployeeData();
         employeeData.setEmpId(id);
-//        LocalDate now = LocalDate.now(); // 2015-11-23
-//        LocalDate firstDay = now.with(firstDayOfYear()); // 2015-01-01
-//        LocalDate lastDay = now.with(lastDayOfYear());
-        List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
-        System.out.println(leaveBalances);
-
-        for (LocalDate date = LocalDate.now().with(firstDayOfYear()); date.isBefore(LocalDate.now().with(firstDayOfMonth())); date = date.plusMonths(1)) {
-
-            List<LeaveDetailsDTO> leaveDetailsDTOS = new ArrayList<>();
-
-
-            for (LeaveBalance leaveBalance : leaveBalances) {
-                LeaveDetailsDTO leaveDetailsDTO = new LeaveDetailsDTO();
-leaveDetailsDTO.getFrom();
-
-            }
-            }
-//Todo startdate=firstmonthof year enddate=lastmonth of year
-        //get leaves of approved
-        // iterare from first to last month
-        //add details
-
-        List<EmployeeLeave> leaves = employeeLeaveRepository.getLeaves(employeeData);//filter:interval between year begining to current month, leave status=approved
+        List<EmployeeLeave> leaves = employeeLeaveRepository.getLeaves(employeeData, year);//filter:interval between year begining to current month, leave status=approved
 
         List<EmployeeLeaveDTO> employeeLeaveDTOS = new ArrayList<>();
 
@@ -115,6 +96,7 @@ leaveDetailsDTO.getFrom();
             employeeLeaveDTO.setManagerName(managerName);
             employeeLeaveDTO.setLeavetype(leave.getLeavetype());
             employeeLeaveDTO.setLeaveStatus(leave.getLeaveStatus());
+            employeeLeaveDTO.setFromDate(leave.getFromDate());
             employeeLeaveDTO.setToDate(leave.getLeaveDate());
             employeeLeaveDTO.setReason(leave.getReason());
 
@@ -125,7 +107,7 @@ leaveDetailsDTO.getFrom();
     }
 
 
-
+//TODO flush the balance every year
     public void leaveBalanceUpdater(String leaveType) {
         List<Integer> empIDs = employeeDataRepository.findAlluserId();
         List<LeaveBalance> leaveBalances = leaveBalanceRepository.findAll();
@@ -143,11 +125,11 @@ leaveDetailsDTO.getFrom();
             if(leaveType.equals("SickLeavePaternityLeave")) {
                 sickLeave = leaveBalance.getSickLeave() + 1;
                 paternityLeave = leaveBalance.getPaternityLeave() + 1;
-                leaveBalance.setEarnedLeave(sickLeave);
+                leaveBalance.setSickLeave(sickLeave);
                 leaveBalance.setPaternityLeave(paternityLeave);
             }else {
                 earnedLeave = leaveBalance.getEarnedLeave() +leaveCount ;
-                leaveBalance.setPaternityLeave(earnedLeave);
+                leaveBalance.setEarnedLeave(earnedLeave);
             }
 
             employeeData.setEmpId(empID);
@@ -157,9 +139,36 @@ leaveDetailsDTO.getFrom();
     }
 
 
-    public ResponseEntity<String> approveLeaves(int id) {
+    public ResponseEntity<JSONObject> approveLeaves(int id) {
 //        employeeDataRepository.findEmpIdByManagerId(id);
 //        List<Integer> reportees=employeeDataRepository.find
-    return null;
+        JSONObject sample=new JSONObject() ;
+        sample.put("EL",12);
+        sample.put("PL",12);
+        sample.put("SL",11);
+        sample.put("MWFH",0);
+        sample.put("LOP",0);
+
+    return ResponseEntity.status(HttpStatus.OK).body(sample);
+    }
+
+    public ResponseEntity<LeaveBalanceDTO> getLeaveBalance(int id) {
+        LeaveBalanceDTO leaveBalanceDTO=new LeaveBalanceDTO();
+        EmployeeData employeeData=new EmployeeData();
+        employeeData.setEmpId(id);
+
+        LeaveBalance leaveBalance= leaveBalanceRepository.findByUser(employeeData);
+        leaveBalanceDTO.setEarnedLeave(leaveBalance.getEarnedLeave());
+//        leaveBalanceDTO.setEarnedLeaveDetails(null);
+        leaveBalanceDTO.setPaternityLeave(leaveBalance.getPaternityLeave());
+//        leaveBalanceDTO.setPaternityLeaveDetails(null);
+        leaveBalanceDTO.setSickLeave(leaveBalance.getSickLeave());
+//        leaveBalanceDTO.setSickLeaveDetails(null);
+        leaveBalanceDTO.setLossOfPay(leaveBalance.getLossOfPay());
+//        leaveBalanceDTO.setLossOfPayDetails(null);
+        leaveBalanceDTO.setMedicalWorkFromHome(leaveBalance.getMedicalWorkFromHome());
+//        leaveBalanceDTO.setMedicalWorkFromHomeDetails(null);
+
+       return  ResponseEntity.status(HttpStatus.OK).body(leaveBalanceDTO);
     }
 }

@@ -38,15 +38,14 @@ public class EmployeeLeave {
     private LocalDate leaveDate;
 
     @Column(name="applied_date")
-    private LocalDate appliedDate;
+    private LocalDateTime appliedDate;
 
-//    @NotNull
-//    @Column(name = "from_date")
-//    private LocalDateTime fromDate;
-//
-//    @NotNull
-//    @Column(name = "to_date")
-//    private LocalDateTime toDate;
+
+    @Column(name = "from_date")
+    private LocalDate fromDate;
+
+    @Column(name = "to_date")
+    private LocalDate toDate;
 
     @Enumerated
     private LeaveStatus leaveStatus;

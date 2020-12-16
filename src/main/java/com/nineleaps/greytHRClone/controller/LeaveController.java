@@ -4,10 +4,12 @@ import com.nineleaps.greytHRClone.dto.EmployeeLeaveDTO;
 
 import com.nineleaps.greytHRClone.dto.EmployeeLeaveRequestDTO;
 import com.nineleaps.greytHRClone.dto.HolidayDTO;
+import com.nineleaps.greytHRClone.dto.LeaveBalanceDTO;
 import com.nineleaps.greytHRClone.model.Holidays;
 import com.nineleaps.greytHRClone.service.LeaveServices;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,14 +55,20 @@ public class LeaveController {
 
     @Operation(summary = "View all leaves taken", description = "To get list of all leaves taken", tags = { "getLeaves" })
     @GetMapping("/leaves")
-    public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(@RequestAttribute int id, @RequestParam(value = "year", required = false )Year year){
+    public ResponseEntity<List<EmployeeLeaveDTO>> getLeaves(@RequestAttribute int id, @RequestParam(value = "year", required = false )Integer year){
         return leaveServices.getLeaves( id,year);
     }
 
     //TODO manager to approve applied leaves
     @GetMapping("/approveLeaves")
-    public ResponseEntity<String> approveLeaves(@RequestAttribute int id ){
+    public ResponseEntity<JSONObject> approveLeaves(@RequestAttribute int id ){
         return leaveServices.approveLeaves( id);
+    }
+
+    @GetMapping("/leaveBalance")
+    public ResponseEntity<LeaveBalanceDTO> getLeaveBalance(@RequestAttribute int id){
+        return leaveServices.getLeaveBalance(id);
+
     }
 
 }
