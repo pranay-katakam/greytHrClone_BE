@@ -65,6 +65,7 @@ public class EmployeeSalaryService {
             tempYear=tempYear.minusYears(1);
         }while (yearMatchingSalaryDetailsData.isEmpty()&&userJoinDate.getYear()<tempYear.getValue()) ;
 
+        yearMatchingSalaryDetailsData.addAll(yearMatchingSalaryDetails(year, salaryDetails,"lowerBound"));
         tempYear=year.plusYears(1);
 
         do {
