@@ -25,4 +25,13 @@ public class Constants {
     public static final String HEADER_STRING = "Authorization";
     public static final String AUTHORITIES_KEY = "scopes";
 
+    //salary policy lookup
+    public static final double BASIC = 0.4836;
+    public static final double HRA= 0.1934;
+    public static final double SPECIAL_ALLOWANCE= 0.3228;
+    public static final double PF= 0.05159;
+    public static final double PROF_TAX= 0.00573;
+    public static final double GROUP_MEDICAL_DEDUCTION= 0.00750;
+    public static final double GROUP_POLICY_ACCIDENT_DEDUCTION= 0.00045;
+
 }

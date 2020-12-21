@@ -3,8 +3,6 @@ package com.nineleaps.greytHRClone.service;
 import com.nineleaps.greytHRClone.dto.AnnualEarningsDTO;
 import com.nineleaps.greytHRClone.dto.EmployeeSalaryRequestDTO;
 import com.nineleaps.greytHRClone.dto.SalaryDTO;
-import com.nineleaps.greytHRClone.model.EmployeeData;
-import com.nineleaps.greytHRClone.model.EmployeeLeave;
 import com.nineleaps.greytHRClone.model.EmployeeSalary;
 import com.nineleaps.greytHRClone.repository.EmployeeDataRepository;
 import com.nineleaps.greytHRClone.repository.EmployeeSalaryRepository;
@@ -16,16 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.YearMonth;
-import java.time.chrono.ChronoLocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.LongStream;
-import java.util.stream.Stream;
+
+import static com.nineleaps.greytHRClone.common.Constants.*;
 
 
 @Service
@@ -76,7 +70,7 @@ public class EmployeeSalaryService {
         do {
             lowerBoundSalaryDetailsData=yearMatchingSalaryDetails(tempYear, salaryDetails,"lowerBound");
             tempYear=tempYear.plusYears(1);
-        }while (lowerBoundSalaryDetailsData.isEmpty()&&Year.now().equals(tempYear.minusYears(1))) ;
+        }while (lowerBoundSalaryDetailsData.isEmpty()&&!Year.now().isBefore(tempYear.minusYears(1))) ;
 
         yearMatchingSalaryDetailsData.addAll(lowerBoundSalaryDetailsData);
 
@@ -95,13 +89,14 @@ public class EmployeeSalaryService {
                     .map(SalaryDTO::getNetPay)
                     .findAny()
                     .orElse(0);
-
-            SalaryDTO salaryDTO = TotalSalaryDetails(salary, date);
-            postSalaryDTOs.add(salaryDTO);
-            annualGrossPay = salaryDTO.getTotalEarning() + annualGrossPay;
-            annualDeduction = salaryDTO.getTotalDeduction() + annualDeduction;
-            annualNetPay = salaryDTO.getNetPay() + annualNetPay;
-            annualPf=salaryDTO.getPf()+annualPf;
+            if(salary!=0) {
+                SalaryDTO salaryDTO = TotalSalaryDetails(salary, date);
+                postSalaryDTOs.add(salaryDTO);
+                annualGrossPay = salaryDTO.getTotalEarning() + annualGrossPay;
+                annualDeduction = salaryDTO.getTotalDeduction() + annualDeduction;
+                annualNetPay = salaryDTO.getNetPay() + annualNetPay;
+                annualPf = salaryDTO.getPf() + annualPf;
+            }
         }
 
         annualEarningsDTO.setAnnualGrossPay(annualGrossPay);
@@ -138,37 +133,30 @@ public class EmployeeSalaryService {
         return salaryDTO;
     }
 
-    //
+
     private SalaryDTO TotalSalaryDetails(int totalSalary, LocalDate payDate) {
-//TODO lookup-table
-        double basic = totalSalary * .45;
-        double hra = totalSalary * .18;
-        double specialAllowance = totalSalary * .30037;
-        double totalEarning = (basic + hra + specialAllowance);
-
-        int pf = 1800;
-        int profTax = 200;
-        int groupMedicalDeduction = 321;
-        int groupPolicyAccidentDeduction = 18;
-        int totalDeduction = (pf + profTax + groupMedicalDeduction + groupPolicyAccidentDeduction);
-
-        double netPay = (totalEarning - totalDeduction);
-        String StringDate = payDate.format(DateTimeFormatter.ofPattern("LLL yyyy"));
-
+        double basic = totalSalary * BASIC;
+        double hra = totalSalary * HRA;
+        double specialAllowance = totalSalary * SPECIAL_ALLOWANCE;
+        double pf =totalSalary* PF;
+        double profTax = totalSalary * PROF_TAX;
+        double groupMedicalDeduction = totalSalary * GROUP_MEDICAL_DEDUCTION;
+        double groupPolicyAccidentDeduction = totalSalary * GROUP_POLICY_ACCIDENT_DEDUCTION;
+        double totalDeduction = (pf + profTax + groupMedicalDeduction + groupPolicyAccidentDeduction);
+        double netPay = (totalSalary - totalDeduction);
+//        String StringDate = payDate.format(DateTimeFormatter.ofPattern("LLL yyyy"));
         SalaryDTO salaryDTO = new SalaryDTO();
-
         salaryDTO.setPayDate(YearMonth.from(payDate));
         salaryDTO.setBasic((int) basic);
         salaryDTO.setHra((int) hra);
         salaryDTO.setSpecialAllowance((int) specialAllowance);
-        salaryDTO.setPf(pf);
-        salaryDTO.setProfTax(profTax);
-        salaryDTO.setGroupMedicalDeduction(groupMedicalDeduction);
-        salaryDTO.setGroupPolicyAccidentDeduction(groupPolicyAccidentDeduction);
-        salaryDTO.setTotalEarning((int) totalEarning);
-        salaryDTO.setTotalDeduction(totalDeduction);
+        salaryDTO.setPf((int) pf);
+        salaryDTO.setProfTax((int) profTax);
+        salaryDTO.setGroupMedicalDeduction((int) groupMedicalDeduction);
+        salaryDTO.setGroupPolicyAccidentDeduction((int) groupPolicyAccidentDeduction);
+        salaryDTO.setTotalEarning(totalSalary);
+        salaryDTO.setTotalDeduction((int) totalDeduction);
         salaryDTO.setNetPay((int) netPay);
-
         return salaryDTO;
     }
 
@@ -183,7 +171,6 @@ public class EmployeeSalaryService {
                 .findFirst()
                 .map(EmployeeSalary::getTotalSalary)
                 .orElse(0);
-        System.out.println("salary " + salary);
         SalaryDTO salaryDTO = salary == 0 ? new SalaryDTO() : TotalSalaryDetails(salary, date);
         return ResponseEntity.status(HttpStatus.OK).body(salaryDTO);
 

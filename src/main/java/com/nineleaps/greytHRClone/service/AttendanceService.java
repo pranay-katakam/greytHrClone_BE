@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotNull;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -149,7 +150,7 @@ public class AttendanceService {
 
 
     //TODO for id attribute check for null and empty validation
-    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(int id, Optional<LocalDate> startDate, Optional<LocalDate> endDate)  {
+    public ResponseEntity<AttendanceSummaryDTO> getAttendanceSummary(@NotNull Integer id, Optional<LocalDate> startDate, Optional<LocalDate> endDate)  {
         LocalDate beginDate= startDate.orElse(LocalDate.now().withDayOfMonth(1));
         LocalDate lastDate=endDate.orElse(LocalDate.now());
         DateTimeFormatter dateFormat =DateTimeFormatter.ofPattern("dd-MMM-yyyy");
@@ -231,9 +232,6 @@ public class AttendanceService {
 
                     Duration duration = Duration.between(firstSwipe,lastSwipe);
                     Long diff = duration.toHours();
-                   System.out.println("firstSwipe"+firstSwipe);
-                   System.out.println("lastSwipe"+lastSwipe);
-                   System.out.println("diff"+diff);
                     Integer balance=0;
                     if (diff < 9 && diff > 4){
                         balance= 9-Math.toIntExact(diff);

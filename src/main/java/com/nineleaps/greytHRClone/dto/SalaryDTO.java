@@ -13,7 +13,6 @@ import java.time.YearMonth;
 @NoArgsConstructor
 public class SalaryDTO {
     private YearMonth payDate;
-    private int eid;
     private int basic;
     private int hra;
     private int specialAllowance;
